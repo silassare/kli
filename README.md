@@ -1,3 +1,3 @@
 # Kli
-Kli help you add interactive command line interface to your php project.
+Kli helps you add an interactive command-line interface to your php project.
 > Coming Soon: Documentation and test project.
