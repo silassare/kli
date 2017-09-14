@@ -22,7 +22,7 @@
 		/**
 		 * KliCommand constructor.
 		 *
-		 * @param string            $name command name.
+		 * @param string   $name command name.
 		 * @param \Kli\Kli $cli  cli object to use.
 		 *
 		 * @throws \Kli\Exceptions\KliException
@@ -39,8 +39,8 @@
 		 * execute command.
 		 *
 		 * @param \Kli\KliAction $action            requested action object.
-		 * @param array                   $options           key value pairs options.
-		 * @param array                   $anonymous_options indexed unused anonymous options.
+		 * @param array          $options           key value pairs options.
+		 * @param array          $anonymous_options indexed unused anonymous options.
 		 */
 		abstract public function execute(KliAction $action, array $options, array $anonymous_options);
 
