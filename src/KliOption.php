@@ -15,19 +15,18 @@
 
 	final class KliOption
 	{
-		private        $name;
-		private        $description         = 'no description';
-		private        $prompt              = false;
-		private        $prompt_msg;
-		private        $prompt_for_password = false;
-		private        $aliases             = [];
-		private static $used_aliases        = [];
-		private        $required            = false;
-		private        $type;
-		private        $default             = null;
-		private        $has_default         = false;
-		private        $locked              = false;
-		private        $offsets             = null;
+		private $name;
+		private $description         = 'no description';
+		private $prompt              = false;
+		private $prompt_msg;
+		private $prompt_for_password = false;
+		private $aliases             = [];
+		private $required            = false;
+		private $type;
+		private $default             = null;
+		private $has_default         = false;
+		private $locked              = false;
+		private $offsets             = null;
 
 		/**
 		 * KliOption constructor.
@@ -56,12 +55,7 @@
 			if (!is_string($alias) OR !preg_match("/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/", $alias)) throw new KliException(sprintf('"%s" is not a valid alias.', $alias));
 
 			if (!in_array($alias, $this->aliases)) {
-				if (isset(self::$used_aliases[$alias])) {
-					throw new KliException(sprintf('alias "--%s" is already defined for option "-%s".', $alias, self::$used_aliases[$alias]));
-				}
-
-				self::$used_aliases[$alias] = $this->getName();
-				$this->aliases[]            = $alias;
+				$this->aliases[] = $alias;
 			}
 
 			return $this;
@@ -309,22 +303,6 @@
 		public function getDescription()
 		{
 			return $this->description;
-		}
-
-		/**
-		 * get option name for a specific alias.
-		 *
-		 * @param string $alias
-		 *
-		 * @return null|string
-		 */
-		public static function getRealName($alias)
-		{
-			if (isset(self::$used_aliases[$alias])) {
-				return self::$used_aliases[$alias];
-			}
-
-			return null;
 		}
 
 		/**

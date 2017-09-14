@@ -18,6 +18,7 @@
 		private $description  = 'no description';
 		private $options      = [];
 		private $offsets_lock = [];
+		private $used_aliases = [];
 
 		/**
 		 * KliAction constructor.
@@ -48,6 +49,16 @@
 
 			if (isset($this->options[$opt_name])) {
 				throw new KliException(sprintf('option "-%s" is already defined in action "%s".', $opt_name, $this->getName()));
+			}
+
+			$aliases = $option->getAliases();
+
+			foreach ($aliases as $alias) {
+				if (array_key_exists($alias, $this->used_aliases)) {
+					throw new KliException(sprintf('alias "--%s" is already defined for option "-%s" in action "%s"', $alias, $this->used_aliases[$alias], $this->name));
+				}
+
+				$this->used_aliases[$alias] = $opt_name;
 			}
 
 			$offsets = $option->getOffsets();
@@ -147,6 +158,22 @@
 		public function getOptions()
 		{
 			return $this->options;
+		}
+
+		/**
+		 * get option name for a specific alias.
+		 *
+		 * @param string $alias
+		 *
+		 * @return null|string
+		 */
+		public function getRealName($alias)
+		{
+			if (isset($this->used_aliases[$alias])) {
+				return $this->used_aliases[$alias];
+			}
+
+			return null;
 		}
 
 		/**
