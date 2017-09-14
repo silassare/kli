@@ -44,7 +44,7 @@
 		 *
 		 * @return $this
 		 */
-		public function integer($error_message = null)
+		public function isInteger($error_message = null)
 		{
 			$this->is_int = true;
 
