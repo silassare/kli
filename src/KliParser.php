@@ -30,7 +30,7 @@
 		 * parse command arg list for a specific action.
 		 *
 		 * @param \Kli\KliAction $action   action object.
-		 * @param array                   $opt_list option list.
+		 * @param array          $opt_list option list.
 		 *
 		 * @return array
 		 *
@@ -141,7 +141,7 @@
 		 * and prompt is enabled for that option
 		 *
 		 * @param \Kli\KliAction $action          action object.
-		 * @param array                   &$parsed_options parsed options.
+		 * @param array          &$parsed_options parsed options.
 		 *
 		 * @throws \Kli\Exceptions\KliInputException
 		 */
@@ -180,17 +180,17 @@
 		 * check if a given action contains a given option.
 		 *
 		 * @param \Kli\KliAction $action   action object.
-		 * @param string                  $opt_name option name defined by user.
-		 * @param bool                    $is_alias is it an alias.
+		 * @param string         $opt_name option name defined by user.
+		 * @param bool           $is_alias is it an alias.
 		 *
-		 * @return string                        option short name.
+		 * @return string                  option short name.
 		 *
 		 * @throws \Kli\Exceptions\KliInputException
 		 */
 		private function checkOption(KliAction $action, $opt_name, $is_alias = false)
 		{
 			if ($is_alias) {
-				$real_name = KliOption::getRealName($opt_name);
+				$real_name = $action->getRealName($opt_name);
 
 				if (empty($real_name)) {
 					throw new KliInputException(sprintf('unrecognized option "%s" for action "%s"', $opt_name, $action->getName()));
@@ -208,7 +208,7 @@
 		 * prompt user to provide value for a given option.
 		 *
 		 * @param \Kli\KliOption $option  option object.
-		 * @param mixed                   $default default value.
+		 * @param mixed          $default default value.
 		 *
 		 * @return mixed
 		 */
