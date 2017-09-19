@@ -70,7 +70,7 @@
 		public function max($value, $error_message = null)
 		{
 			if (!is_int($value) OR $value < 1)
-				throw new KliException(sprintf('%s is not a valid integer(>0).', $value));
+				throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
 			if (isset($this->min) AND $value < $this->min)
 				throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
 
@@ -92,7 +92,7 @@
 		public function min($value, $error_message = null)
 		{
 			if (!is_int($value) OR $value < 1)
-				throw new KliException(sprintf('%s is not a valid integer(>0).', $value));
+				throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
 			if (isset($this->max) AND $value > $this->max)
 				throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
 

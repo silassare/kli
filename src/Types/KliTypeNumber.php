@@ -20,7 +20,7 @@
 		private $is_int         = false;
 		private $error_messages = [
 			'msg_require_number'  => 'option "-%s" require a number as value.',
-			'msg_require_integer' => '%s is not a valid integer for option "-%s".',
+			'msg_require_integer' => '"%s" is not a valid integer for option "-%s".',
 			'msg_number_lt_min'   => 'min=%s for option "-%s".',
 			'msg_number_gt_max'   => 'max=%s for option "-%s".'
 		];
@@ -64,9 +64,9 @@
 		public function max($value, $error_message = null)
 		{
 			if (!is_numeric($value))
-				throw new KliException(sprintf('%s is not a valid number.', $value));
+				throw new KliException(sprintf('"%s" is not a valid number.', $value));
 
-			$_value = 1 * $value;
+			$_value = $value + 0;
 
 			if (isset($this->min) AND $_value < $this->min)
 				throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
@@ -89,9 +89,9 @@
 		public function min($value, $error_message = null)
 		{
 			if (!is_numeric($value))
-				throw new KliException(sprintf('%s is not a valid number.', $value));
+				throw new KliException(sprintf('"%s" is not a valid number.', $value));
 
-			$_value = 1 * $value;
+			$_value = $value + 0;
 
 			if (isset($this->max) AND $_value > $this->max)
 				throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
@@ -109,7 +109,7 @@
 			if (!is_numeric($value))
 				throw new KliInputException(sprintf($this->error_messages['msg_require_number'], $opt_name));
 
-			$_value = 1 * $value;
+			$_value = $value + 0;
 
 			if ($this->is_int === true AND !is_int($_value))
 				throw new KliInputException(sprintf($this->error_messages['msg_require_integer'], $value, $opt_name));

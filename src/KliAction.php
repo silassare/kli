@@ -29,7 +29,7 @@
 		 */
 		public function __construct($name)
 		{
-			if (!is_string($name) OR !preg_match("/^[a-zA-Z0-9](?:[a-zA-Z0-9-_]+)$/", $name)) throw new KliException(sprintf('%s is not a valid action name.', $name));
+			if (!is_string($name) OR !preg_match("/^[a-zA-Z0-9](?:[a-zA-Z0-9-_]+)$/", $name)) throw new KliException(sprintf('"%s" is not a valid action name.', $name));
 
 			$this->name = $name;
 		}
