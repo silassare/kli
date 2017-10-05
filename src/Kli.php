@@ -14,7 +14,6 @@
 
 	class Kli
 	{
-
 		private $enable_interactive = false;
 		private $is_interactive     = false;
 		private $commands           = [];
@@ -39,7 +38,7 @@
 		}
 
 		/**
-		 * execute a command.
+		 * Executes a command.
 		 *
 		 * @param array $_argv the command argv like array.
 		 */
@@ -78,14 +77,14 @@
 								$cmd->execute($action, $result['options'], $result['anonymous']);
 							}
 						} else {
-							$this->writeLn(sprintf('%s: action "%s" not recognized.', $a1, $a2), true);
+							$this->writeLn(sprintf('%s: action "%s" not recognized.', $a1, $a2));
 						}
 					} else {
 						$action_list = implode(' , ', array_keys($cmd->getActions()));
-						$this->writeLn(sprintf('actions available for the command "%s": %s', $a1, $action_list), true);
+						$this->writeLn(sprintf('actions available for the command "%s": %s', $a1, $action_list));
 					}
 				} else {
-					$this->writeLn(sprintf('error: command "%s" not recognized.', $_argv[1]), true);
+					$this->writeLn(sprintf('error: command "%s" not recognized.', $_argv[1]));
 				}
 
 				if (!$this->is_interactive) {
@@ -97,7 +96,7 @@
 		}
 
 		/**
-		 * title setter.
+		 * Title setter.
 		 *
 		 * @param string $title the cli title
 		 *
@@ -111,7 +110,7 @@
 		}
 
 		/**
-		 * title getter.
+		 * Title getter.
 		 *
 		 * @return string
 		 */
@@ -121,7 +120,7 @@
 		}
 
 		/**
-		 * does this cli has a given command.
+		 * Check if this cli has a given command.
 		 *
 		 * @param string $cmd_name the command name
 		 *
@@ -133,7 +132,7 @@
 		}
 
 		/**
-		 * add command to cli.
+		 * Add command to cli.
 		 *
 		 * @param \Kli\KliCommand $cmd the command to add
 		 *
@@ -147,7 +146,7 @@
 		}
 
 		/**
-		 * check if string is a help flag.
+		 * Check if string is a help flag.
 		 *
 		 * @param string $str the string to check
 		 *
@@ -155,11 +154,11 @@
 		 */
 		public function isHelp($str)
 		{
-			return ($str == '--help' OR $str == '-?');
+			return ($str === '--help' OR $str === '-?');
 		}
 
 		/**
-		 * show the help.
+		 * Show the help.
 		 *
 		 * @param string|null $cmd_name the command name
 		 * @param string|null $act_name the action name
@@ -167,10 +166,18 @@
 		public function showHelp($cmd_name = null, $act_name = null)
 		{
 			global $argv;
-			$h = 'Usage:' . PHP_EOL . PHP_EOL;
-			$h .= '  ' . basename($argv[0]) . ' command action [options]' . PHP_EOL;
-			$h .= '  ' . basename($argv[0]) . ' -? or --help';
-			$h .= PHP_EOL . PHP_EOL;
+
+			if (!$this->is_interactive) {
+				$this->welcome();
+			}
+			$head = basename($argv[0]);
+			$h    = PHP_EOL . "Usage:"
+					. PHP_EOL . "  > $head command action [options]"
+					. PHP_EOL . "For interactive mode."
+					. PHP_EOL . "  > $head"
+					. PHP_EOL . "To show help message."
+					. PHP_EOL . "  > $head [command [action]] -? or --help"
+					. PHP_EOL . PHP_EOL;
 
 			if (isset($cmd_name) AND $this->hasCommand($cmd_name)) {
 				$cmd = $this->commands[$cmd_name];
@@ -181,21 +188,21 @@
 					$h .= $cmd;
 				}
 			} else {
-				$h .= implode(PHP_EOL, $this->commands) . PHP_EOL;
+				$h .= implode(PHP_EOL . PHP_EOL, $this->commands) . PHP_EOL;
 			}
 
-			$this->writeLn($h);
+			$this->writeLn($h, false);
 		}
 
 		/**
-		 * enable interactive mode.
+		 * Enable interactive mode.
 		 */
 		public function interactiveMode()
 		{
 			global $argv;
 			if (!$this->is_interactive) {
 				$this->is_interactive = true;
-
+				$this->welcome();
 				$this->writeLn('Hint: type "quit" or "exit" to stop.' . PHP_EOL);
 
 				while ($this->is_interactive) {
@@ -207,7 +214,7 @@
 						} else {
 							// construct command: exactly as if it was fully typed
 							$absolute_cmd = $argv[0] . ' ' . $in;
-							static::execute(KliUtils::stringToArgv( $absolute_cmd ));
+							static::execute(KliUtils::stringToArgv($absolute_cmd));
 						}
 					}
 
@@ -217,7 +224,7 @@
 		}
 
 		/**
-		 * output string.
+		 * Writes string.
 		 *
 		 * @param string $str  the string to write
 		 * @param bool   $wrap to wrap string or not
@@ -232,22 +239,22 @@
 		}
 
 		/**
-		 * output string on a new line.
+		 * Writes string on a new line.
 		 *
 		 * @param string $str  the string to write
 		 * @param bool   $wrap to wrap string or not
 		 *
 		 * @return \Kli\Kli
 		 */
-		public function writeLn($str = '', $wrap = false)
+		public function writeLn($str = '', $wrap = true)
 		{
-			echo PHP_EOL . ($wrap ? KliUtils::wrap($str) : $str);
+			echo PHP_EOL . (($wrap AND strlen($str) > 80) ? KliUtils::wrap($str) : $str);
 
 			return $this;
 		}
 
 		/**
-		 * read data from user input.
+		 * Reads data from user input.
 		 *
 		 * @param string $prompt      the prompt string
 		 * @param bool   $is_password should we hide user input
@@ -272,13 +279,24 @@
 		}
 
 		/**
-		 * read pass.
+		 * Reads password.
 		 *
 		 * @return string user input
 		 */
 		protected function readPass()
 		{
-			return `stty -echo; head -n1 ; stty echo`;
+			return `stty -echo; head -n1; stty echo`;
+		}
+
+		/**
+		 * Write welcome message.
+		 *
+		 * It is called once in interactive mode.
+		 * Or when help is requested.
+		 */
+		public function welcome()
+		{
+			// silence is gold
 		}
 
 		/**

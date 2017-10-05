@@ -35,7 +35,7 @@
 		}
 
 		/**
-		 * add option to this action.
+		 * Adds option(s) to this action.
 		 *
 		 * @param \Kli\KliOption $option the option to be added
 		 *
@@ -45,49 +45,53 @@
 		 */
 		public function addOption(KliOption $option)
 		{
-			$opt_name = $option->getName();
+			/** @var \Kli\KliOption[] $options */
+			$options = func_get_args();
+			foreach ($options as $o) {
+				$opt_name = $o->getName();
 
-			if (isset($this->options[$opt_name])) {
-				throw new KliException(sprintf('option "-%s" is already defined in action "%s".', $opt_name, $this->getName()));
-			}
-
-			$aliases = $option->getAliases();
-
-			foreach ($aliases as $alias) {
-				if (array_key_exists($alias, $this->used_aliases)) {
-					throw new KliException(sprintf('alias "--%s" is already defined for option "-%s" in action "%s"', $alias, $this->used_aliases[$alias], $this->name));
+				if (isset($this->options[$opt_name])) {
+					throw new KliException(sprintf('option "-%s" is already defined in action "%s".', $opt_name, $this->getName()));
 				}
 
-				$this->used_aliases[$alias] = $opt_name;
-			}
+				$aliases = $o->getAliases();
 
-			$offsets = $option->getOffsets();
-
-			if (!empty($offsets)) {
-				$a = $offsets[0];
-				$b = $offsets[1];
-
-				foreach ($this->offsets_lock as $locker => $lock) {
-					$c  = $lock[0];
-					$d  = $lock[1];
-					$ok = ($a > $d OR $b < $c);// some math lol
-
-					if (!$ok) {
-						throw new KliException(sprintf('all or parts of offsets(%s,%s) is used by option "-%s" of action "%s".', $a, $b, $locker, $this->getName()));
+				foreach ($aliases as $alias) {
+					if (array_key_exists($alias, $this->used_aliases)) {
+						throw new KliException(sprintf('alias "--%s" is already defined for option "-%s" in action "%s"', $alias, $this->used_aliases[$alias], $this->name));
 					}
+
+					$this->used_aliases[$alias] = $opt_name;
 				}
 
-				// lock offsets
-				$this->offsets_lock[$opt_name] = $offsets;
-			}
+				$offsets = $o->getOffsets();
 
-			$this->options[$opt_name] = $option->lock();
+				if (!empty($offsets)) {
+					$a = $offsets[0];
+					$b = $offsets[1];
+
+					foreach ($this->offsets_lock as $locker => $lock) {
+						$c  = $lock[0];
+						$d  = $lock[1];
+						$ok = ($a > $d OR $b < $c);// some math lol
+
+						if (!$ok) {
+							throw new KliException(sprintf('all or parts of offsets(%s,%s) is used by option "-%s" of action "%s".', $a, $b, $locker, $this->getName()));
+						}
+					}
+
+					// lock offsets
+					$this->offsets_lock[$opt_name] = $offsets;
+				}
+
+				$this->options[$opt_name] = $o->lock();
+			}
 
 			return $this;
 		}
 
 		/**
-		 * define this action description.
+		 * Define this action description.
 		 *
 		 * @param string $description action description
 		 *
@@ -101,7 +105,7 @@
 		}
 
 		/**
-		 * action description getter.
+		 * Action description getter.
 		 *
 		 * @return string
 		 */
@@ -111,7 +115,7 @@
 		}
 
 		/**
-		 * action name getter.
+		 * Action name getter.
 		 *
 		 * @return string
 		 */
@@ -121,37 +125,37 @@
 		}
 
 		/**
-		 * does this action has a given option.
+		 * Does this action has a given option.
 		 *
-		 * @param string $opt_name the option name
+		 * @param string $name the option name
 		 *
 		 * @return bool
 		 */
-		public function hasOption($opt_name)
+		public function hasOption($name)
 		{
-			return (is_string($opt_name) AND isset($this->options[$opt_name]));
+			return (is_string($name) AND isset($this->options[$name]));
 		}
 
 		/**
-		 * get option.
+		 * Gets option with a given name.
 		 *
-		 * @param string $opt_name the option name
+		 * @param string $name the option name
 		 *
 		 * @return \Kli\KliOption
 		 *
 		 * @throws \Kli\Exceptions\KliException    when the option is not defined for this action
 		 */
-		public function getOption($opt_name)
+		public function getOption($name)
 		{
-			if (!isset($this->options[$opt_name])) {
-				throw new KliException(sprintf('"%s" - unrecognized option: "%s"', $this->getName(), $opt_name));
+			if (!isset($this->options[$name])) {
+				throw new KliException(sprintf('"%s" - unrecognized option: "%s"', $this->getName(), $name));
 			}
 
-			return $this->options[$opt_name];
+			return $this->options[$name];
 		}
 
 		/**
-		 * get this action options list.
+		 * Gets this action options list.
 		 *
 		 * @return array
 		 */
@@ -161,7 +165,7 @@
 		}
 
 		/**
-		 * get option name for a specific alias.
+		 * Gets option name for a specific alias.
 		 *
 		 * @param string $alias
 		 *
@@ -177,13 +181,13 @@
 		}
 
 		/**
-		 * action to string routine used as help.
+		 * Action to string routine used as help.
 		 *
 		 * @return string
 		 */
 		public function __toString()
 		{
-			$text = $this->getName();
+			$text = $this->getName() . ' [options]';
 			$text .= PHP_EOL . KliUtils::indent($this->getDescription(), 4);
 			$sep  = PHP_EOL . PHP_EOL;
 			$text .= $sep . implode($sep, $this->options);

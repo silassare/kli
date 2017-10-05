@@ -43,7 +43,7 @@
 		}
 
 		/**
-		 * add option alias.
+		 * Adds option alias.
 		 *
 		 * @param string $alias option alias to add
 		 *
@@ -62,7 +62,7 @@
 		}
 
 		/**
-		 * define argument offset to use as own anonymous value.
+		 * Define argument offset to use as own anonymous value.
 		 *
 		 * when $to is set, any anonymous argument in offset range($at,$to) will be used.
 		 * NOTE: $to could be set to infinity (INF)
@@ -96,7 +96,7 @@
 		}
 
 		/**
-		 * lock the option.
+		 * Lock the option.
 		 *
 		 * options are locked when added to an action.
 		 *
@@ -110,7 +110,7 @@
 		}
 
 		/**
-		 * explicitly set the default value.
+		 * Explicitly set the default value.
 		 *
 		 * @param mixed $value the value to use as default
 		 *
@@ -126,7 +126,7 @@
 		}
 
 		/**
-		 * define this option description.
+		 * Define this option description.
 		 *
 		 * @param string $description option description
 		 *
@@ -140,7 +140,7 @@
 		}
 
 		/**
-		 * set this option value type.
+		 * Set this option value type.
 		 *
 		 * @param \Kli\Types\KliType $type the type of the value
 		 *
@@ -154,7 +154,7 @@
 		}
 
 		/**
-		 * mark this option as required.
+		 * Marks this option as required.
 		 *
 		 * @return \Kli\KliOption
 		 */
@@ -166,7 +166,7 @@
 		}
 
 		/**
-		 * define the prompt capability and even prompt message.
+		 * Define the prompt capability and even prompt message.
 		 *
 		 * @param bool   $prompt              prompt enable/disable
 		 * @param string $prompt_msg          prompt message
@@ -192,7 +192,7 @@
 		}
 
 		/**
-		 * does this option enable prompt.
+		 * Does this option enable prompt.
 		 *
 		 * @return bool
 		 */
@@ -212,7 +212,7 @@
 		}
 
 		/**
-		 * option prompt message getter.
+		 * Option prompt message getter.
 		 *
 		 * @return string
 		 */
@@ -226,7 +226,7 @@
 		}
 
 		/**
-		 * option name getter.
+		 * Option name getter.
 		 *
 		 * @return string
 		 */
@@ -246,7 +246,7 @@
 		}
 
 		/**
-		 * option offsets value getter.
+		 * Option offsets value getter.
 		 *
 		 * @return null|array
 		 */
@@ -256,7 +256,7 @@
 		}
 
 		/**
-		 * does the default value was explicitly set.
+		 * Does the default value was explicitly set.
 		 *
 		 * @return bool
 		 */
@@ -266,7 +266,7 @@
 		}
 
 		/**
-		 * does this option is required or not.
+		 * Does this option is required or not.
 		 *
 		 * @return bool
 		 */
@@ -276,7 +276,7 @@
 		}
 
 		/**
-		 * option type getter.
+		 * Option type getter.
 		 *
 		 * @return \Kli\Types\KliType
 		 */
@@ -286,7 +286,7 @@
 		}
 
 		/**
-		 * option aliases getter.
+		 * Option aliases getter.
 		 *
 		 * @return array
 		 */
@@ -296,7 +296,7 @@
 		}
 
 		/**
-		 * option description getter.
+		 * Option description getter.
 		 *
 		 * @return string
 		 */
@@ -306,7 +306,7 @@
 		}
 
 		/**
-		 * option to string routine used as help.
+		 * Option to string routine used as help.
 		 *
 		 * @return string
 		 */
@@ -318,9 +318,8 @@
 				$text .= ' , --' . implode(' --', $this->aliases);
 			}
 
-			$text = KliUtils::indent($text, 6);
-			$text .= PHP_EOL . KliUtils::indent($this->getDescription(), 8);
+			$text .= "\t".$this->getDescription();
 
-			return $text;
+			return KliUtils::indent($text, 6);;
 		}
 	}
