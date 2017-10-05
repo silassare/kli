@@ -318,8 +318,8 @@
 				$text .= ' , --' . implode(' --', $this->aliases);
 			}
 
-			$text .= "\t".$this->getDescription();
+			$text .= "\t" . $this->getDescription();
 
-			return KliUtils::indent($text, 6);;
+			return KliUtils::indent($text, 6);
 		}
 	}
