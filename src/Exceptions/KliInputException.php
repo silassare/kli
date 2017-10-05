@@ -10,6 +10,12 @@
 
 	namespace Kli\Exceptions;
 
-	class KliInputException extends \Exception
-	{
-	}
+	/**
+	 * Class KliInputException
+	 *
+	 * For user input error.
+	 *
+	 * @package Kli\Exceptions
+	 */
+
+	class KliInputException extends \Exception { }

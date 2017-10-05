@@ -55,7 +55,7 @@
 		}
 
 		/**
-		 * set custom error message
+		 * Set custom error message.
 		 *
 		 * @param string $key     the error key
 		 * @param string $message the error message

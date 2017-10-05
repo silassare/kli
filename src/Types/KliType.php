@@ -13,7 +13,7 @@
 	interface KliType
 	{
 		/**
-		 * called to validate an option value
+		 * Called to validate an option value.
 		 *
 		 * @param string $opt_name the option name
 		 * @param string $value    the value to validate

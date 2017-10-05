@@ -27,7 +27,7 @@
 		}
 
 		/**
-		 * parse command arg list for a specific action.
+		 * Parse command arg list for a specific action.
 		 *
 		 * @param \Kli\KliAction $action   action object.
 		 * @param array          $opt_list option list.
@@ -135,7 +135,7 @@
 		}
 
 		/**
-		 * validate a list of parsed options for a given action.
+		 * Validate a list of parsed options for a given action.
 		 *
 		 * prompt user to define value: when an option is missing
 		 * and prompt is enabled for that option
@@ -177,7 +177,7 @@
 		}
 
 		/**
-		 * check if a given action contains a given option.
+		 * Check if a given action contains a given option.
 		 *
 		 * @param \Kli\KliAction $action   action object.
 		 * @param string         $opt_name option name defined by user.
@@ -205,7 +205,7 @@
 		}
 
 		/**
-		 * prompt user to provide value for a given option.
+		 * Prompt user to provide value for a given option.
 		 *
 		 * @param \Kli\KliOption $option  option object.
 		 * @param mixed          $default default value.

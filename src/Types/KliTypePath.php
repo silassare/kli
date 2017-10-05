@@ -46,7 +46,7 @@
 		}
 
 		/**
-		 * set the path pattern.
+		 * Set the path pattern.
 		 *
 		 * @param string      $pattern       the pattern (regular expression)
 		 * @param string|null $error_message the error message
@@ -66,7 +66,7 @@
 		}
 
 		/**
-		 * allow multiple path.
+		 * Allow multiple path.
 		 *
 		 * @return $this
 		 */
@@ -78,7 +78,7 @@
 		}
 
 		/**
-		 * accept file path only.
+		 * Accept file path only.
 		 *
 		 * @param string|null $error_message the error message
 		 *
@@ -93,7 +93,7 @@
 		}
 
 		/**
-		 * accept directory path only.
+		 * Accept directory path only.
 		 *
 		 * @param string|null $error_message the error message
 		 *
@@ -108,7 +108,7 @@
 		}
 
 		/**
-		 * accept writable path only.
+		 * Accept writable path only.
 		 *
 		 * @param string|null $error_message the error message
 		 *
@@ -122,7 +122,7 @@
 		}
 
 		/**
-		 * set minimum path count.
+		 * Set minimum path count.
 		 *
 		 * @param int         $value         the minimum path count
 		 * @param string|null $error_message the error message
@@ -142,7 +142,7 @@
 		}
 
 		/**
-		 * set maximum path count.
+		 * Set maximum path count.
 		 *
 		 * @param int         $value         the maximum path count
 		 * @param string|null $error_message the error message
@@ -162,7 +162,7 @@
 		}
 
 		/**
-		 * resolve path    use glog if enabled.
+		 * Resolve path use glob if enabled.
 		 *
 		 * @param string $path the path to resolve
 		 *
@@ -176,7 +176,7 @@
 		}
 
 		/**
-		 * filter path list with regular expression.
+		 * Filter path list with regular expression.
 		 *
 		 * @param array $list the path list to filter
 		 *
@@ -254,7 +254,7 @@
 		}
 
 		/**
-		 * set custom error message
+		 * Set custom error message
 		 *
 		 * @param string $key     the error key
 		 * @param string $message the error message

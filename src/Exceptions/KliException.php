@@ -10,6 +10,12 @@
 
 	namespace Kli\Exceptions;
 
-	class KliException extends \Exception
-	{
-	}
+	/**
+	 * Class KliException
+	 *
+	 * When it is thrown, it may mean that
+	 * there is an error in your code
+	 *
+	 * @package Kli\Exceptions
+	 */
+	class KliException extends \Exception { }

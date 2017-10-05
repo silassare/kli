@@ -38,7 +38,7 @@
 		}
 
 		/**
-		 * set the string pattern.
+		 * Set the string pattern.
 		 *
 		 * @param string      $pattern       the pattern (regular expression)
 		 * @param string|null $error_message the error message
@@ -58,7 +58,7 @@
 		}
 
 		/**
-		 * set maximum string length.
+		 * Set maximum string length.
 		 *
 		 * @param int         $value         the maximum string length
 		 * @param string|null $error_message the error message
@@ -80,7 +80,7 @@
 		}
 
 		/**
-		 * set minimum string length.
+		 * Set minimum string length.
 		 *
 		 * @param int         $value         the minimum string length
 		 * @param string|null $error_message the error message
@@ -122,7 +122,7 @@
 		}
 
 		/**
-		 * set custom error message
+		 * Set custom error message
 		 *
 		 * @param string $key     the error key
 		 * @param string $message the error message

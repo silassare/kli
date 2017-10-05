@@ -12,9 +12,8 @@
 
 	class KliUtils
 	{
-
 		/**
-		 * parse command string to argv like array.
+		 * Parse command string to argv like array.
 		 *
 		 * found here: https://someguyjeremy.com/2017/07/adventures-in-parsing-strings-to-argv-in-php.html
 		 *
@@ -66,7 +65,7 @@
 		}
 
 		/**
-		 * indent text.
+		 * Indent text.
 		 *
 		 * @param string $text   the text string to indent
 		 * @param int    $size   the indent size
@@ -80,7 +79,7 @@
 		}
 
 		/**
-		 * wrap text.
+		 * Wrap text.
 		 *
 		 * @param string $text         the text string to wrap
 		 * @param int    $width        the width
