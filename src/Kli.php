@@ -91,7 +91,8 @@
 					$this->writeLn();
 				}
 			} catch (KliInputException $e) {
-				$this->writeLn(PHP_EOL . KliUtils::wrap($e->getMessage()) . PHP_EOL);
+				$this->writeLn($e->getMessage())
+					 ->writeLn();
 			}
 		}
 
@@ -120,7 +121,7 @@
 		}
 
 		/**
-		 * Check if this cli has a given command.
+		 * Checks if this cli has a given command.
 		 *
 		 * @param string $cmd_name the command name
 		 *
@@ -146,7 +147,7 @@
 		}
 
 		/**
-		 * Check if string is a help flag.
+		 * Checks if string is a help flag.
 		 *
 		 * @param string $str the string to check
 		 *
