@@ -46,7 +46,7 @@
 		}
 
 		/**
-		 * Set the path pattern.
+		 * Sets the path pattern.
 		 *
 		 * @param string      $pattern       the pattern (regular expression)
 		 * @param string|null $error_message the error message
@@ -122,7 +122,7 @@
 		}
 
 		/**
-		 * Set minimum path count.
+		 * Sets minimum path count.
 		 *
 		 * @param int         $value         the minimum path count
 		 * @param string|null $error_message the error message
@@ -142,7 +142,7 @@
 		}
 
 		/**
-		 * Set maximum path count.
+		 * Sets maximum path count.
 		 *
 		 * @param int         $value         the maximum path count
 		 * @param string|null $error_message the error message
@@ -254,7 +254,7 @@
 		}
 
 		/**
-		 * Set custom error message
+		 * Sets custom error message
 		 *
 		 * @param string $key     the error key
 		 * @param string $message the error message

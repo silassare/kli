@@ -140,7 +140,7 @@
 		}
 
 		/**
-		 * Set this option value type.
+		 * Sets this option value type.
 		 *
 		 * @param \Kli\Types\KliType $type the type of the value
 		 *

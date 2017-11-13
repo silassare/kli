@@ -37,7 +37,7 @@
 		 * @param bool        $strict        whether to limit bool value to (true,false,'true','false')
 		 * @param string|null $error_message the error message
 		 */
-		public function __construct($strict = true, $error_message = null)
+		public function __construct($strict = false, $error_message = null)
 		{
 			$this->strict = (bool)$strict;
 			$this->customErrorMessage('msg_require_bool', $error_message);
@@ -55,7 +55,7 @@
 		}
 
 		/**
-		 * Set custom error message.
+		 * Sets custom error message.
 		 *
 		 * @param string $key     the error key
 		 * @param string $message the error message

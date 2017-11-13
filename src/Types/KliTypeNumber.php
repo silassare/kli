@@ -38,7 +38,7 @@
 		}
 
 		/**
-		 * Set number type as integer.
+		 * Sets number type as integer.
 		 *
 		 * @param string|null $error_message the error message
 		 *
@@ -52,7 +52,7 @@
 		}
 
 		/**
-		 * Set number max value.
+		 * Sets number max value.
 		 *
 		 * @param int         $value         the maximum
 		 * @param string|null $error_message the error message
@@ -77,7 +77,7 @@
 		}
 
 		/**
-		 * Set number min value.
+		 * Sets number min value.
 		 *
 		 * @param int         $value         the minimum
 		 * @param string|null $error_message the error message
@@ -124,7 +124,7 @@
 		}
 
 		/**
-		 * Set custom error message
+		 * Sets custom error message
 		 *
 		 * @param string $key     the error key
 		 * @param string $message the error message

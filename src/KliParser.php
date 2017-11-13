@@ -177,7 +177,7 @@
 		}
 
 		/**
-		 * Check if a given action contains a given option.
+		 * Checks if a given action contains a given option.
 		 *
 		 * @param \Kli\KliAction $action   action object.
 		 * @param string         $opt_name option name defined by user.
