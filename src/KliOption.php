@@ -98,7 +98,7 @@
 		/**
 		 * Lock the option.
 		 *
-		 * options are locked when added to an action.
+		 * Options are locked and should not be modified when added to an action.
 		 *
 		 * @return \Kli\KliOption
 		 */
@@ -236,7 +236,7 @@
 		}
 
 		/**
-		 * option default value getter.
+		 * Option default value getter.
 		 *
 		 * @return mixed
 		 */
