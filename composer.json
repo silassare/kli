@@ -16,7 +16,7 @@
     "homepage": "https://github.com/silassare/kli#readme",
     "autoload": {
         "psr-4": {
-            "KLI\\": "src"
+            "Kli\\": "src"
         }
     },
     "authors": [
