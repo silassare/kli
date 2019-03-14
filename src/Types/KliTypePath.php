@@ -24,7 +24,7 @@
 		private $is_writable    = false;
 		private $reg;
 		private $error_messages = [
-			'msg_require_valid_path'    => '"%s" require valid path.',
+			'msg_require_valid_path'    => 'option "-%s" require valid path.',
 			'msg_require_writable_path' => 'option "-%s" require writable path.',
 			'msg_require_file_path'     => 'option "-%s" require file.',
 			'msg_require_dir_path'      => 'option "-%s" require directory.',

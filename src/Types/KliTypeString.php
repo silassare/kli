@@ -20,9 +20,9 @@
 		private $reg;
 		private $error_messages = [
 			'msg_require_string'      => 'option "-%s" require a string as value.',
-			'msg_length_lt_min'       => 'input min=%s for option "-%s".',
-			'msg_length_gt_max'       => 'input max=%s for option "-%s".',
-			'msg_pattern_check_fails' => '"%s" fails on regular expression for option "-%s".'
+			'msg_length_lt_min'       => '"%s" -> fails on minlength=%s for option "-%s".',
+			'msg_length_gt_max'       => '"%s" -> fails on maxlength=%s for option "-%s".',
+			'msg_pattern_check_fails' => '"%s" -> fails on regular expression for option "-%s".'
 		];
 
 		/**
