@@ -26,6 +26,7 @@
             "homepage": "https://github.com/silassare"
         }
     ],
+    "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true
 }
