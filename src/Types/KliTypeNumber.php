@@ -21,8 +21,8 @@
 		private $error_messages = [
 			'msg_require_number'  => 'option "-%s" require a number as value.',
 			'msg_require_integer' => '"%s" is not a valid integer for option "-%s".',
-			'msg_number_lt_min'   => 'min=%s for option "-%s".',
-			'msg_number_gt_max'   => 'max=%s for option "-%s".'
+			'msg_number_lt_min'   => '"%s" -> fails on min=%s for option "-%s".',
+			'msg_number_gt_max'   => '"%s" -> fails on max=%s for option "-%s".'
 		];
 
 		/**
@@ -115,10 +115,10 @@
 				throw new KliInputException(sprintf($this->error_messages['msg_require_integer'], $value, $opt_name));
 
 			if (isset($this->min) AND $_value < $this->min)
-				throw new KliInputException(sprintf($this->error_messages['msg_number_lt_min'], $this->min, $opt_name));
+				throw new KliInputException(sprintf($this->error_messages['msg_number_lt_min'], $value, $this->min, $opt_name));
 
 			if (isset($this->max) AND $_value > $this->max)
-				throw new KliInputException(sprintf($this->error_messages['msg_number_gt_max'], $this->max, $opt_name));
+				throw new KliInputException(sprintf($this->error_messages['msg_number_gt_max'], $value, $this->max, $opt_name));
 
 			return $_value;
 		}
