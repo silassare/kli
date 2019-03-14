@@ -1,0 +1,28 @@
+{
+    "name": "silassare/kli",
+    "description": "Kli helps you add an interactive command-line interface to your php project.",
+    "version": "1.0.0",
+    "keywords": [
+        "kli",
+        "cli",
+        "command"
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "homepage": "https://github.com/silassare/kli#readme",
+    "autoload": {
+        "psr-4": {
+            "KLI\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Emile Silas Sare",
+            "email": "emile.silas@gmail.com",
+            "homepage": "https://github.com/silassare"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
