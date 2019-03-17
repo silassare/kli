@@ -102,7 +102,7 @@
 		}
 
 		/**
-		 * {@inheritdoc}
+		 * @inheritdoc
 		 */
 		public function validate($opt_name, $value)
 		{
