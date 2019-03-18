@@ -301,11 +301,27 @@
 		}
 
 		/**
-		 * quit cli.
+		 * Quit Kli.
 		 */
 		public function quit()
 		{
 			$this->is_interactive = false;
 			$this->writeLn();// silence is gold
+		}
+
+		/**
+		 * Create log file or append to existing.
+		 *
+		 * @param mixed $log
+		 *
+		 * @return $this
+		 */
+		public function log($log)
+		{
+			$content = is_scalar($log) ? (string)$log : var_export($log, true);
+
+			file_put_contents($content, getcwd() . DIRECTORY_SEPARATOR . "kli.log", FILE_APPEND);
+
+			return $this;
 		}
 	}
