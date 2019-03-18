@@ -30,53 +30,13 @@
 		 *
 		 * @param int|null $min the minimum string length
 		 * @param int|null $max the maximum string length
+		 *
+		 * @throws \Kli\Exceptions\KliException
 		 */
 		public function __construct($min = null, $max = null)
 		{
 			if (isset($min)) $this->min($min);
 			if (isset($max)) $this->max($max);
-		}
-
-		/**
-		 * Sets the string pattern.
-		 *
-		 * @param string      $pattern       the pattern (regular expression)
-		 * @param string|null $error_message the error message
-		 *
-		 * @return $this
-		 *
-		 * @throws \Kli\Exceptions\KliException
-		 */
-		public function pattern($pattern, $error_message = null)
-		{
-			if (false === preg_match($pattern, null))
-				throw new KliException(sprintf('invalid regular expression: %s', $pattern));
-
-			$this->reg = $pattern;
-
-			return $this->customErrorMessage('msg_pattern_check_fails', $error_message);
-		}
-
-		/**
-		 * Sets maximum string length.
-		 *
-		 * @param int         $value         the maximum string length
-		 * @param string|null $error_message the error message
-		 *
-		 * @return $this
-		 *
-		 * @throws \Kli\Exceptions\KliException
-		 */
-		public function max($value, $error_message = null)
-		{
-			if (!is_int($value) OR $value < 1)
-				throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
-			if (isset($this->min) AND $value < $this->min)
-				throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
-
-			$this->max = $value;
-
-			return $this->customErrorMessage('msg_length_gt_max', $error_message);
 		}
 
 		/**
@@ -102,6 +62,65 @@
 		}
 
 		/**
+		 * Sets custom error message
+		 *
+		 * @param string $key     the error key
+		 * @param string $message the error message
+		 *
+		 * @return $this
+		 */
+		private function customErrorMessage($key, $message)
+		{
+			if (!empty($message)) {
+				$this->error_messages[$key] = $message;
+			}
+
+			return $this;
+		}
+
+		/**
+		 * Sets maximum string length.
+		 *
+		 * @param int         $value         the maximum string length
+		 * @param string|null $error_message the error message
+		 *
+		 * @return $this
+		 *
+		 * @throws \Kli\Exceptions\KliException
+		 */
+		public function max($value, $error_message = null)
+		{
+			if (!is_int($value) OR $value < 1)
+				throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
+			if (isset($this->min) AND $value < $this->min)
+				throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
+
+			$this->max = $value;
+
+			return $this->customErrorMessage('msg_length_gt_max', $error_message);
+		}
+
+		/**
+		 * Sets the string pattern.
+		 *
+		 * @param string      $pattern       the pattern (regular expression)
+		 * @param string|null $error_message the error message
+		 *
+		 * @return $this
+		 *
+		 * @throws \Kli\Exceptions\KliException
+		 */
+		public function pattern($pattern, $error_message = null)
+		{
+			if (false === preg_match($pattern, null))
+				throw new KliException(sprintf('invalid regular expression: %s', $pattern));
+
+			$this->reg = $pattern;
+
+			return $this->customErrorMessage('msg_pattern_check_fails', $error_message);
+		}
+
+		/**
 		 * @inheritdoc
 		 */
 		public function validate($opt_name, $value)
@@ -119,22 +138,5 @@
 				throw new KliInputException(sprintf($this->error_messages['msg_pattern_check_fails'], $value, $opt_name));
 
 			return $value;
-		}
-
-		/**
-		 * Sets custom error message
-		 *
-		 * @param string $key     the error key
-		 * @param string $message the error message
-		 *
-		 * @return $this
-		 */
-		private function customErrorMessage($key, $message)
-		{
-			if (!empty($message)) {
-				$this->error_messages[$key] = $message;
-			}
-
-			return $this;
 		}
 	}

@@ -17,5 +17,6 @@
 	 *
 	 * @package Kli\Exceptions
 	 */
-
-	class KliInputException extends \Exception { }
+	class KliInputException extends \Exception
+	{
+	}

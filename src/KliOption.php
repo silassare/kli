@@ -154,7 +154,7 @@
 		}
 
 		/**
-		 * Marks this option as required.
+		 * Mark this option as required.
 		 *
 		 * @return \Kli\KliOption
 		 */
@@ -192,6 +192,16 @@
 		}
 
 		/**
+		 * Option name getter.
+		 *
+		 * @return string
+		 */
+		public function getName()
+		{
+			return $this->name;
+		}
+
+		/**
 		 * Does this option enable prompt.
 		 *
 		 * @return bool
@@ -202,7 +212,7 @@
 		}
 
 		/**
-		 * does this option prompt is for password.
+		 * Does this option prompt is for password.
 		 *
 		 * @return bool
 		 */
@@ -223,16 +233,6 @@
 			}
 
 			return $this->prompt_msg;
-		}
-
-		/**
-		 * Option name getter.
-		 *
-		 * @return string
-		 */
-		public function getName()
-		{
-			return $this->name;
 		}
 
 		/**
@@ -296,16 +296,6 @@
 		}
 
 		/**
-		 * Option description getter.
-		 *
-		 * @return string
-		 */
-		public function getDescription()
-		{
-			return $this->description;
-		}
-
-		/**
 		 * Option to string routine used as help.
 		 *
 		 * @return string
@@ -321,5 +311,15 @@
 			$text .= "\t" . $this->getDescription();
 
 			return KliUtils::indent($text, 6);
+		}
+
+		/**
+		 * Option description getter.
+		 *
+		 * @return string
+		 */
+		public function getDescription()
+		{
+			return $this->description;
 		}
 	}

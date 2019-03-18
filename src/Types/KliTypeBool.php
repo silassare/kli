@@ -14,7 +14,6 @@
 
 	class KliTypeBool implements KliType
 	{
-		private        $strict;
 		private static $list           = [true, false, 'true', 'false'];
 		private static $extended_list  = [true, false, 1, 0, '1', '0', 'true', 'false', 'yes', 'no', 'y', 'n'];
 		private static $map            = [
@@ -27,6 +26,7 @@
 			'y'     => true,
 			'n'     => false
 		];
+		private        $strict;
 		private        $error_messages = [
 			'msg_require_bool' => 'option "-%s" require a boolean.'
 		];
@@ -44,17 +44,6 @@
 		}
 
 		/**
-		 * @inheritdoc
-		 */
-		public function validate($opt_name, $value)
-		{
-			if (!in_array($value, ($this->strict ? self::$list : self::$extended_list)))
-				throw new KliInputException(sprintf($this->error_messages['msg_require_bool'], $value, $opt_name));
-
-			return (is_string($value) ? self::$map[strtolower($value)] : (bool)$value);
-		}
-
-		/**
 		 * Sets custom error message.
 		 *
 		 * @param string $key     the error key
@@ -69,5 +58,16 @@
 			}
 
 			return $this;
+		}
+
+		/**
+		 * @inheritdoc
+		 */
+		public function validate($opt_name, $value)
+		{
+			if (!in_array($value, ($this->strict ? self::$list : self::$extended_list)))
+				throw new KliInputException(sprintf($this->error_messages['msg_require_bool'], $value, $opt_name));
+
+			return (is_string($value) ? self::$map[strtolower($value)] : (bool)$value);
 		}
 	}

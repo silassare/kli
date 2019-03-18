@@ -91,6 +91,16 @@
 		}
 
 		/**
+		 * Action name getter.
+		 *
+		 * @return string
+		 */
+		public function getName()
+		{
+			return $this->name;
+		}
+
+		/**
 		 * Define this action description.
 		 *
 		 * @param string $description action description
@@ -102,26 +112,6 @@
 			$this->description = trim($description);
 
 			return $this;
-		}
-
-		/**
-		 * Action description getter.
-		 *
-		 * @return string
-		 */
-		public function getDescription()
-		{
-			return $this->description;
-		}
-
-		/**
-		 * Action name getter.
-		 *
-		 * @return string
-		 */
-		public function getName()
-		{
-			return $this->name;
 		}
 
 		/**
@@ -193,5 +183,15 @@
 			$text .= $sep . implode($sep, $this->options);
 
 			return $text;
+		}
+
+		/**
+		 * Action description getter.
+		 *
+		 * @return string
+		 */
+		public function getDescription()
+		{
+			return $this->description;
 		}
 	}

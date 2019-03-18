@@ -135,12 +135,40 @@
 		}
 
 		/**
+		 * Checks if a given action contains a given option.
+		 *
+		 * @param \Kli\KliAction $action   action object.
+		 * @param string         $opt_name option name defined by user.
+		 * @param bool           $is_alias is it an alias.
+		 *
+		 * @return string                  option short name.
+		 *
+		 * @throws \Kli\Exceptions\KliInputException
+		 */
+		private function checkOption(KliAction $action, $opt_name, $is_alias = false)
+		{
+			if ($is_alias) {
+				$real_name = $action->getRealName($opt_name);
+
+				if (empty($real_name)) {
+					throw new KliInputException(sprintf('unrecognized option "%s" for action "%s"', $opt_name, $action->getName()));
+				}
+
+				$opt_name = $real_name;
+			} elseif (!$action->hasOption($opt_name)) {
+				throw new KliInputException(sprintf('unrecognized option "%s" for action "%s"', $opt_name, $action->getName()));
+			}
+
+			return $opt_name;
+		}
+
+		/**
 		 * Validate a list of parsed options for a given action.
 		 *
 		 * prompt user to define value: when an option is missing
 		 * and prompt is enabled for that option
 		 *
-		 * @param \Kli\KliAction $action          action object.
+		 * @param \Kli\KliAction  $action         action object.
 		 * @param array          &$parsed_options parsed options.
 		 *
 		 * @throws \Kli\Exceptions\KliInputException
@@ -174,34 +202,6 @@
 
 				$parsed_options[$opt_name] = $value;
 			}
-		}
-
-		/**
-		 * Checks if a given action contains a given option.
-		 *
-		 * @param \Kli\KliAction $action   action object.
-		 * @param string         $opt_name option name defined by user.
-		 * @param bool           $is_alias is it an alias.
-		 *
-		 * @return string                  option short name.
-		 *
-		 * @throws \Kli\Exceptions\KliInputException
-		 */
-		private function checkOption(KliAction $action, $opt_name, $is_alias = false)
-		{
-			if ($is_alias) {
-				$real_name = $action->getRealName($opt_name);
-
-				if (empty($real_name)) {
-					throw new KliInputException(sprintf('unrecognized option "%s" for action "%s"', $opt_name, $action->getName()));
-				}
-
-				$opt_name = $real_name;
-			} elseif (!$action->hasOption($opt_name)) {
-				throw new KliInputException(sprintf('unrecognized option "%s" for action "%s"', $opt_name, $action->getName()));
-			}
-
-			return $opt_name;
 		}
 
 		/**

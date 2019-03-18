@@ -18,4 +18,6 @@
 	 *
 	 * @package Kli\Exceptions
 	 */
-	class KliException extends \Exception { }
+	class KliException extends \Exception
+	{
+	}

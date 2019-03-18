@@ -86,7 +86,7 @@
 		}
 
 		/**
-		 * Does this command has a given action.
+		 * Doe this command has a given action.
 		 *
 		 * @param string $name the action name
 		 *
@@ -116,6 +116,16 @@
 		}
 
 		/**
+		 * Command name getter.
+		 *
+		 * @return string
+		 */
+		public function getName()
+		{
+			return $this->name;
+		}
+
+		/**
 		 * Gets this command actions list.
 		 *
 		 * @return array
@@ -126,16 +136,6 @@
 		}
 
 		/**
-		 * Command description getter.
-		 *
-		 * @return string
-		 */
-		public function getDescription()
-		{
-			return $this->description;
-		}
-
-		/**
 		 * Command cli getter.
 		 *
 		 * @return \Kli\Kli
@@ -143,16 +143,6 @@
 		public function getCli()
 		{
 			return $this->cli;
-		}
-
-		/**
-		 * Command name getter.
-		 *
-		 * @return string
-		 */
-		public function getName()
-		{
-			return $this->name;
 		}
 
 		/**
@@ -168,5 +158,15 @@
 			$text .= $sep . implode($sep, $this->actions);
 
 			return $text;
+		}
+
+		/**
+		 * Command description getter.
+		 *
+		 * @return string
+		 */
+		public function getDescription()
+		{
+			return $this->description;
 		}
 	}

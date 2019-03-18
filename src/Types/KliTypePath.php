@@ -38,11 +38,70 @@
 		 *
 		 * @param int|null $min the minimum path count
 		 * @param int|null $max the maximum path count
+		 *
+		 * @throws \Kli\Exceptions\KliException
 		 */
 		public function __construct($min = null, $max = null)
 		{
 			if (isset($min)) $this->min($min);
 			if (isset($max)) $this->max($max);
+		}
+
+		/**
+		 * Sets minimum path count.
+		 *
+		 * @param int         $value         the minimum path count
+		 * @param string|null $error_message the error message
+		 *
+		 * @return $this
+		 *
+		 * @throws \Kli\Exceptions\KliException
+		 */
+		public function min($value, $error_message = null)
+		{
+			if (!is_int($value) OR $value < 1) throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
+			if (isset($this->max) AND $value > $this->max) throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
+
+			$this->min = $value;
+
+			return $this->customErrorMessage('msg_path_count_lt_min', $error_message);
+		}
+
+		/**
+		 * Sets custom error message
+		 *
+		 * @param string $key     the error key
+		 * @param string $message the error message
+		 *
+		 * @return $this
+		 */
+		private function customErrorMessage($key, $message)
+		{
+			if (!empty($message)) {
+				$this->error_messages[$key] = $message;
+			}
+
+			return $this;
+		}
+
+		/**
+		 * Sets maximum path count.
+		 *
+		 * @param int         $value         the maximum path count
+		 * @param string|null $error_message the error message
+		 *
+		 * @return $this
+		 *
+		 * @throws \Kli\Exceptions\KliException
+		 */
+		public function max($value, $error_message = null)
+		{
+			if (!is_int($value) OR $value < 1) throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
+			if ($value < $this->min) throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
+
+			$this->max = $value;
+
+			return $this->customErrorMessage('msg_path_count_gt_max', $error_message);
 		}
 
 		/**
@@ -122,79 +181,6 @@
 		}
 
 		/**
-		 * Sets minimum path count.
-		 *
-		 * @param int         $value         the minimum path count
-		 * @param string|null $error_message the error message
-		 *
-		 * @return $this
-		 *
-		 * @throws \Kli\Exceptions\KliException
-		 */
-		public function min($value, $error_message = null)
-		{
-			if (!is_int($value) OR $value < 1) throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
-			if (isset($this->max) AND $value > $this->max) throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
-
-			$this->min = $value;
-
-			return $this->customErrorMessage('msg_path_count_lt_min', $error_message);
-		}
-
-		/**
-		 * Sets maximum path count.
-		 *
-		 * @param int         $value         the maximum path count
-		 * @param string|null $error_message the error message
-		 *
-		 * @return $this
-		 *
-		 * @throws \Kli\Exceptions\KliException
-		 */
-		public function max($value, $error_message = null)
-		{
-			if (!is_int($value) OR $value < 1) throw new KliException(sprintf('"%s" is not a valid integer(>0).', $value));
-			if ($value < $this->min) throw new KliException(sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
-
-			$this->max = $value;
-
-			return $this->customErrorMessage('msg_path_count_gt_max', $error_message);
-		}
-
-		/**
-		 * Resolve path use glob if enabled.
-		 *
-		 * @param string $path the path to resolve
-		 *
-		 * @return array    path list
-		 */
-		private function resolvePath($path)
-		{
-			if (!is_string($path)) return [];
-
-			return ($this->glob) ? glob($path) : [realpath($path)];
-		}
-
-		/**
-		 * Filter path list with regular expression.
-		 *
-		 * @param array $list the path list to filter
-		 *
-		 * @return array    path list
-		 */
-		private function filterReg(array $list)
-		{
-			$found = [];
-			foreach ($list as $f) {
-				if (preg_match($this->reg, $f)) {
-					$found[] = $f;
-				}
-			}
-
-			return $found;
-		}
-
-		/**
 		 * @inheritdoc
 		 */
 		public function validate($opt_name, $value)
@@ -254,19 +240,35 @@
 		}
 
 		/**
-		 * Sets custom error message
+		 * Resolve path use glob if enabled.
 		 *
-		 * @param string $key     the error key
-		 * @param string $message the error message
+		 * @param string $path the path to resolve
 		 *
-		 * @return $this
+		 * @return array    path list
 		 */
-		private function customErrorMessage($key, $message)
+		private function resolvePath($path)
 		{
-			if (!empty($message)) {
-				$this->error_messages[$key] = $message;
+			if (!is_string($path)) return [];
+
+			return ($this->glob) ? glob($path) : [realpath($path)];
+		}
+
+		/**
+		 * Filters path list with regular expression.
+		 *
+		 * @param array $list the path list to filter
+		 *
+		 * @return array    path list
+		 */
+		private function filterReg(array $list)
+		{
+			$found = [];
+			foreach ($list as $f) {
+				if (preg_match($this->reg, $f)) {
+					$found[] = $f;
+				}
 			}
 
-			return $this;
+			return $found;
 		}
 	}

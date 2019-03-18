@@ -97,6 +97,106 @@
 		}
 
 		/**
+		 * Enable interactive mode.
+		 */
+		public function interactiveMode()
+		{
+			global $argv;
+			if (!$this->is_interactive) {
+				$this->is_interactive = true;
+				$this->welcome();
+				$this->writeLn('Hint: type "quit" or "exit" to stop.' . PHP_EOL);
+
+				while ($this->is_interactive) {
+					$in = $this->readLine(sprintf('%s> ', $this->getTitle()));
+
+					if (strlen($in)) {
+						if ($in == 'quit' OR $in == 'exit') {
+							$this->quit();
+						} else {
+							// construct command: exactly as if it was fully typed
+							$absolute_cmd = $argv[0] . ' ' . $in;
+							static::execute(KliUtils::stringToArgv($absolute_cmd));
+						}
+					}
+
+					$this->writeLn();
+				}
+			}
+		}
+
+		/**
+		 * Write welcome message.
+		 *
+		 * It is called once in interactive mode.
+		 * Or when help is requested.
+		 */
+		public function welcome()
+		{
+			// silence is gold
+		}
+
+		/**
+		 * Write string on a new line.
+		 *
+		 * @param string $str  the string to write
+		 * @param bool   $wrap to wrap string or not
+		 *
+		 * @return \Kli\Kli
+		 */
+		public function writeLn($str = '', $wrap = true)
+		{
+			echo PHP_EOL . (($wrap AND strlen($str) > 80) ? KliUtils::wrap($str) : $str);
+
+			return $this;
+		}
+
+		/**
+		 * Read data from user input.
+		 *
+		 * @param string $prompt      the prompt string
+		 * @param bool   $is_password should we hide user input
+		 *
+		 * @return string            user input
+		 */
+		public function readLine($prompt, $is_password = false)
+		{
+			if ($is_password) {
+				$this->writeLn($prompt);
+				$line = $this->readPass();
+			} elseif (function_exists('readline_add_history')) {
+				$this->writeLn();
+				$line = readline($prompt);
+				readline_add_history($line);
+			} else {
+				$this->writeLn($prompt);
+				$line = fgets(STDIN);
+			}
+
+			return trim($line);
+		}
+
+		/**
+		 * Read password.
+		 *
+		 * @return string user input
+		 */
+		protected function readPass()
+		{
+			return `stty -echo; head -n1; stty echo`;
+		}
+
+		/**
+		 * Title getter.
+		 *
+		 * @return string
+		 */
+		public function getTitle()
+		{
+			return $this->title;
+		}
+
+		/**
 		 * Title setter.
 		 *
 		 * @param string $title the cli title
@@ -111,51 +211,12 @@
 		}
 
 		/**
-		 * Title getter.
-		 *
-		 * @return string
+		 * Quit Kli.
 		 */
-		public function getTitle()
+		public function quit()
 		{
-			return $this->title;
-		}
-
-		/**
-		 * Checks if this cli has a given command.
-		 *
-		 * @param string $cmd_name the command name
-		 *
-		 * @return bool
-		 */
-		public function hasCommand($cmd_name)
-		{
-			return (is_string($cmd_name) AND isset($this->commands[$cmd_name]));
-		}
-
-		/**
-		 * Add command to cli.
-		 *
-		 * @param \Kli\KliCommand $cmd the command to add
-		 *
-		 * @return \Kli\Kli
-		 */
-		public function addCommand(KliCommand $cmd)
-		{
-			$this->commands[$cmd->getName()] = $cmd;
-
-			return $this;
-		}
-
-		/**
-		 * Checks if string is a help flag.
-		 *
-		 * @param string $str the string to check
-		 *
-		 * @return bool
-		 */
-		public function isHelp($str)
-		{
-			return ($str === '--help' OR $str === '-?');
+			$this->is_interactive = false;
+			$this->writeLn();// silence is gold
 		}
 
 		/**
@@ -196,36 +257,45 @@
 		}
 
 		/**
-		 * Enable interactive mode.
+		 * Checks if this cli has a given command.
+		 *
+		 * @param string $cmd_name the command name
+		 *
+		 * @return bool
 		 */
-		public function interactiveMode()
+		public function hasCommand($cmd_name)
 		{
-			global $argv;
-			if (!$this->is_interactive) {
-				$this->is_interactive = true;
-				$this->welcome();
-				$this->writeLn('Hint: type "quit" or "exit" to stop.' . PHP_EOL);
-
-				while ($this->is_interactive) {
-					$in = $this->readLine(sprintf('%s> ', $this->getTitle()));
-
-					if (strlen($in)) {
-						if ($in == 'quit' OR $in == 'exit') {
-							$this->quit();
-						} else {
-							// construct command: exactly as if it was fully typed
-							$absolute_cmd = $argv[0] . ' ' . $in;
-							static::execute(KliUtils::stringToArgv($absolute_cmd));
-						}
-					}
-
-					$this->writeLn();
-				}
-			}
+			return (is_string($cmd_name) AND isset($this->commands[$cmd_name]));
 		}
 
 		/**
-		 * Writes string.
+		 * Checks if string is a help flag.
+		 *
+		 * @param string $str the string to check
+		 *
+		 * @return bool
+		 */
+		public function isHelp($str)
+		{
+			return ($str === '--help' OR $str === '-?');
+		}
+
+		/**
+		 * Adds command to cli.
+		 *
+		 * @param \Kli\KliCommand $cmd the command to add
+		 *
+		 * @return \Kli\Kli
+		 */
+		public function addCommand(KliCommand $cmd)
+		{
+			$this->commands[$cmd->getName()] = $cmd;
+
+			return $this;
+		}
+
+		/**
+		 * Write string.
 		 *
 		 * @param string $str  the string to write
 		 * @param bool   $wrap to wrap string or not
@@ -240,77 +310,7 @@
 		}
 
 		/**
-		 * Writes string on a new line.
-		 *
-		 * @param string $str  the string to write
-		 * @param bool   $wrap to wrap string or not
-		 *
-		 * @return \Kli\Kli
-		 */
-		public function writeLn($str = '', $wrap = true)
-		{
-			echo PHP_EOL . (($wrap AND strlen($str) > 80) ? KliUtils::wrap($str) : $str);
-
-			return $this;
-		}
-
-		/**
-		 * Reads data from user input.
-		 *
-		 * @param string $prompt      the prompt string
-		 * @param bool   $is_password should we hide user input
-		 *
-		 * @return string            user input
-		 */
-		public function readLine($prompt, $is_password = false)
-		{
-			if ($is_password) {
-				$this->writeLn($prompt);
-				$line = $this->readPass();
-			} elseif (function_exists('readline_add_history')) {
-				$this->writeLn();
-				$line = readline($prompt);
-				readline_add_history($line);
-			} else {
-				$this->writeLn($prompt);
-				$line = fgets(STDIN);
-			}
-
-			return trim($line);
-		}
-
-		/**
-		 * Reads password.
-		 *
-		 * @return string user input
-		 */
-		protected function readPass()
-		{
-			return `stty -echo; head -n1; stty echo`;
-		}
-
-		/**
-		 * Write welcome message.
-		 *
-		 * It is called once in interactive mode.
-		 * Or when help is requested.
-		 */
-		public function welcome()
-		{
-			// silence is gold
-		}
-
-		/**
-		 * Quit Kli.
-		 */
-		public function quit()
-		{
-			$this->is_interactive = false;
-			$this->writeLn();// silence is gold
-		}
-
-		/**
-		 * Create log file or append to existing.
+		 * Creates log file or append to existing.
 		 *
 		 * @param mixed $log
 		 *
