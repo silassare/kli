@@ -1,32 +1,33 @@
 {
-    "name": "silassare/kli",
-    "description": "Kli helps you add an interactive command-line interface to your php project.",
-    "version": "1.0.2",
-    "keywords": [
-        "kli",
-        "cli",
-        "command",
-        "command-line",
-        "command-line-tool",
-        "php-cli"
-    ],
-    "require": {
-        "php": ">=5.6.0"
-    },
-    "homepage": "https://github.com/silassare/kli#readme",
-    "autoload": {
-        "psr-4": {
-            "Kli\\": "src"
-        }
-    },
-    "authors": [
-        {
-            "name": "Emile Silas Sare",
-            "email": "emile.silas@gmail.com",
-            "homepage": "https://github.com/silassare"
-        }
-    ],
-    "license": "MIT",
-    "minimum-stability": "dev",
-    "prefer-stable": true
+	"name": "silassare/kli",
+	"description": "Kli helps you add an interactive command-line interface to your php project.",
+	"version": "1.0.3",
+	"keywords": [
+		"kli",
+		"cli",
+		"command",
+		"command-line",
+		"command-line-tool",
+		"php-cli"
+	],
+	"require": {
+		"php": ">=5.6.0",
+		"ext-readline": "*"
+	},
+	"homepage": "https://github.com/silassare/kli#readme",
+	"autoload": {
+		"psr-4": {
+			"Kli\\": "src"
+		}
+	},
+	"authors": [
+		{
+			"name": "Emile Silas Sare",
+			"email": "emile.silas@gmail.com",
+			"homepage": "https://github.com/silassare"
+		}
+	],
+	"license": "MIT",
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }
