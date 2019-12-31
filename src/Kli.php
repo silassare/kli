@@ -100,11 +100,23 @@
 		}
 
 		/**
+		 * Executes a command.
+		 *
+		 * @param string $cmd the command line string
+		 */
+		final function executeString($cmd)
+		{
+			global $argv;
+			$absolute_cmd = $argv[0] . ' ' . $cmd;
+
+			static::execute(KliUtils::stringToArgv($absolute_cmd));
+		}
+
+		/**
 		 * Enable interactive mode.
 		 */
 		public function interactiveMode()
 		{
-			global $argv;
 			if (!$this->is_interactive) {
 				$this->is_interactive = true;
 				$this->welcome();
@@ -118,8 +130,7 @@
 							$this->quit();
 						} else {
 							// construct command: exactly as if it was fully typed
-							$absolute_cmd = $argv[0] . ' ' . $in;
-							static::execute(KliUtils::stringToArgv($absolute_cmd));
+							static::executeString($in);
 						}
 					}
 
@@ -349,8 +360,7 @@
 				$msg = KliUtils::wrap($msg);
 			}
 
-			return $this->log($msg, false)
-						->writeLn("\033[0;31m" . $msg . "\033[0m", false);
+			return $this->writeLn("\033[0;31m" . $msg . "\033[0m", false);
 		}
 
 		/**
@@ -369,8 +379,7 @@
 				$msg = KliUtils::wrap($msg);
 			}
 
-			return $this->log($msg, false)
-						->writeLn("\033[0;32m" . $msg . "\033[0m", false);
+			return $this->writeLn("\033[0;32m" . $msg . "\033[0m", false);
 		}
 
 		/**
@@ -389,7 +398,6 @@
 				$msg = KliUtils::wrap($msg);
 			}
 
-			return $this->log($msg, false)
-						->writeLn("\033[0;36m" . $msg . "\033[0m", false);
+			return $this->writeLn("\033[0;36m" . $msg . "\033[0m", false);
 		}
 	}
