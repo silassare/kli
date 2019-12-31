@@ -235,7 +235,7 @@
 									 ->validate($option->getName(), $in);
 					} catch (KliInputException $e) {
 						$in = null;
-						$this->cli->writeLn($e->getMessage());
+						$this->cli->error($e->getMessage());
 					}
 				}
 			}

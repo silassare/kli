@@ -16,16 +16,18 @@
 	{
 		private $enable_interactive = false;
 		private $is_interactive     = false;
+		private $log_file;
 		private $commands           = [];
 		private $title              = '';
 
 		/**
 		 * Kli constructor.
 		 *
-		 * @param string $title              the cli title to be used in interactive mode.
-		 * @param bool   $enable_interactive to enable interactive cli.
+		 * @param string      $title              the cli title to be used in interactive mode.
+		 * @param bool        $enable_interactive to enable interactive cli.
+		 * @param string|null $log_file           path to log file
 		 */
-		public function __construct($title = '', $enable_interactive = false)
+		public function __construct($title = '', $enable_interactive = false, $log_file = null)
 		{
 			global $argv;
 
@@ -34,6 +36,7 @@
 			}
 
 			$this->enable_interactive = $enable_interactive;
+			$this->log_file           = $log_file;
 			$this->setTitle($title);
 		}
 
@@ -77,21 +80,21 @@
 								$cmd->execute($action, $result['options'], $result['anonymous']);
 							}
 						} else {
-							$this->writeLn(sprintf('%s: action "%s" not recognized.', $a1, $a2));
+							$this->error(sprintf('%s: action "%s" not recognized.', $a1, $a2));
 						}
 					} else {
 						$action_list = implode(' , ', array_keys($cmd->getActions()));
-						$this->writeLn(sprintf('actions available for the command "%s": %s', $a1, $action_list));
+						$this->info(sprintf('actions available for the command "%s": %s', $a1, $action_list));
 					}
 				} else {
-					$this->writeLn(sprintf('error: command "%s" not recognized.', $_argv[1]));
+					$this->error(sprintf('command "%s" not recognized.', $_argv[1]));
 				}
 
 				if (!$this->is_interactive) {
 					$this->writeLn();
 				}
 			} catch (KliInputException $e) {
-				$this->writeLn($e->getMessage())
+				$this->error($e->getMessage())
 					 ->writeLn();
 			}
 		}
@@ -105,7 +108,7 @@
 			if (!$this->is_interactive) {
 				$this->is_interactive = true;
 				$this->welcome();
-				$this->writeLn('Hint: type "quit" or "exit" to stop.' . PHP_EOL);
+				$this->info('Hint: type "quit" or "exit" to stop.' . PHP_EOL);
 
 				while ($this->is_interactive) {
 					$in = $this->readLine(sprintf('%s> ', $this->getTitle()));
@@ -312,16 +315,81 @@
 		/**
 		 * Creates log file or append to existing.
 		 *
-		 * @param mixed $log
+		 * @param string $msg  the message to log
+		 * @param bool   $wrap to wrap string or not
 		 *
-		 * @return $this
+		 * @return \Kli\Kli
 		 */
-		public function log($log)
+		public function log($msg, $wrap = true)
 		{
-			$content = is_scalar($log) ? (string)$log : var_export($log, true);
+			if ($this->log_file) {
+				if ($wrap) {
+					$msg = KliUtils::wrap($msg);
+				}
 
-			file_put_contents($content, getcwd() . DIRECTORY_SEPARATOR . "kli.log", FILE_APPEND);
+				file_put_contents($this->log_file, $msg . PHP_EOL, FILE_APPEND);
+			}
 
 			return $this;
+		}
+
+		/**
+		 * Print error message.
+		 *
+		 * @param string $msg  the message
+		 * @param bool   $wrap to wrap string or not
+		 *
+		 * @return \Kli\Kli
+		 */
+		public function error($msg, $wrap = true)
+		{
+			$msg = "✖ " . $msg;
+
+			if ($wrap) {
+				$msg = KliUtils::wrap($msg);
+			}
+
+			return $this->log($msg, false)
+						->writeLn("\033[0;31m" . $msg . "\033[0m", false);
+		}
+
+		/**
+		 * Print success message.
+		 *
+		 * @param string $msg  the message
+		 * @param bool   $wrap to wrap string or not
+		 *
+		 * @return \Kli\Kli
+		 */
+		public function success($msg, $wrap = true)
+		{
+			$msg = "✔ " . $msg;
+
+			if ($wrap) {
+				$msg = KliUtils::wrap($msg);
+			}
+
+			return $this->log($msg, false)
+						->writeLn("\033[0;32m" . $msg . "\033[0m", false);
+		}
+
+		/**
+		 * Print info message.
+		 *
+		 * @param string $msg  the message
+		 * @param bool   $wrap to wrap string or not
+		 *
+		 * @return \Kli\Kli
+		 */
+		public function info($msg, $wrap = true)
+		{
+			$msg = "ℹ " . $msg;
+
+			if ($wrap) {
+				$msg = KliUtils::wrap($msg);
+			}
+
+			return $this->log($msg, false)
+						->writeLn("\033[0;36m" . $msg . "\033[0m", false);
 		}
 	}
