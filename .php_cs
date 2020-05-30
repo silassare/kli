@@ -13,12 +13,7 @@ $config = PhpCsFixer\Config::create();
 
 $finder->in(__DIR__)
            ->name('*.php')
-           ->notPath('node_modules')
-           ->notPath('oz_vendors')
-           ->notPath('oz/Db/')
            ->notPath('ignore')
-           ->notPath('otpl_done')
-           ->notPath('blate_cache')
            ->ignoreDotFiles(true)
            ->ignoreVCS(true);
 
