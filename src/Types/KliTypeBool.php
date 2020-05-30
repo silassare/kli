@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2017-present, Emile Silas Sare
  *
- * This file is part of OZone (O'Zone) package.
+ * This file is part of Kli package.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,65 +15,65 @@ use Kli\Exceptions\KliInputException;
 
 class KliTypeBool implements KliType
 {
-    private static $list           = [true, false, 'true', 'false'];
+	private static $list           = [true, false, 'true', 'false'];
 
-    private static $extended_list  = [true, false, 1, 0, '1', '0', 'true', 'false', 'yes', 'no', 'y', 'n'];
+	private static $extended_list  = [true, false, 1, 0, '1', '0', 'true', 'false', 'yes', 'no', 'y', 'n'];
 
-    private static $map            = [
-    '1'     => true,
-    '0'     => false,
-    'true'  => true,
-    'false' => false,
-    'yes'   => true,
-    'no'    => false,
-    'y'     => true,
-    'n'     => false,
-    ];
+	private static $map            = [
+		'1'     => true,
+		'0'     => false,
+		'true'  => true,
+		'false' => false,
+		'yes'   => true,
+		'no'    => false,
+		'y'     => true,
+		'n'     => false,
+	];
 
-    private $strict;
+	private $strict;
 
-    private $error_messages = [
-    'msg_require_bool' => 'option "-%s" require a boolean.',
-    ];
+	private $error_messages = [
+		'msg_require_bool' => 'option "-%s" require a boolean.',
+	];
 
-    /**
-     * KliTypeBool Constructor.
-     *
-     * @param bool        $strict        whether to limit bool value to (true,false,'true','false')
-     * @param null|string $error_message the error message
-     */
-    public function __construct($strict = false, $error_message = null)
-    {
-        $this->strict = (bool) $strict;
-        $this->customErrorMessage('msg_require_bool', $error_message);
-    }
+	/**
+	 * KliTypeBool Constructor.
+	 *
+	 * @param bool        $strict        whether to limit bool value to (true,false,'true','false')
+	 * @param null|string $error_message the error message
+	 */
+	public function __construct($strict = false, $error_message = null)
+	{
+		$this->strict = (bool) $strict;
+		$this->customErrorMessage('msg_require_bool', $error_message);
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function validate($opt_name, $value)
-    {
-        if (!\in_array($value, ($this->strict ? self::$list : self::$extended_list))) {
-            throw new KliInputException(\sprintf($this->error_messages['msg_require_bool'], $value, $opt_name));
-        }
+	/**
+	 * @inheritdoc
+	 */
+	public function validate($opt_name, $value)
+	{
+		if (!\in_array($value, ($this->strict ? self::$list : self::$extended_list))) {
+			throw new KliInputException(\sprintf($this->error_messages['msg_require_bool'], $value, $opt_name));
+		}
 
-        return \is_string($value) ? self::$map[\strtolower($value)] : (bool) $value;
-    }
+		return \is_string($value) ? self::$map[\strtolower($value)] : (bool) $value;
+	}
 
-    /**
-     * Sets custom error message.
-     *
-     * @param string $key     the error key
-     * @param string $message the error message
-     *
-     * @return $this
-     */
-    private function customErrorMessage($key, $message)
-    {
-        if (!empty($message)) {
-            $this->error_messages[$key] = $message;
-        }
+	/**
+	 * Sets custom error message.
+	 *
+	 * @param string $key     the error key
+	 * @param string $message the error message
+	 *
+	 * @return $this
+	 */
+	private function customErrorMessage($key, $message)
+	{
+		if (!empty($message)) {
+			$this->error_messages[$key] = $message;
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 }
