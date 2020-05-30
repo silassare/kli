@@ -1,172 +1,180 @@
 <?php
-	/**
-	 * Copyright (c) Emile Silas Sare <emile.silas@gmail.com>
-	 *
-	 * This file is part of the Kli package.
-	 *
-	 * For the full copyright and license information, please view the LICENSE
-	 * file that was distributed with this source code.
-	 */
 
-	namespace Kli;
+/**
+ * Copyright (c) 2017-present, Emile Silas Sare
+ *
+ * This file is part of OZone (O'Zone) package.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-	use Kli\Exceptions\KliException;
+namespace Kli;
 
-	abstract class KliCommand
-	{
-		private $name;
-		private $description = "";
-		private $cli;
-		private $actions     = [];
+use Kli\Exceptions\KliException;
 
-		/**
-		 * KliCommand constructor.
-		 *
-		 * @param string   $name command name.
-		 * @param \Kli\Kli $cli  cli object to use.
-		 *
-		 * @throws \Kli\Exceptions\KliException
-		 */
-		protected function __construct($name, Kli $cli)
-		{
-			if (!preg_match("/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/", $name)) throw new KliException(sprintf('"%s" is not a valid command name.', $name));
+abstract class KliCommand
+{
+    private $name;
 
-			$this->name = $name;
-			$this->cli  = $cli;
-		}
+    private $description = '';
 
-		/**
-		 * Executes command.
-		 *
-		 * @param \Kli\KliAction $action            requested action object.
-		 * @param array          $options           key value pairs options.
-		 * @param array          $anonymous_options indexed unused anonymous options.
-		 */
-		abstract public function execute(KliAction $action, array $options, array $anonymous_options);
+    private $cli;
 
-		/**
-		 * Adds action(s) to this command.
-		 *
-		 * @param \Kli\KliAction $action action object.
-		 *
-		 * @return \Kli\KliCommand
-		 *
-		 * @throws \Kli\Exceptions\KliException    when action is already defined
-		 */
-		public function addAction(KliAction $action)
-		{
-			/** @var \Kli\KliAction[] $actions */
-			$actions = func_get_args();
+    private $actions     = [];
 
-			foreach ($actions as $a) {
-				$act_name = $a->getName();
+    /**
+     * KliCommand constructor.
+     *
+     * @param string   $name command name
+     * @param \Kli\Kli $cli  cli object to use
+     *
+     * @throws \Kli\Exceptions\KliException
+     */
+    protected function __construct($name, Kli $cli)
+    {
+        if (!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/', $name)) {
+            throw new KliException(\sprintf('"%s" is not a valid command name.', $name));
+        }
 
-				if (isset($this->actions[$act_name])) {
-					throw new KliException(sprintf('action "%s" is already defined.', $act_name));
-				}
+        $this->name = $name;
+        $this->cli  = $cli;
+    }
 
-				$this->actions[$act_name] = $a;
-			}
+    /**
+     * Executes command.
+     *
+     * @param \Kli\KliAction $action            requested action object
+     * @param array          $options           key value pairs options
+     * @param array          $anonymous_options indexed unused anonymous options
+     */
+    abstract public function execute(KliAction $action, array $options, array $anonymous_options);
 
-			return $this;
-		}
+    /**
+     * Adds action(s) to this command.
+     *
+     * @param \Kli\KliAction $action action object
+     *
+     * @throws \Kli\Exceptions\KliException when action is already defined
+     *
+     * @return \Kli\KliCommand
+     */
+    public function addAction(KliAction $action)
+    {
+        /**
+         * @var \Kli\KliAction[]
+         */
+        $actions = \func_get_args();
 
-		/**
-		 * Define this command description.
-		 *
-		 * @param string $description command description
-		 *
-		 * @return \Kli\KliCommand
-		 */
-		public function description($description)
-		{
-			$this->description = trim($description);
+        foreach ($actions as $a) {
+            $act_name = $a->getName();
 
-			return $this;
-		}
+            if (isset($this->actions[$act_name])) {
+                throw new KliException(\sprintf('action "%s" is already defined.', $act_name));
+            }
 
-		/**
-		 * Doe this command has a given action.
-		 *
-		 * @param string $name the action name
-		 *
-		 * @return bool
-		 */
-		public function hasAction($name)
-		{
-			return (is_string($name) AND isset($this->actions[$name]));
-		}
+            $this->actions[$act_name] = $a;
+        }
 
-		/**
-		 * Gets action with a given name.
-		 *
-		 * @param string $name the action name
-		 *
-		 * @return \Kli\KliAction
-		 *
-		 * @throws \Kli\Exceptions\KliException    when the action is not defined for this command
-		 */
-		public function getAction($name)
-		{
-			if (!isset($this->actions[$name])) {
-				throw new KliException(sprintf('"%s" - unrecognized action: "%s"', $this->getName(), $name));
-			}
+        return $this;
+    }
 
-			return $this->actions[$name];
-		}
+    /**
+     * Define this command description.
+     *
+     * @param string $description command description
+     *
+     * @return \Kli\KliCommand
+     */
+    public function description($description)
+    {
+        $this->description = \trim($description);
 
-		/**
-		 * Command name getter.
-		 *
-		 * @return string
-		 */
-		public function getName()
-		{
-			return $this->name;
-		}
+        return $this;
+    }
 
-		/**
-		 * Gets this command actions list.
-		 *
-		 * @return array
-		 */
-		public function getActions()
-		{
-			return $this->actions;
-		}
+    /**
+     * Doe this command has a given action.
+     *
+     * @param string $name the action name
+     *
+     * @return bool
+     */
+    public function hasAction($name)
+    {
+        return \is_string($name) && isset($this->actions[$name]);
+    }
 
-		/**
-		 * Command cli getter.
-		 *
-		 * @return \Kli\Kli
-		 */
-		public function getCli()
-		{
-			return $this->cli;
-		}
+    /**
+     * Gets action with a given name.
+     *
+     * @param string $name the action name
+     *
+     * @throws \Kli\Exceptions\KliException when the action is not defined for this command
+     *
+     * @return \Kli\KliAction
+     */
+    public function getAction($name)
+    {
+        if (!isset($this->actions[$name])) {
+            throw new KliException(\sprintf('"%s" - unrecognized action: "%s"', $this->getName(), $name));
+        }
 
-		/**
-		 * Command to string routine used as help.
-		 *
-		 * @return string
-		 */
-		public function __toString()
-		{
-			$text = '█ ' . $this->getName();
-			$text .= PHP_EOL . KliUtils::indent($this->getDescription(), 1, '█ ');
-			$sep  = PHP_EOL . PHP_EOL . '  > ' . $this->getName() . ' ';
-			$text .= $sep . implode($sep, $this->actions);
+        return $this->actions[$name];
+    }
 
-			return $text;
-		}
+    /**
+     * Command name getter.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-		/**
-		 * Command description getter.
-		 *
-		 * @return string
-		 */
-		public function getDescription()
-		{
-			return $this->description;
-		}
-	}
+    /**
+     * Gets this command actions list.
+     *
+     * @return array
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+
+    /**
+     * Command cli getter.
+     *
+     * @return \Kli\Kli
+     */
+    public function getCli()
+    {
+        return $this->cli;
+    }
+
+    /**
+     * Command description getter.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Command to string routine used as help.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $text = '█ ' . $this->getName();
+        $text .= \PHP_EOL . KliUtils::indent($this->getDescription(), 1, '█ ');
+        $sep  = \PHP_EOL . \PHP_EOL . '  > ' . $this->getName() . ' ';
+        $text .= $sep . \implode($sep, $this->actions);
+
+        return $text;
+    }
+}
