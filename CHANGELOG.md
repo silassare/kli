@@ -1,3 +1,8 @@
+### v1.0.4 (2020-08-23)
+
+    - `KliColor` class added for text styling
+    - bell function added to `Kli` class
+
 ### v1.0.3 (2019-12-31)
 
     - display colored error/success/info to terminal
