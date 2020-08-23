@@ -59,6 +59,13 @@ class KliColor
 
 	private $style;
 
+	/**
+	 * The string to colorize.
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
 	public function string($string)
 	{
 		return self::color($string, $this->color, $this->bg, $this->style);
@@ -281,6 +288,14 @@ class KliColor
 		return $this;
 	}
 
+	/**
+	 * Adds color to a given string.
+	 *
+	 * @param string $string
+	 * @param string $color
+	 * @param string $bg
+	 * @param string $style
+	 */
 	public static function color($string, $color = null, $bg = null, $style = null)
 	{
 		$style = '';
