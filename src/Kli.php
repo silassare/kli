@@ -370,7 +370,9 @@ class Kli
 			$msg = KliUtils::wrap($msg);
 		}
 
-		return $this->writeLn("\033[0;31m" . $msg . "\033[0m", false);
+		$color = new KliColor();
+
+		return $this->writeLn($color->red()->string($msg), false);
 	}
 
 	/**
@@ -389,7 +391,9 @@ class Kli
 			$msg = KliUtils::wrap($msg);
 		}
 
-		return $this->writeLn("\033[0;32m" . $msg . "\033[0m", false);
+		$color = new KliColor();
+
+		return $this->writeLn($color->green()->string($msg), false);
 	}
 
 	/**
@@ -408,7 +412,9 @@ class Kli
 			$msg = KliUtils::wrap($msg);
 		}
 
-		return $this->writeLn("\033[0;36m" . $msg . "\033[0m", false);
+		$color = new KliColor();
+
+		return $this->writeLn($color->cyan()->string($msg), false);
 	}
 
 	/**
