@@ -320,6 +320,20 @@ class Kli
 	}
 
 	/**
+	 * Plays a bell sound in console (if available)
+	 *
+	 * @param int $count Bell play count
+	 */
+	public function bell($count = 1)
+	{
+		if (\posix_isatty(\STDOUT)) {
+			return $this->write(\str_repeat("\007", $count));
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Creates log file or append to existing.
 	 *
 	 * @param string $msg  the message to log
