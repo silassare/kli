@@ -57,7 +57,7 @@ abstract class KliCommand
 	 *
 	 * @throws \Kli\Exceptions\KliException when action is already defined
 	 *
-	 * @return \Kli\KliCommand
+	 * @return $this
 	 */
 	public function addAction(KliAction $action)
 	{
@@ -84,7 +84,7 @@ abstract class KliCommand
 	 *
 	 * @param string $description command description
 	 *
-	 * @return \Kli\KliCommand
+	 * @return $this
 	 */
 	public function description($description)
 	{

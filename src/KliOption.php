@@ -63,7 +63,7 @@ final class KliOption
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function alias($alias)
 	{
@@ -89,7 +89,7 @@ final class KliOption
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function offsets($at, $to = null)
 	{
@@ -117,7 +117,7 @@ final class KliOption
 	 *
 	 * Options are locked and should not be modified when added to an action.
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function lock()
 	{
@@ -131,7 +131,7 @@ final class KliOption
 	 *
 	 * @param mixed $value the value to use as default
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function def($value)
 	{
@@ -147,7 +147,7 @@ final class KliOption
 	 *
 	 * @param string $description option description
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function description($description)
 	{
@@ -161,7 +161,7 @@ final class KliOption
 	 *
 	 * @param \Kli\Types\KliType $type the type of the value
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function type(KliType $type)
 	{
@@ -173,7 +173,7 @@ final class KliOption
 	/**
 	 * Mark this option as required.
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function required()
 	{
@@ -191,7 +191,7 @@ final class KliOption
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
-	 * @return \Kli\KliOption
+	 * @return $this
 	 */
 	public function prompt($prompt = true, $prompt_msg = null, $prompt_for_password = false)
 	{

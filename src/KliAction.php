@@ -48,7 +48,7 @@ final class KliAction
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
-	 * @return \Kli\KliAction
+	 * @return $this
 	 */
 	public function addOption(KliOption $option)
 	{
@@ -128,7 +128,7 @@ final class KliAction
 	 *
 	 * @param string $description action description
 	 *
-	 * @return \Kli\KliAction
+	 * @return $this
 	 */
 	public function description($description)
 	{

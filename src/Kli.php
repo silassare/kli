@@ -162,7 +162,7 @@ class Kli
 	 * @param string $str  the string to write
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function writeLn($str = '', $wrap = true)
 	{
@@ -211,7 +211,7 @@ class Kli
 	 *
 	 * @param string $title the cli title
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function setTitle($title)
 	{
@@ -295,7 +295,7 @@ class Kli
 	 *
 	 * @param \Kli\KliCommand $cmd the command to add
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function addCommand(KliCommand $cmd)
 	{
@@ -310,7 +310,7 @@ class Kli
 	 * @param string $str  the string to write
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function write($str, $wrap = false)
 	{
@@ -323,6 +323,8 @@ class Kli
 	 * Plays a bell sound in console (if available)
 	 *
 	 * @param int $count Bell play count
+	 *
+	 * @return $this
 	 */
 	public function bell($count = 1)
 	{
@@ -339,7 +341,7 @@ class Kli
 	 * @param string $msg  the message to log
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function log($msg, $wrap = true)
 	{
@@ -360,7 +362,7 @@ class Kli
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function error($msg, $wrap = true)
 	{
@@ -381,7 +383,7 @@ class Kli
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function success($msg, $wrap = true)
 	{
@@ -402,7 +404,7 @@ class Kli
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return \Kli\Kli
+	 * @return $this
 	 */
 	public function info($msg, $wrap = true)
 	{
