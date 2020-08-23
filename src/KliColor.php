@@ -298,22 +298,22 @@ class KliColor
 	 */
 	public static function color($string, $color = null, $bg = null, $style = null)
 	{
-		$style = '';
+		$head = '';
 
 		if (\posix_isatty(\STDOUT)) {
 			if (isset(self::$foreground_colors[$color])) {
-				$style .= "\033[" . self::$foreground_colors[$color] . 'm';
+				$head .= "\033[" . self::$foreground_colors[$color] . 'm';
 			}
 
 			if (isset(self::$background_colors[$bg])) {
-				$style .= "\033[" . self::$background_colors[$bg] . 'm';
+				$head .= "\033[" . self::$background_colors[$bg] . 'm';
 			}
 
 			if (isset(self::$styles[$style])) {
-				$style .= "\033[" . self::$styles[$style] . 'm';
+				$head .= "\033[" . self::$styles[$style] . 'm';
 			}
 		}
 
-		return $style ? $style . $string . "\033[0m" : $string;
+		return $head ? $head . $string . "\033[0m" : $string;
 	}
 }
