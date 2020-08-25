@@ -166,7 +166,7 @@ class Kli
 	 */
 	public function writeLn($str = '', $wrap = true)
 	{
-		print \PHP_EOL . (($wrap && \strlen($str) > 80) ? KliUtils::wrap($str) : $str);
+		print \PHP_EOL . ($wrap ? KliUtils::wrap($str) : $str);
 
 		return $this;
 	}
