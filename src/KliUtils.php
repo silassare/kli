@@ -77,36 +77,105 @@ class KliUtils
 	/**
 	 * Indent text.
 	 *
-	 * @param string $text   the text string to indent
-	 * @param int    $size   the indent size
-	 * @param string $indent char to use
+	 * @param string $text        the text string to indent
+	 * @param int    $size        the indent size
+	 * @param string $indent_char char to use
 	 *
 	 * @return string
 	 */
-	public static function indent($text, $size = 1, $indent = ' ')
+	public static function indent($text, $size = 1, $indent_char = ' ')
 	{
-		return self::wrap($text, 80, $size, 0, $indent);
+		return self::margins(self::wrap($text), [
+			'left' => $size,
+			'pad'  => $indent_char,
+		]);
 	}
 
 	/**
 	 * Wrap text.
 	 *
-	 * @param string $text         the text string to wrap
-	 * @param int    $width        the width
-	 * @param int    $margin_left  left margin
-	 * @param int    $margin_right right margin
-	 * @param string $pad          char to use for padding
+	 * @param string $text          the text string to wrap
+	 * @param int    $width         the width
+	 * @param bool   $cut_long_word to cut long words
 	 *
 	 * @return string
 	 */
-	public static function wrap($text, $width = 80, $margin_left = 0, $margin_right = 0, $pad = ' ')
+	public static function wrap($text, $width = 80, $cut_long_word = false)
 	{
-		$width        = \max(1, $width);
-		$margin_left  = \max(0, $margin_left);
-		$margin_right = \max(0, $margin_right);
-		$width        = $width - \abs($margin_left) - \abs($margin_right);
-		$margin       = \str_repeat($pad, $margin_left);
+		$width = \max(1, $width);
 
-		return $margin . \wordwrap(\preg_replace("#[\n\r]#", '', $text), $width, \PHP_EOL . $margin);
+		return \wordwrap(\preg_replace("~\n|\r\n?~", '', $text), $width, "\n", $cut_long_word);
+	}
+
+	/**
+	 * Adds margins to text.
+	 *
+	 * ```php
+	 *
+	 * $text = 'My text';
+	 * $text = KliUtils::margins($text, [
+	 *   'left'   => 4,
+	 *   'right'  => 4,
+	 *   'top'    => 1,
+	 *   'bottom' => 1,
+	 * ]);
+	 * echo $text;
+	 *
+	 * ```
+	 *
+	 * @param string $text    the text string
+	 * @param array  $options margin options
+	 *
+	 * @return string
+	 */
+	public static function margins($text, array $options = [])
+	{
+		$left         = isset($options['left']) ? \max(0, $options['left']) : 0;
+		$right        = isset($options['right']) ? \max(0, $options['right']) : 0;
+		$top          = isset($options['top']) ? \max(0, $options['top']) : 0;
+		$bottom       = isset($options['bottom']) ? \max(0, $options['bottom']) : 0;
+		$pad          = isset($options['pad']) ? $options['pad'] : ' ';
+
+		$text         = \preg_replace("~\n|\r\n?~", \PHP_EOL, $text);
+		$parts        = \explode(\PHP_EOL, $text);
+		$margin_left  = \str_repeat($pad, $left);
+		$margin_right = \str_repeat($pad, $right);
+		$line_length  = 0;
+		$out          = '';
+
+		foreach ($parts as $line) {
+			$len = \strlen($line);
+
+			if ($len > $line_length) {
+				$line_length = $len;
+			}
+		}
+
+		foreach ($parts as $line) {
+			$len  = \strlen($line);
+			$fill = '';
+
+			if ($len < $line_length) {
+				$fill = \str_repeat($pad, $line_length - $len);
+			}
+
+			$out .= $margin_left . $line . $fill . $margin_right . \PHP_EOL;
+		}
+
+		$sp            = \str_repeat($pad, $line_length);
+		$margin_top    = '';
+		$margin_bottom = '';
+
+		if ($top) {
+			$margin_top = \str_repeat($margin_left . $sp . $margin_right . \PHP_EOL, $top);
+		}
+
+		if ($bottom) {
+			$margin_bottom = \str_repeat($margin_left . $sp . $margin_right, $bottom);
+		}
+
+		return $margin_top .
+			   $out .
+			   $margin_bottom;
 	}
 }
