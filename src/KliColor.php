@@ -14,44 +14,56 @@ namespace Kli;
 class KliColor
 {
 	public static $foreground_colors = [
-		'bold'         => '1',
-		'dim'          => '2',
-		'black'        => '0;30',
-		'dark_gray'    => '1;30',
-		'blue'         => '0;34',
-		'light_blue'   => '1;34',
-		'green'        => '0;32',
-		'light_green'  => '1;32',
-		'cyan'         => '0;36',
-		'light_cyan'   => '1;36',
-		'red'          => '0;31',
-		'light_red'    => '1;31',
-		'purple'       => '0;35',
-		'light_purple' => '1;35',
-		'brown'        => '0;33',
-		'yellow'       => '1;33',
-		'light_gray'   => '0;37',
-		'white'        => '1;37',
-		'normal'       => '0;39',
+		'black'         => '30',
+		'dark_gray'     => '90',
+		'blue'          => '34',
+		'light_blue'    => '94',
+		'green'         => '32',
+		'light_green'   => '92',
+		'cyan'          => '36',
+		'light_cyan'    => '96',
+		'red'           => '31',
+		'light_red'     => '91',
+		'magenta'       => '35',
+		'light_magenta' => '95',
+		'yellow'        => '33',
+		'light_gray'    => '37',
+		'white'         => '97',
+		'normal'        => '39',
 	];
 
 	public static $background_colors = [
-		'black'        => '40',
-		'red'          => '41',
-		'green'        => '42',
-		'yellow'       => '43',
-		'blue'         => '44',
-		'magenta'      => '45',
-		'cyan'         => '46',
-		'light_gray'   => '47',
+		'black'      => '40',
+		'red'        => '41',
+		'green'      => '42',
+		'yellow'     => '43',
+		'blue'       => '44',
+		'magenta'    => '45',
+		'cyan'       => '46',
+		'light_gray' => '47',
 	];
 
-	public static $styles = [
-		'underline'     => '4',
-		'blink'         => '5',
-		'reverse'       => '7',
-		'hidden'        => '8',
+	public static $styles       = [
+		'bold'      => '1',
+		'dim'       => '2',
+		'underline' => '4',
+		'blink'     => '5',
+		'invert'    => '7',
+		'hidden'    => '8',
 	];
+
+	public static $styles_reset = [
+		'bold'      => '22',
+		'dim'       => '22',
+		'underline' => '24',
+		'blink'     => '25',
+		'invert'    => '27',
+		'hidden'    => '28',
+	];
+
+	private static $foreground_reset = '39';
+
+	private static $background_reset = '49';
 
 	private $color;
 
@@ -59,28 +71,25 @@ class KliColor
 
 	private $style;
 
-	/**
-	 * The string to colorize.
-	 *
-	 * @param string $string
-	 *
-	 * @return string
-	 */
+	private $box_options;
+
 	public function string($string)
 	{
+		if ($this->box_options) {
+			$string = KliUtils::margins(KliUtils::wrap($string), $this->box_options);
+		}
+
 		return self::color($string, $this->color, $this->bg, $this->style);
 	}
 
-	public function bold()
+	public function box(array $options = [
+		'top'    => 1,
+		'right'  => 4,
+		'left'   => 4,
+		'bottom' => 1,
+	])
 	{
-		$this->color = 'bold';
-
-		return $this;
-	}
-
-	public function dim()
-	{
-		$this->color = 'dim';
+		$this->box_options = $options;
 
 		return $this;
 	}
@@ -155,23 +164,16 @@ class KliColor
 		return $this;
 	}
 
-	public function purple()
+	public function magenta()
 	{
-		$this->color = 'purple';
+		$this->color = 'magenta';
 
 		return $this;
 	}
 
-	public function lightPurple()
+	public function lightMagenta()
 	{
-		$this->color = 'light_purple';
-
-		return $this;
-	}
-
-	public function brown()
-	{
-		$this->color = 'brown';
+		$this->color = 'light_magenta';
 
 		return $this;
 	}
@@ -260,6 +262,20 @@ class KliColor
 		return $this;
 	}
 
+	public function bold()
+	{
+		$this->style = 'bold';
+
+		return $this;
+	}
+
+	public function dim()
+	{
+		$this->style = 'dim';
+
+		return $this;
+	}
+
 	public function underline()
 	{
 		$this->style = 'underline';
@@ -274,9 +290,9 @@ class KliColor
 		return $this;
 	}
 
-	public function reverse()
+	public function invert()
 	{
-		$this->style = 'reverse';
+		$this->style = 'invert';
 
 		return $this;
 	}
@@ -295,25 +311,38 @@ class KliColor
 	 * @param string $color
 	 * @param string $bg
 	 * @param string $style
+	 *
+	 * @return string
 	 */
 	public static function color($string, $color = null, $bg = null, $style = null)
 	{
-		$head = '';
+		$set   = [];
+		$reset = [];
 
-		if (\posix_isatty(\STDOUT)) {
+		if (\stream_isatty(\STDOUT)) {
 			if (isset(self::$foreground_colors[$color])) {
-				$head .= "\033[" . self::$foreground_colors[$color] . 'm';
+				$set[]   = self::$foreground_colors[$color];
+				$reset[] = self::$foreground_reset;
 			}
 
 			if (isset(self::$background_colors[$bg])) {
-				$head .= "\033[" . self::$background_colors[$bg] . 'm';
+				$set[]   = self::$background_colors[$bg];
+				$reset[] = self::$background_reset;
 			}
 
 			if (isset(self::$styles[$style])) {
-				$head .= "\033[" . self::$styles[$style] . 'm';
+				$set[]   = self::$styles[$style];
+				$reset[] = self::$styles_reset[$style];
 			}
 		}
 
-		return $head ? $head . $string . "\033[0m" : $string;
+		if (\count($set)) {
+			$set   = "\033[" . \implode(';', $set) . 'm';
+			$reset = "\033[" . \implode(';', $reset) . 'm';
+
+			return $set . $string . $reset;
+		}
+
+		return $string;
 	}
 }
