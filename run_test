@@ -1,0 +1,3 @@
+#!/bin/sh
+
+phpunit --bootstrap vendor/autoload.php --testdox src/Tests
