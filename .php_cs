@@ -14,6 +14,7 @@ $config = PhpCsFixer\Config::create();
 $finder->in(__DIR__)
            ->name('*.php')
            ->notPath('ignore')
+           ->notPath('vendor')
            ->ignoreDotFiles(true)
            ->ignoreVCS(true);
 
