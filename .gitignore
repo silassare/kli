@@ -2,4 +2,3 @@
 .phpunit.result.cache
 vendor
 ignore
-composer.lock
