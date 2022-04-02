@@ -9,21 +9,29 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli;
 
 use Kli\Exceptions\KliInputException;
 
+/**
+ * Class Kli.
+ */
 class Kli
 {
-	private $enable_interactive = false;
+	private bool $enable_interactive;
 
-	private $is_interactive     = false;
+	private bool $is_interactive = false;
 
-	private $log_file;
+	private ?string $log_file;
 
-	private $commands           = [];
+	/**
+	 * @var \Kli\KliCommand[]
+	 */
+	private array $commands = [];
 
-	private $title              = '';
+	private string $title = '';
 
 	/**
 	 * Kli constructor.
@@ -32,7 +40,7 @@ class Kli
 	 * @param bool        $enable_interactive to enable interactive cli
 	 * @param null|string $log_file           path to log file
 	 */
-	public function __construct($title = '', $enable_interactive = false, $log_file = null)
+	public function __construct(string $title = '', bool $enable_interactive = false, ?string $log_file = null)
 	{
 		global $argv;
 
@@ -49,8 +57,10 @@ class Kli
 	 * Executes a command.
 	 *
 	 * @param array $_argv the command argv like array
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
-	final public function execute(array $_argv)
+	final public function execute(array $_argv): void
 	{
 		try {
 			$c = \count($_argv);
@@ -101,7 +111,7 @@ class Kli
 			}
 		} catch (KliInputException $e) {
 			$this->error($e->getMessage())
-				->writeLn();
+				 ->writeLn();
 		}
 	}
 
@@ -109,19 +119,23 @@ class Kli
 	 * Executes a command.
 	 *
 	 * @param string $cmd the command line string
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
-	final public function executeString($cmd)
+	final public function executeString(string $cmd): void
 	{
 		global $argv;
 		$absolute_cmd = $argv[0] . ' ' . $cmd;
 
-		static::execute(KliUtils::stringToArgv($absolute_cmd));
+		$this->execute(KliUtils::stringToArgv($absolute_cmd));
 	}
 
 	/**
 	 * Enable interactive mode.
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function interactiveMode()
+	public function interactiveMode(): void
 	{
 		if (!$this->is_interactive) {
 			$this->is_interactive = true;
@@ -131,12 +145,12 @@ class Kli
 			while ($this->is_interactive) {
 				$in = $this->readLine(\sprintf('%s> ', $this->getTitle()));
 
-				if (\strlen($in)) {
-					if ($in == 'quit' || $in == 'exit') {
+				if ($in !== '') {
+					if ($in === 'quit' || $in === 'exit') {
 						$this->quit();
 					} else {
 						// construct command: exactly as if it was fully typed
-						static::executeString($in);
+						$this->executeString($in);
 					}
 				}
 
@@ -151,7 +165,7 @@ class Kli
 	 * It is called once in interactive mode.
 	 * Or when help is requested.
 	 */
-	public function welcome()
+	public function welcome(): void
 	{
 		// silence is gold
 	}
@@ -164,7 +178,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function writeLn($str = '', $wrap = true)
+	public function writeLn(string $str = '', bool $wrap = true): self
 	{
 		print \PHP_EOL . ($wrap ? KliUtils::wrap($str) : $str);
 
@@ -179,7 +193,7 @@ class Kli
 	 *
 	 * @return string user input
 	 */
-	public function readLine($prompt, $is_password = false)
+	public function readLine(string $prompt, bool $is_password = false): string
 	{
 		if ($is_password) {
 			$this->writeLn($prompt);
@@ -201,7 +215,7 @@ class Kli
 	 *
 	 * @return string
 	 */
-	public function getTitle()
+	public function getTitle(): string
 	{
 		return $this->title;
 	}
@@ -213,7 +227,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function setTitle($title)
+	public function setTitle(string $title): self
 	{
 		$this->title = $title;
 
@@ -223,7 +237,7 @@ class Kli
 	/**
 	 * Quit Kli.
 	 */
-	public function quit()
+	public function quit(): void
 	{
 		$this->is_interactive = false;
 		$this->writeLn();// silence is gold
@@ -232,10 +246,12 @@ class Kli
 	/**
 	 * Show the help.
 	 *
-	 * @param null|string $cmd_name the command name
-	 * @param null|string $act_name the action name
+	 * @param null|string $command_name the command name
+	 * @param null|string $action_name  the action name
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function showHelp($cmd_name = null, $act_name = null)
+	public function showHelp(?string $command_name = null, ?string $action_name = null): void
 	{
 		global $argv;
 
@@ -244,18 +260,18 @@ class Kli
 		}
 		$head = \basename($argv[0]);
 		$h    = \PHP_EOL . 'Usage:'
-		. \PHP_EOL . "  > $head command action [options]"
-		. \PHP_EOL . 'For interactive mode.'
-		. \PHP_EOL . "  > $head"
-		. \PHP_EOL . 'To show help message.'
-		. \PHP_EOL . "  > $head [command [action]] -? or --help"
-		. \PHP_EOL . \PHP_EOL;
+				. \PHP_EOL . "  > $head command action [options]"
+				. \PHP_EOL . 'For interactive mode.'
+				. \PHP_EOL . "  > $head"
+				. \PHP_EOL . 'To show help message.'
+				. \PHP_EOL . "  > $head [command [action]] -? or --help"
+				. \PHP_EOL . \PHP_EOL;
 
-		if (isset($cmd_name) && $this->hasCommand($cmd_name)) {
-			$cmd = $this->commands[$cmd_name];
+		if (isset($command_name) && $this->hasCommand($command_name)) {
+			$cmd = $this->commands[$command_name];
 
-			if (isset($act_name) && $cmd->hasAction($act_name)) {
-				$h .= \sprintf('  %s %s', $cmd->getName(), $cmd->getAction($act_name));
+			if (isset($action_name) && $cmd->hasAction($action_name)) {
+				$h .= \sprintf('  %s %s', $cmd->getName(), $cmd->getAction($action_name));
 			} else {
 				$h .= $cmd;
 			}
@@ -269,13 +285,13 @@ class Kli
 	/**
 	 * Checks if this cli has a given command.
 	 *
-	 * @param string $cmd_name the command name
+	 * @param string $command_name the command name
 	 *
 	 * @return bool
 	 */
-	public function hasCommand($cmd_name)
+	public function hasCommand(string $command_name): bool
 	{
-		return \is_string($cmd_name) && isset($this->commands[$cmd_name]);
+		return isset($this->commands[$command_name]);
 	}
 
 	/**
@@ -285,7 +301,7 @@ class Kli
 	 *
 	 * @return bool
 	 */
-	public function isHelp($str)
+	public function isHelp(string $str): bool
 	{
 		return $str === '--help' || $str === '-?';
 	}
@@ -293,13 +309,13 @@ class Kli
 	/**
 	 * Adds command to cli.
 	 *
-	 * @param \Kli\KliCommand $cmd the command to add
+	 * @param \Kli\KliCommand $command the command to add
 	 *
 	 * @return $this
 	 */
-	public function addCommand(KliCommand $cmd)
+	public function addCommand(KliCommand $command): self
 	{
-		$this->commands[$cmd->getName()] = $cmd;
+		$this->commands[$command->getName()] = $command;
 
 		return $this;
 	}
@@ -312,9 +328,9 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function write($str, $wrap = false)
+	public function write(string $str, bool $wrap = false): self
 	{
-		print $wrap ? KliUtils::wrap($str) : $str;
+		print ($wrap ? KliUtils::wrap($str) : $str);
 
 		return $this;
 	}
@@ -326,7 +342,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function bell($count = 1)
+	public function bell(int $count = 1): self
 	{
 		if (\posix_isatty(\STDOUT)) {
 			return $this->write(\str_repeat("\007", $count));
@@ -338,14 +354,14 @@ class Kli
 	/**
 	 * Creates log file or append to existing.
 	 *
-	 * @param string $msg  the message to log
-	 * @param bool   $wrap to wrap string or not
+	 * @param mixed $msg  the message to log
+	 * @param bool  $wrap to wrap string or not
 	 *
 	 * @return $this
 	 */
-	public function log($msg, $wrap = true)
+	public function log($msg, bool $wrap = true): self
 	{
-		if ($this->log_file) {
+		if (\is_string($msg) && $this->log_file) {
 			if ($wrap) {
 				$msg = KliUtils::wrap($msg);
 			}
@@ -364,7 +380,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function error($msg, $wrap = true)
+	public function error(string $msg, bool $wrap = true): self
 	{
 		$msg = '✖ ' . $msg;
 
@@ -374,7 +390,8 @@ class Kli
 
 		$color = new KliColor();
 
-		return $this->writeLn($color->red()->string($msg), false);
+		return $this->writeLn($color->red()
+									->string($msg), false);
 	}
 
 	/**
@@ -385,7 +402,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function success($msg, $wrap = true)
+	public function success(string $msg, bool $wrap = true): self
 	{
 		$msg = '✔ ' . $msg;
 
@@ -395,7 +412,8 @@ class Kli
 
 		$color = new KliColor();
 
-		return $this->writeLn($color->green()->string($msg), false);
+		return $this->writeLn($color->green()
+									->string($msg), false);
 	}
 
 	/**
@@ -406,7 +424,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function info($msg, $wrap = true)
+	public function info(string $msg, bool $wrap = true): self
 	{
 		$msg = 'ℹ ' . $msg;
 
@@ -416,7 +434,8 @@ class Kli
 
 		$color = new KliColor();
 
-		return $this->writeLn($color->cyan()->string($msg), false);
+		return $this->writeLn($color->cyan()
+									->string($msg), false);
 	}
 
 	/**
@@ -424,8 +443,8 @@ class Kli
 	 *
 	 * @return string user input
 	 */
-	protected function readPass()
+	protected function readPass(): string
 	{
-		return `stty -echo; head -n1; stty echo`;
+		return \shell_exec('stty -echo; head -n1; stty echo');
 	}
 }

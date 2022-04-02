@@ -9,35 +9,40 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli\Types;
 
 use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 
-class KliTypeNumber implements KliType
+/**
+ * Class KliTypeNumber.
+ */
+class KliTypeNumber extends KliType
 {
-	private $min;
-
-	private $max;
-
-	private $is_int         = false;
-
-	private $error_messages = [
+	protected array $error_messages = [
 		'msg_require_number'  => 'option "-%s" require a number as value.',
 		'msg_require_integer' => '"%s" is not a valid integer for option "-%s".',
 		'msg_number_lt_min'   => '"%s" -> fails on min=%s for option "-%s".',
 		'msg_number_gt_max'   => '"%s" -> fails on max=%s for option "-%s".',
 	];
 
+	private ?float $opt_min;
+
+	private ?float $opt_max;
+
+	private bool $is_int         = false;
+
 	/**
 	 * KliTypeNumber constructor.
 	 *
-	 * @param null|int $min the minimum number
-	 * @param null|int $max the maximum number
+	 * @param null|float $min the minimum number
+	 * @param null|float $max the maximum number
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function __construct($min = null, $max = null)
+	public function __construct(?float $min = null, ?float $max = null)
 	{
 		if (isset($min)) {
 			$this->min($min);
@@ -51,117 +56,94 @@ class KliTypeNumber implements KliType
 	/**
 	 * Sets number min value.
 	 *
-	 * @param int         $value         the minimum
-	 * @param null|string $error_message the error message
+	 * @param float       $value   the minimum
+	 * @param null|string $message the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function min($value, $error_message = null)
+	public function min(float $value, ?string $message = null): self
 	{
-		if (!\is_numeric($value)) {
-			throw new KliException(\sprintf('"%s" is not a valid number.', $value));
+		if (isset($this->opt_max) && $value > $this->opt_max) {
+			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
 		}
 
-		$_value = $value + 0;
+		$this->opt_min = $value;
 
-		if (isset($this->max) && $_value > $this->max) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
-		}
+		!empty($message) && $this->msg('msg_number_lt_min', $message);
 
-		$this->min = $_value;
-
-		return $this->customErrorMessage('msg_number_lt_min', $error_message);
+		return $this;
 	}
 
 	/**
 	 * Sets number max value.
 	 *
-	 * @param int         $value         the maximum
-	 * @param null|string $error_message the error message
+	 * @param float       $value   the maximum
+	 * @param null|string $message the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function max($value, $error_message = null)
+	public function max(float $value, ?string $message = null): self
 	{
-		if (!\is_numeric($value)) {
-			throw new KliException(\sprintf('"%s" is not a valid number.', $value));
+		if (isset($this->opt_min) && $value < $this->opt_min) {
+			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
 		}
 
-		$_value = $value + 0;
+		$this->opt_max = $value;
 
-		if (isset($this->min) && $_value < $this->min) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
-		}
+		!empty($message) && $this->msg('msg_number_gt_max', $message);
 
-		$this->max = $_value;
-
-		return $this->customErrorMessage('msg_number_gt_max', $error_message);
+		return $this;
 	}
 
 	/**
 	 * Sets number type as integer.
 	 *
-	 * @param null|string $error_message the error message
+	 * @param null|string $message the error message
 	 *
 	 * @return $this
 	 */
-	public function integer($error_message = null)
+	public function integer(?string $message = null): self
 	{
 		$this->is_int = true;
 
-		return $this->customErrorMessage('msg_require_integer', $error_message);
+		!empty($message) && $this->msg('msg_require_integer', $message);
+
+		return $this;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function validate($opt_name, $value)
+	public function validate(string $opt_name, $value): int
 	{
 		if (!\is_numeric($value)) {
-			throw new KliInputException(\sprintf($this->error_messages['msg_require_number'], $opt_name));
+			throw new KliInputException(\sprintf($this->msg('msg_require_number'), $opt_name));
 		}
 
 		$_value = $value + 0;
 
 		if ($this->is_int === true && !\is_int($_value)) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_require_integer'], $value, $opt_name)
+				\sprintf($this->msg('msg_require_integer'), $value, $opt_name)
 			);
 		}
 
-		if (isset($this->min) && $_value < $this->min) {
+		if (isset($this->opt_min) && $_value < $this->opt_min) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_number_lt_min'], $value, $this->min, $opt_name)
+				\sprintf($this->msg('msg_number_lt_min'), $value, $this->opt_min, $opt_name)
 			);
 		}
 
-		if (isset($this->max) && $_value > $this->max) {
+		if (isset($this->opt_max) && $_value > $this->opt_max) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_number_gt_max'], $value, $this->max, $opt_name)
+				\sprintf($this->msg('msg_number_gt_max'), $value, $this->opt_max, $opt_name)
 			);
 		}
 
 		return $_value;
-	}
-
-	/**
-	 * Sets custom error message
-	 *
-	 * @param string $key     the error key
-	 * @param string $message the error message
-	 *
-	 * @return $this
-	 */
-	private function customErrorMessage($key, $message)
-	{
-		if (!empty($message)) {
-			$this->error_messages[$key] = $message;
-		}
-
-		return $this;
 	}
 }

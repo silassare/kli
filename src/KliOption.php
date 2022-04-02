@@ -9,36 +9,44 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli;
 
 use Kli\Exceptions\KliException;
-use Kli\Types\KliType;
+use Kli\Types\Interfaces\KliTypeInterface;
+use Kli\Types\KliTypeString;
 
+/**
+ * Class KliOption.
+ */
 final class KliOption
 {
-	private $name;
+	private string $name;
 
-	private $description         = 'no description';
+	private ?string $opt_flag = null;
 
-	private $prompt              = false;
+	private array $aliases = [];
 
-	private $prompt_msg;
+	private string $opt_description = 'no description';
 
-	private $prompt_for_password = false;
+	private KliTypeInterface $opt_type;
 
-	private $aliases             = [];
+	private ?array $opt_offsets = null;
 
-	private $required            = false;
+	private bool $prompt              = false;
 
-	private $type;
+	private string $prompt_msg = '';
+
+	private bool $prompt_for_password = false;
+
+	private bool $required            = false;
 
 	private $default;
 
-	private $has_default         = false;
+	private bool $has_default         = false;
 
-	private $locked              = false;
-
-	private $offsets;
+	private bool $locked              = false;
 
 	/**
 	 * KliOption constructor.
@@ -47,13 +55,21 @@ final class KliOption
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function __construct($name)
+	public function __construct(string $name)
 	{
-		if (!\is_string($name) || !\preg_match('/^[a-zA-Z0-9?]$/', $name)) {
+		if (!\preg_match('/^[a-zA-Z0-9?]$/', $name)) {
 			throw new KliException(\sprintf('"%s" is not a valid option name.', $name));
 		}
 
-		$this->name = $name;
+		$this->name     = $name;
+		$this->opt_type = new KliTypeString();
+		$len            = \strlen($this->name);
+
+		if ($len === 1) {
+			$this->flag($this->name);
+		} else {
+			$this->alias($this->name);
+		}
 	}
 
 	/**
@@ -65,15 +81,35 @@ final class KliOption
 	 *
 	 * @return $this
 	 */
-	public function alias($alias)
+	public function alias(string $alias): self
 	{
-		if (!\is_string($alias) || !\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/', $alias)) {
+		if (!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/', $alias)) {
 			throw new KliException(\sprintf('"%s" is not a valid alias.', $alias));
 		}
 
-		if (!\in_array($alias, $this->aliases)) {
+		if (!\in_array($alias, $this->aliases, true)) {
 			$this->aliases[] = $alias;
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Sets option flag.
+	 *
+	 * @param string $flag option flag
+	 *
+	 * @throws \Kli\Exceptions\KliException
+	 *
+	 * @return $this
+	 */
+	public function flag(string $flag): self
+	{
+		if (!\preg_match('/^[a-zA-Z0-9]$/', $flag)) {
+			throw new KliException(\sprintf('"%s" is not a valid flag.', $flag));
+		}
+
+		$this->opt_flag = $flag;
 
 		return $this;
 	}
@@ -91,23 +127,23 @@ final class KliOption
 	 *
 	 * @return $this
 	 */
-	public function offsets($at, $to = null)
+	public function offsets(int $at, int $to = null): self
 	{
 		if ($this->locked) {
 			throw new KliException("can't define offsets, option is locked.");
 		}
 
-		if (!\is_int($at) || $at < 0) {
+		if ($at < 0) {
 			throw new KliException(\sprintf('"%s" is not a valid arg offset.', $at));
 		}
 
-		if (isset($to) && ((!\is_int($to) && !\is_infinite($to)) || $to < $at)) {
+		if ($to !== null && ((!\is_int($to) && !\is_infinite($to)) || $to < $at)) {
 			throw new KliException(\sprintf('from=%s to=%s is not a valid arg offset range.', $at, $to));
 		}
 
-		$range = [$at, (isset($to) ? $to : $at)];
+		$range = [$at, $to ?? $at];
 
-		$this->offsets = $range;
+		$this->opt_offsets = $range;
 
 		return $this;
 	}
@@ -119,7 +155,7 @@ final class KliOption
 	 *
 	 * @return $this
 	 */
-	public function lock()
+	public function lock(): self
 	{
 		$this->locked = true;
 
@@ -133,7 +169,7 @@ final class KliOption
 	 *
 	 * @return $this
 	 */
-	public function def($value)
+	public function def($value): self
 	{
 		// the default should comply with all rules or not ?
 		$this->default     = $value;
@@ -149,9 +185,9 @@ final class KliOption
 	 *
 	 * @return $this
 	 */
-	public function description($description)
+	public function description(string $description): self
 	{
-		$this->description = \trim($description);
+		$this->opt_description = \trim($description);
 
 		return $this;
 	}
@@ -159,13 +195,13 @@ final class KliOption
 	/**
 	 * Sets this option value type.
 	 *
-	 * @param \Kli\Types\KliType $type the type of the value
+	 * @param \Kli\Types\Interfaces\KliTypeInterface $type
 	 *
 	 * @return $this
 	 */
-	public function type(KliType $type)
+	public function type(KliTypeInterface $type): self
 	{
-		$this->type = $type;
+		$this->opt_type = $type;
 
 		return $this;
 	}
@@ -175,7 +211,7 @@ final class KliOption
 	 *
 	 * @return $this
 	 */
-	public function required()
+	public function required(): self
 	{
 		$this->required = true;
 
@@ -185,18 +221,18 @@ final class KliOption
 	/**
 	 * Define the prompt capability and even prompt message.
 	 *
-	 * @param bool   $prompt              prompt enable/disable
-	 * @param string $prompt_msg          prompt message
-	 * @param bool   $prompt_for_password prompt is for password
+	 * @param bool        $prompt              prompt enable/disable
+	 * @param null|string $prompt_msg          prompt message
+	 * @param bool        $prompt_for_password prompt is for password
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function prompt($prompt = true, $prompt_msg = null, $prompt_for_password = false)
+	public function prompt(bool $prompt = true, ?string $prompt_msg = null, bool $prompt_for_password = false): self
 	{
 		if ($prompt && isset($prompt_msg)) {
-			if (\is_string($prompt_msg) && \strlen(\trim($prompt_msg))) {
+			if (\trim($prompt_msg) !== '') {
 				$this->prompt_msg = \trim($prompt_msg);
 			} else {
 				throw new KliException(\sprintf('the prompt for "-%s" should be a string.', $this->getName()));
@@ -214,9 +250,19 @@ final class KliOption
 	 *
 	 * @return string
 	 */
-	public function getName()
+	public function getName(): string
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Option flag getter.
+	 *
+	 * @return null|string
+	 */
+	public function getFlag(): ?string
+	{
+		return $this->opt_flag;
 	}
 
 	/**
@@ -224,7 +270,7 @@ final class KliOption
 	 *
 	 * @return bool
 	 */
-	public function promptEnabled()
+	public function promptEnabled(): bool
 	{
 		return $this->prompt;
 	}
@@ -234,7 +280,7 @@ final class KliOption
 	 *
 	 * @return bool
 	 */
-	public function promptForPassword()
+	public function promptForPassword(): bool
 	{
 		return $this->prompt_for_password;
 	}
@@ -244,13 +290,9 @@ final class KliOption
 	 *
 	 * @return string
 	 */
-	public function getPrompt()
+	public function getPrompt(): string
 	{
-		if (!isset($this->prompt_msg)) {
-			return \sprintf('Please provide -%s', $this->getName());
-		}
-
-		return $this->prompt_msg;
+		return $this->prompt_msg ?? \sprintf('Please provide -%s', $this->getName());
 	}
 
 	/**
@@ -268,9 +310,9 @@ final class KliOption
 	 *
 	 * @return null|array
 	 */
-	public function getOffsets()
+	public function getOffsets(): ?array
 	{
-		return $this->offsets;
+		return $this->opt_offsets;
 	}
 
 	/**
@@ -278,7 +320,7 @@ final class KliOption
 	 *
 	 * @return bool
 	 */
-	public function hasDefault()
+	public function hasDefault(): bool
 	{
 		return $this->has_default;
 	}
@@ -288,7 +330,7 @@ final class KliOption
 	 *
 	 * @return bool
 	 */
-	public function isRequired()
+	public function isRequired(): bool
 	{
 		return $this->required;
 	}
@@ -296,19 +338,19 @@ final class KliOption
 	/**
 	 * Option type getter.
 	 *
-	 * @return \Kli\Types\KliType
+	 * @return \Kli\Types\Interfaces\KliTypeInterface
 	 */
-	public function getType()
+	public function getType(): KliTypeInterface
 	{
-		return $this->type;
+		return $this->opt_type;
 	}
 
 	/**
 	 * Option aliases getter.
 	 *
-	 * @return array
+	 * @return string[]
 	 */
-	public function getAliases()
+	public function getAliases(): array
 	{
 		return $this->aliases;
 	}
@@ -318,9 +360,9 @@ final class KliOption
 	 *
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription(): string
 	{
-		return $this->description;
+		return $this->opt_description;
 	}
 
 	/**
@@ -330,10 +372,10 @@ final class KliOption
 	 */
 	public function __toString()
 	{
-		$text = '-' . $this->getName();
+		$text = $this->opt_flag ? '-' . $this->opt_flag . ' , ' : '';
 
 		if (\count($this->aliases)) {
-			$text .= ' , --' . \implode(' --', $this->aliases);
+			$text .= '--' . \implode(' --', $this->aliases);
 		}
 
 		$text .= "\t" . $this->getDescription();

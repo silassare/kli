@@ -9,8 +9,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli;
 
+/**
+ * Class KliUtils.
+ */
 class KliUtils
 {
 	/**
@@ -22,19 +27,19 @@ class KliUtils
 	 *
 	 * @return array
 	 */
-	public static function stringToArgv($command)
+	public static function stringToArgv(string $command): array
 	{
-		$charCount = \strlen($command);
-		$argv      = [];
-		$arg       = '';
-		$inDQuote  = false;
-		$inSQuote  = false;
+		$len              = \strlen($command);
+		$argv             = [];
+		$arg              = '';
+		$in_double_quote  = false;
+		$in_single_quote  = false;
 
-		for ($i = 0; $i < $charCount; $i++) {
-			$char = \substr($command, $i, 1);
+		for ($i = 0; $i < $len; $i++) {
+			$char = $command[$i];
 
-			if ($char === ' ' && !$inDQuote && !$inSQuote) {
-				if (\strlen($arg)) {
+			if ($char === ' ' && !$in_double_quote && !$in_single_quote) {
+				if ($arg !== '') {
 					$argv[] = $arg;
 				}
 				$arg = '';
@@ -42,26 +47,26 @@ class KliUtils
 				continue;
 			}
 
-			if ($inSQuote && $char === "'") {
-				$inSQuote = false;
+			if ($in_single_quote && $char === "'") {
+				$in_single_quote = false;
 
 				continue;
 			}
 
-			if ($inDQuote && $char === '"') {
-				$inDQuote = false;
+			if ($in_double_quote && $char === '"') {
+				$in_double_quote = false;
 
 				continue;
 			}
 
-			if ($char === '"' && !$inSQuote) {
-				$inDQuote = true;
+			if ($char === '"' && !$in_single_quote) {
+				$in_double_quote = true;
 
 				continue;
 			}
 
-			if ($char === "'" && !$inDQuote) {
-				$inSQuote = true;
+			if ($char === "'" && !$in_double_quote) {
+				$in_single_quote = true;
 
 				continue;
 			}
@@ -83,7 +88,7 @@ class KliUtils
 	 *
 	 * @return string
 	 */
-	public static function indent($text, $size = 1, $indent_char = ' ')
+	public static function indent(string $text, int $size = 1, string $indent_char = ' '): string
 	{
 		return self::margins(self::wrap($text), [
 			'left' => $size,
@@ -100,7 +105,7 @@ class KliUtils
 	 *
 	 * @return string
 	 */
-	public static function wrap($text, $width = 80, $cut_long_word = false)
+	public static function wrap(string $text, int $width = 80, bool $cut_long_word = false): string
 	{
 		$width = \max(1, $width);
 
@@ -128,13 +133,13 @@ class KliUtils
 	 *
 	 * @return string
 	 */
-	public static function margins($text, array $options = [])
+	public static function margins(string $text, array $options = []): string
 	{
 		$left         = isset($options['left']) ? \max(0, $options['left']) : 0;
 		$right        = isset($options['right']) ? \max(0, $options['right']) : 0;
 		$top          = isset($options['top']) ? \max(0, $options['top']) : 0;
 		$bottom       = isset($options['bottom']) ? \max(0, $options['bottom']) : 0;
-		$pad          = isset($options['pad']) ? $options['pad'] : ' ';
+		$pad          = $options['pad'] ?? ' ';
 
 		$text         = \preg_replace("~\n|\r\n?~", \PHP_EOL, $text);
 		$parts        = \explode(\PHP_EOL, $text);

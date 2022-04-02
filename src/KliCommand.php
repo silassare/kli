@@ -9,19 +9,27 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli;
 
 use Kli\Exceptions\KliException;
 
+/**
+ * Class KliCommand.
+ */
 abstract class KliCommand
 {
-	private $name;
+	private string $name;
 
-	private $description = '';
+	private string $description = '';
 
-	private $cli;
+	private Kli $cli;
 
-	private $actions     = [];
+	/**
+	 * @var \Kli\KliAction[]
+	 */
+	private array $actions     = [];
 
 	/**
 	 * KliCommand constructor.
@@ -31,7 +39,7 @@ abstract class KliCommand
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	protected function __construct($name, Kli $cli)
+	protected function __construct(string $name, Kli $cli)
 	{
 		if (!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/', $name)) {
 			throw new KliException(\sprintf('"%s" is not a valid command name.', $name));
@@ -59,7 +67,7 @@ abstract class KliCommand
 	 *
 	 * @return $this
 	 */
-	public function addAction(KliAction $action)
+	public function addAction(KliAction $action): self
 	{
 		/**
 		 * @var \Kli\KliAction[]
@@ -86,7 +94,7 @@ abstract class KliCommand
 	 *
 	 * @return $this
 	 */
-	public function description($description)
+	public function description(string $description): self
 	{
 		$this->description = \trim($description);
 
@@ -100,9 +108,9 @@ abstract class KliCommand
 	 *
 	 * @return bool
 	 */
-	public function hasAction($name)
+	public function hasAction(string $name): bool
 	{
-		return \is_string($name) && isset($this->actions[$name]);
+		return isset($this->actions[$name]);
 	}
 
 	/**
@@ -114,7 +122,7 @@ abstract class KliCommand
 	 *
 	 * @return \Kli\KliAction
 	 */
-	public function getAction($name)
+	public function getAction(string $name): KliAction
 	{
 		if (!isset($this->actions[$name])) {
 			throw new KliException(\sprintf('"%s" - unrecognized action: "%s"', $this->getName(), $name));
@@ -128,7 +136,7 @@ abstract class KliCommand
 	 *
 	 * @return string
 	 */
-	public function getName()
+	public function getName(): string
 	{
 		return $this->name;
 	}
@@ -136,9 +144,9 @@ abstract class KliCommand
 	/**
 	 * Gets this command actions list.
 	 *
-	 * @return array
+	 * @return \Kli\KliAction[]
 	 */
-	public function getActions()
+	public function getActions(): array
 	{
 		return $this->actions;
 	}
@@ -148,7 +156,7 @@ abstract class KliCommand
 	 *
 	 * @return \Kli\Kli
 	 */
-	public function getCli()
+	public function getCli(): Kli
 	{
 		return $this->cli;
 	}
@@ -158,7 +166,7 @@ abstract class KliCommand
 	 *
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return $this->description;
 	}

@@ -14,7 +14,7 @@
 
     <testsuites>
         <testsuite name="Kli Test Suite">
-            <directory>./src/Tests/</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 

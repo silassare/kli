@@ -9,21 +9,31 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli;
 
 use Kli\Exceptions\KliException;
 
+/**
+ * Class KliAction.
+ */
 final class KliAction
 {
-	private $name;
+	private string $name;
 
-	private $description  = 'no description';
+	private string $description  = 'no description';
 
-	private $options      = [];
+	/**
+	 * @var \Kli\KliOption[]
+	 */
+	private array $options      = [];
 
-	private $offsets_lock = [];
+	private array $offsets_lock = [];
 
-	private $used_aliases = [];
+	private array $used_aliases = [];
+
+	private array $used_flags = [];
 
 	/**
 	 * KliAction constructor.
@@ -32,9 +42,9 @@ final class KliAction
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function __construct($name)
+	public function __construct(string $name)
 	{
-		if (!\is_string($name) || !\preg_match('/^[a-zA-Z0-9](?:[a-zA-Z0-9-_]+)$/', $name)) {
+		if (!\preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9-_]+)$/', $name)) {
 			throw new KliException(\sprintf('"%s" is not a valid action name.', $name));
 		}
 
@@ -44,19 +54,14 @@ final class KliAction
 	/**
 	 * Adds option(s) to this action.
 	 *
-	 * @param \Kli\KliOption $option the option to be added
+	 * @param \Kli\KliOption ...$options
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function addOption(KliOption $option)
+	public function addOption(KliOption ...$options): self
 	{
-		/**
-		 * @var \Kli\KliOption[]
-		 */
-		$options = \func_get_args();
-
 		foreach ($options as $o) {
 			$opt_name = $o->getName();
 
@@ -66,12 +71,27 @@ final class KliAction
 				);
 			}
 
+			$opt_flag = $o->getFlag();
+
+			if ($opt_flag) {
+				if (\array_key_exists($opt_flag, $this->used_flags)) {
+					throw new KliException(\sprintf(
+						'flag "-%s" is already defined for option "%s" in action "%s".',
+						$opt_flag,
+						$this->used_flags[$opt_flag],
+						$this->getName()
+					));
+				}
+
+				$this->used_flags[$opt_flag] = $opt_name;
+			}
+
 			$aliases = $o->getAliases();
 
 			foreach ($aliases as $alias) {
 				if (\array_key_exists($alias, $this->used_aliases)) {
 					throw new KliException(\sprintf(
-						'alias "--%s" is already defined for option "-%s" in action "%s"',
+						'alias "--%s" is already defined for option "%s" in action "%s"',
 						$alias,
 						$this->used_aliases[$alias],
 						$this->name
@@ -84,13 +104,11 @@ final class KliAction
 			$offsets = $o->getOffsets();
 
 			if (!empty($offsets)) {
-				$a = $offsets[0];
-				$b = $offsets[1];
+				[$a, $b] = $offsets;
 
 				foreach ($this->offsets_lock as $locker => $lock) {
-					$c  = $lock[0];
-					$d  = $lock[1];
-					$ok = ($a > $d || $b < $c);// some math lol
+					[$c, $d]      = $lock;
+					$ok           = ($a > $d || $b < $c);// some math lol
 
 					if (!$ok) {
 						throw new KliException(\sprintf(
@@ -118,7 +136,7 @@ final class KliAction
 	 *
 	 * @return string
 	 */
-	public function getName()
+	public function getName(): string
 	{
 		return $this->name;
 	}
@@ -130,7 +148,7 @@ final class KliAction
 	 *
 	 * @return $this
 	 */
-	public function description($description)
+	public function description(string $description): self
 	{
 		$this->description = \trim($description);
 
@@ -144,24 +162,28 @@ final class KliAction
 	 *
 	 * @return bool
 	 */
-	public function hasOption($name)
+	public function hasOption(string $name): bool
 	{
-		return \is_string($name) && isset($this->options[$name]);
+		return isset($this->options[$name]) || isset($this->used_flags[$name]);
 	}
 
 	/**
 	 * Gets option with a given name.
 	 *
-	 * @param string $name the option name
+	 * @param string $name the option name or flag
 	 *
 	 * @throws \Kli\Exceptions\KliException when the option is not defined for this action
 	 *
 	 * @return \Kli\KliOption
 	 */
-	public function getOption($name)
+	public function getOption(string $name): KliOption
 	{
 		if (!isset($this->options[$name])) {
-			throw new KliException(\sprintf('"%s" - unrecognized option: "%s"', $this->getName(), $name));
+			if (!isset($this->used_flags[$name])) {
+				throw new KliException(\sprintf('"%s" - unrecognized option: "%s"', $this->getName(), $name));
+			}
+
+			$name = $this->used_flags[$name];
 		}
 
 		return $this->options[$name];
@@ -170,9 +192,9 @@ final class KliAction
 	/**
 	 * Gets this action options list.
 	 *
-	 * @return array
+	 * @return \Kli\KliOption[]
 	 */
-	public function getOptions()
+	public function getOptions(): array
 	{
 		return $this->options;
 	}
@@ -184,13 +206,9 @@ final class KliAction
 	 *
 	 * @return null|string
 	 */
-	public function getRealName($alias)
+	public function getRealName(string $alias): ?string
 	{
-		if (isset($this->used_aliases[$alias])) {
-			return $this->used_aliases[$alias];
-		}
-
-		return null;
+		return $this->used_aliases[$alias] ?? null;
 	}
 
 	/**
@@ -198,7 +216,7 @@ final class KliAction
 	 *
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return $this->description;
 	}

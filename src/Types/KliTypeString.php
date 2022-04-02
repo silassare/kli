@@ -9,25 +9,36 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli\Types;
 
 use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 
-class KliTypeString implements KliType
+/**
+ * Class KliTypeString.
+ */
+class KliTypeString extends KliType
 {
-	private $min;
-
-	private $max;
-
-	private $reg;
-
-	private $error_messages = [
-		'msg_require_string'      => 'option "-%s" require a string as value.',
-		'msg_length_lt_min'       => '"%s" -> fails on minlength=%s for option "-%s".',
-		'msg_length_gt_max'       => '"%s" -> fails on maxlength=%s for option "-%s".',
-		'msg_pattern_check_fails' => '"%s" -> fails on regular expression for option "-%s".',
+	protected array $error_messages = [
+		'msg_require_string'        => 'option "-%s" require a string as value.',
+		'msg_length_lt_min'         => '"%s" -> fails on minlength=%s for option "-%s".',
+		'msg_length_gt_max'         => '"%s" -> fails on maxlength=%s for option "-%s".',
+		'msg_validator_check_fails' => '"%s" -> fails on validator function for option "-%s".',
+		'msg_pattern_check_fails'   => '"%s" -> fails on regular expression for option "-%s".',
 	];
+
+	private int $opt_min;
+
+	private int $opt_max;
+
+	private string $reg;
+
+	/**
+	 * @var callable
+	 */
+	private $validator_fn;
 
 	/**
 	 * KliTypeString constructor.
@@ -37,7 +48,7 @@ class KliTypeString implements KliType
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function __construct($min = null, $max = null)
+	public function __construct(?int $min = null, ?int $max = null)
 	{
 		if (isset($min)) {
 			$this->min($min);
@@ -51,118 +62,130 @@ class KliTypeString implements KliType
 	/**
 	 * Sets minimum string length.
 	 *
-	 * @param int         $value         the minimum string length
-	 * @param null|string $error_message the error message
+	 * @param int         $value   the minimum string length
+	 * @param null|string $message the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function min($value, $error_message = null)
+	public function min(int $value, ?string $message = null): self
 	{
-		if (!\is_int($value) || $value < 1) {
+		if ($value < 1) {
 			throw new KliException(\sprintf('"%s" is not a valid integer(>0).', $value));
 		}
 
-		if (isset($this->max) && $value > $this->max) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
+		if (isset($this->opt_max) && $value > $this->opt_max) {
+			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
 		}
 
-		$this->min = $value;
+		$this->opt_min = $value;
 
-		return $this->customErrorMessage('msg_length_lt_min', $error_message);
+		!empty($message) && $this->msg('msg_length_lt_min', $message);
+
+		return $this;
 	}
 
 	/**
 	 * Sets maximum string length.
 	 *
-	 * @param int         $value         the maximum string length
-	 * @param null|string $error_message the error message
+	 * @param int         $value   the maximum string length
+	 * @param null|string $message the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function max($value, $error_message = null)
+	public function max(int $value, ?string $message = null): self
 	{
-		if (!\is_int($value) || $value < 1) {
+		if ($value < 1) {
 			throw new KliException(\sprintf('"%s" is not a valid integer(>0).', $value));
 		}
 
-		if (isset($this->min) && $value < $this->min) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
+		if (isset($this->opt_min) && $value < $this->opt_min) {
+			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
 		}
 
-		$this->max = $value;
+		$this->opt_max = $value;
 
-		return $this->customErrorMessage('msg_length_gt_max', $error_message);
+		!empty($message) && $this->msg('msg_length_gt_max', $message);
+
+		return $this;
 	}
 
 	/**
 	 * Sets the string pattern.
 	 *
-	 * @param string      $pattern       the pattern (regular expression)
-	 * @param null|string $error_message the error message
+	 * @param string      $reg_expression the regular expression
+	 * @param null|string $message        the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function pattern($pattern, $error_message = null)
+	public function pattern(string $reg_expression, ?string $message = null): self
 	{
-		if (false === \preg_match($pattern, '')) {
-			throw new KliException(\sprintf('invalid regular expression: %s', $pattern));
+		if (false === \preg_match($reg_expression, '')) {
+			throw new KliException(\sprintf('invalid regular expression: %s', $reg_expression));
 		}
 
-		$this->reg = $pattern;
+		$this->reg = $reg_expression;
 
-		return $this->customErrorMessage('msg_pattern_check_fails', $error_message);
+		!empty($message) && $this->msg('msg_pattern_check_fails', $message);
+
+		return $this;
+	}
+
+	/**
+	 * Sets a validator.
+	 *
+	 * @param callable    $fn
+	 * @param null|string $message
+	 *
+	 * @return $this
+	 */
+	public function validator(callable $fn, ?string $message = null): self
+	{
+		$this->validator_fn = $fn;
+
+		!empty($message) && $this->msg('msg_validator_check_fails', $message);
+
+		return $this;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function validate($opt_name, $value)
+	public function validate(string $opt_name, $value)
 	{
 		if (!\is_string($value)) {
-			throw new KliInputException(\sprintf($this->error_messages['msg_require_string'], $opt_name));
+			throw new KliInputException(\sprintf($this->msg('msg_require_string'), $opt_name));
 		}
 
-		if (isset($this->min) && \strlen($value) < $this->min) {
+		if (isset($this->opt_min) && \strlen($value) < $this->opt_min) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_length_lt_min'], $value, $this->min, $opt_name)
+				\sprintf($this->msg('msg_length_lt_min'), $value, $this->opt_min, $opt_name)
 			);
 		}
 
-		if (isset($this->max) && \strlen($value) > $this->max) {
+		if (isset($this->opt_max) && \strlen($value) > $this->opt_max) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_length_gt_max'], $value, $this->max, $opt_name)
+				\sprintf($this->msg('msg_length_gt_max'), $value, $this->opt_max, $opt_name)
 			);
 		}
 
 		if (isset($this->reg) && !\preg_match($this->reg, $value)) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_pattern_check_fails'], $value, $opt_name)
+				\sprintf($this->msg('msg_pattern_check_fails'), $value, $opt_name)
+			);
+		}
+
+		if (isset($this->validator_fn) && !($this->validator_fn)($value)) {
+			throw new KliInputException(
+				\sprintf($this->msg('msg_validator_check_fails'), $value, $opt_name)
 			);
 		}
 
 		return $value;
-	}
-
-	/**
-	 * Sets custom error message
-	 *
-	 * @param string $key     the error key
-	 * @param string $message the error message
-	 *
-	 * @return $this
-	 */
-	private function customErrorMessage($key, $message)
-	{
-		if (!empty($message)) {
-			$this->error_messages[$key] = $message;
-		}
-
-		return $this;
 	}
 }
