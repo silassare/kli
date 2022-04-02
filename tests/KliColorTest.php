@@ -9,30 +9,35 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli\Tests;
 
 use Kli\KliColor;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class KliColorTest.
+ */
 class KliColorTest extends TestCase
 {
-	public function testAnsiColors()
+	public function testAnsiColors(): void
 	{
 		$color = new KliColor();
 
-		$this->assertSame(' ', $color->string(' '));
+		self::assertSame(' ', $color->string(' '));
 
 		$color = new KliColor();
 		$color->red()
 			  ->backgroundYellow();
 
-		$this->assertSame("\033[31;43m \033[39;49m", $color->string(' '));
+		self::assertSame("\033[31;43m \033[39;49m", $color->string(' '));
 
 		$color = new KliColor();
 		$color->red()
 			  ->backgroundYellow()
 			  ->underline();
 
-		$this->assertSame("\033[31;43;4m \033[39;49;24m", $color->string(' '));
+		self::assertSame("\033[31;43;4m \033[39;49;24m", $color->string(' '));
 	}
 }
