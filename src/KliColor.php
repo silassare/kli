@@ -9,11 +9,16 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli;
 
+/**
+ * Class KliColor.
+ */
 class KliColor
 {
-	public static $foreground_colors = [
+	public const FOREGROUND_COLORS = [
 		'black'         => '30',
 		'dark_gray'     => '90',
 		'blue'          => '34',
@@ -32,7 +37,7 @@ class KliColor
 		'normal'        => '39',
 	];
 
-	public static $background_colors = [
+	public const BACKGROUND_COLORS = [
 		'black'      => '40',
 		'red'        => '41',
 		'green'      => '42',
@@ -43,7 +48,7 @@ class KliColor
 		'light_gray' => '47',
 	];
 
-	public static $styles       = [
+	public const STYLES = [
 		'bold'      => '1',
 		'dim'       => '2',
 		'underline' => '4',
@@ -52,7 +57,7 @@ class KliColor
 		'hidden'    => '8',
 	];
 
-	public static $styles_reset = [
+	public const STYLES_RESET = [
 		'bold'      => '22',
 		'dim'       => '22',
 		'underline' => '24',
@@ -61,25 +66,25 @@ class KliColor
 		'hidden'    => '28',
 	];
 
-	private static $foreground_reset = '39';
+	private static string $foreground_reset = '39';
 
-	private static $background_reset = '49';
+	private static string $background_reset = '49';
 
-	private $color;
+	private string $opt_color;
 
-	private $bg;
+	private string $opt_bg;
 
-	private $style;
+	private string $opt_style;
 
-	private $box_options;
+	private array $box_options;
 
-	public function string($string)
+	public function string(string $string): string
 	{
-		if ($this->box_options) {
+		if (isset($this->box_options)) {
 			$string = KliUtils::margins(KliUtils::wrap($string), $this->box_options);
 		}
 
-		return self::color($string, $this->color, $this->bg, $this->style);
+		return self::color($string, $this->opt_color ?? null, $this->opt_bg ?? null, $this->opt_style ?? null);
 	}
 
 	public function box(array $options = [
@@ -87,219 +92,219 @@ class KliColor
 		'right'  => 4,
 		'left'   => 4,
 		'bottom' => 1,
-	])
+	]): self
 	{
 		$this->box_options = $options;
 
 		return $this;
 	}
 
-	public function black()
+	public function black(): self
 	{
-		$this->color = 'black';
+		$this->opt_color = 'black';
 
 		return $this;
 	}
 
-	public function darkGray()
+	public function darkGray(): self
 	{
-		$this->color = 'dark_gray';
+		$this->opt_color = 'dark_gray';
 
 		return $this;
 	}
 
-	public function blue()
+	public function blue(): self
 	{
-		$this->color = 'blue';
+		$this->opt_color = 'blue';
 
 		return $this;
 	}
 
-	public function lightBlue()
+	public function lightBlue(): self
 	{
-		$this->color = 'light_blue';
+		$this->opt_color = 'light_blue';
 
 		return $this;
 	}
 
-	public function green()
+	public function green(): self
 	{
-		$this->color = 'green';
+		$this->opt_color = 'green';
 
 		return $this;
 	}
 
-	public function lightGreen()
+	public function lightGreen(): self
 	{
-		$this->color = 'light_green';
+		$this->opt_color = 'light_green';
 
 		return $this;
 	}
 
-	public function cyan()
+	public function cyan(): self
 	{
-		$this->color = 'cyan';
+		$this->opt_color = 'cyan';
 
 		return $this;
 	}
 
-	public function lightCyan()
+	public function lightCyan(): self
 	{
-		$this->color = 'light_cyan';
+		$this->opt_color = 'light_cyan';
 
 		return $this;
 	}
 
-	public function red()
+	public function red(): self
 	{
-		$this->color = 'red';
+		$this->opt_color = 'red';
 
 		return $this;
 	}
 
-	public function lightRed()
+	public function lightRed(): self
 	{
-		$this->color = 'light_red';
+		$this->opt_color = 'light_red';
 
 		return $this;
 	}
 
-	public function magenta()
+	public function magenta(): self
 	{
-		$this->color = 'magenta';
+		$this->opt_color = 'magenta';
 
 		return $this;
 	}
 
-	public function lightMagenta()
+	public function lightMagenta(): self
 	{
-		$this->color = 'light_magenta';
+		$this->opt_color = 'light_magenta';
 
 		return $this;
 	}
 
-	public function yellow()
+	public function yellow(): self
 	{
-		$this->color = 'yellow';
+		$this->opt_color = 'yellow';
 
 		return $this;
 	}
 
-	public function lightGray()
+	public function lightGray(): self
 	{
-		$this->color = 'light_gray';
+		$this->opt_color = 'light_gray';
 
 		return $this;
 	}
 
-	public function white()
+	public function white(): self
 	{
-		$this->color = 'white';
+		$this->opt_color = 'white';
 
 		return $this;
 	}
 
-	public function normal()
+	public function normal(): self
 	{
-		$this->color = 'normal';
+		$this->opt_color = 'normal';
 
 		return $this;
 	}
 
-	public function backgroundBlack()
+	public function backgroundBlack(): self
 	{
-		$this->bg = 'black';
+		$this->opt_bg = 'black';
 
 		return $this;
 	}
 
-	public function backgroundRed()
+	public function backgroundRed(): self
 	{
-		$this->bg = 'red';
+		$this->opt_bg = 'red';
 
 		return $this;
 	}
 
-	public function backgroundGreen()
+	public function backgroundGreen(): self
 	{
-		$this->bg = 'green';
+		$this->opt_bg = 'green';
 
 		return $this;
 	}
 
-	public function backgroundYellow()
+	public function backgroundYellow(): self
 	{
-		$this->bg = 'yellow';
+		$this->opt_bg = 'yellow';
 
 		return $this;
 	}
 
-	public function backgroundBlue()
+	public function backgroundBlue(): self
 	{
-		$this->bg = 'blue';
+		$this->opt_bg = 'blue';
 
 		return $this;
 	}
 
-	public function backgroundMagenta()
+	public function backgroundMagenta(): self
 	{
-		$this->bg = 'magenta';
+		$this->opt_bg = 'magenta';
 
 		return $this;
 	}
 
-	public function backgroundCyan()
+	public function backgroundCyan(): self
 	{
-		$this->bg = 'cyan';
+		$this->opt_bg = 'cyan';
 
 		return $this;
 	}
 
-	public function backgroundLightGray()
+	public function backgroundLightGray(): self
 	{
-		$this->bg = 'light_gray';
+		$this->opt_bg = 'light_gray';
 
 		return $this;
 	}
 
-	public function bold()
+	public function bold(): self
 	{
-		$this->style = 'bold';
+		$this->opt_style = 'bold';
 
 		return $this;
 	}
 
-	public function dim()
+	public function dim(): self
 	{
-		$this->style = 'dim';
+		$this->opt_style = 'dim';
 
 		return $this;
 	}
 
-	public function underline()
+	public function underline(): self
 	{
-		$this->style = 'underline';
+		$this->opt_style = 'underline';
 
 		return $this;
 	}
 
-	public function blink()
+	public function blink(): self
 	{
-		$this->style = 'blink';
+		$this->opt_style = 'blink';
 
 		return $this;
 	}
 
-	public function invert()
+	public function invert(): self
 	{
-		$this->style = 'invert';
+		$this->opt_style = 'invert';
 
 		return $this;
 	}
 
-	public function hidden()
+	public function hidden(): self
 	{
-		$this->style = 'hidden';
+		$this->opt_style = 'hidden';
 
 		return $this;
 	}
@@ -307,32 +312,36 @@ class KliColor
 	/**
 	 * Adds color to a given string.
 	 *
-	 * @param string $string
-	 * @param string $color
-	 * @param string $bg
-	 * @param string $style
+	 * @param string      $string
+	 * @param null|string $color
+	 * @param null|string $bg
+	 * @param null|string $style
 	 *
 	 * @return string
 	 */
-	public static function color($string, $color = null, $bg = null, $style = null)
-	{
+	public static function color(
+		string $string,
+		?string $color = null,
+		?string $bg = null,
+		?string $style = null
+	): string {
 		$set   = [];
 		$reset = [];
 
 		if (\stream_isatty(\STDOUT)) {
-			if (isset(self::$foreground_colors[$color])) {
-				$set[]   = self::$foreground_colors[$color];
+			if (isset(self::FOREGROUND_COLORS[$color])) {
+				$set[]   = self::FOREGROUND_COLORS[$color];
 				$reset[] = self::$foreground_reset;
 			}
 
-			if (isset(self::$background_colors[$bg])) {
-				$set[]   = self::$background_colors[$bg];
+			if (isset(self::BACKGROUND_COLORS[$bg])) {
+				$set[]   = self::BACKGROUND_COLORS[$bg];
 				$reset[] = self::$background_reset;
 			}
 
-			if (isset(self::$styles[$style])) {
-				$set[]   = self::$styles[$style];
-				$reset[] = self::$styles_reset[$style];
+			if (isset(self::STYLES[$style])) {
+				$set[]   = self::STYLES[$style];
+				$reset[] = self::STYLES_RESET[$style];
 			}
 		}
 

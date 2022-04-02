@@ -2,6 +2,6 @@
 <ruleset name="kli">
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/ignore/*</exclude-pattern>
-	<exclude-pattern>*/test/*</exclude-pattern>
+	<exclude-pattern>*/samples/*</exclude-pattern>
 	<rule ref="./oliup.phpcs.xml" />
 </ruleset>

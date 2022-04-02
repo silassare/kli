@@ -9,19 +9,33 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli\Types;
 
-interface KliType
+use Kli\Types\Interfaces\KliTypeInterface;
+
+/**
+ * Class KliType.
+ */
+abstract class KliType implements KliTypeInterface
 {
+	protected array $error_messages = [];
+
 	/**
-	 * Called to validate an option value.
+	 * Sets/Gets custom error message
 	 *
-	 * @param string $opt_name the option name
-	 * @param string $value    the value to validate
+	 * @param string      $key     the error key
+	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliInputException when user input is invalid
-	 *
-	 * @return mixed the cleaned value to use
+	 * @return string
 	 */
-	public function validate($opt_name, $value);
+	protected function msg(string $key, ?string $message = null): string
+	{
+		if (!empty($message)) {
+			$this->error_messages[$key] = $message;
+		}
+
+		return $this->error_messages[$key] ?? $key;
+	}
 }

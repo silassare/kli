@@ -9,30 +9,19 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Kli\Types;
 
 use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 
-class KliTypePath implements KliType
+/**
+ * Class KliTypePath.
+ */
+class KliTypePath extends KliType
 {
-	private $min            = 1;
-
-	private $max;
-
-	private $multi          = false;
-
-	private $glob           = false;
-
-	private $is_file        = true;
-
-	private $is_dir         = true;
-
-	private $is_writable    = false;
-
-	private $reg;
-
-	private $error_messages = [
+	protected array $error_messages = [
 		'msg_require_valid_path'    => 'option "-%s" require valid path.',
 		'msg_require_writable_path' => 'option "-%s" require writable path.',
 		'msg_require_file_path'     => 'option "-%s" require file.',
@@ -42,6 +31,22 @@ class KliTypePath implements KliType
 		'msg_pattern_check_fails'   => '"%s" fails on regular expression for option "-%s".',
 	];
 
+	private int $opt_min = 1;
+
+	private int $opt_max;
+
+	private bool $multi = false;
+
+	private bool $glob = false;
+
+	private bool $is_file = true;
+
+	private bool $is_dir = true;
+
+	private bool $is_writable = false;
+
+	private string $reg;
+
 	/**
 	 * KliTypePath constructor.
 	 *
@@ -50,7 +55,7 @@ class KliTypePath implements KliType
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function __construct($min = null, $max = null)
+	public function __construct(?int $min = null, ?int $max = null)
 	{
 		if (isset($min)) {
 			$this->min($min);
@@ -64,72 +69,78 @@ class KliTypePath implements KliType
 	/**
 	 * Sets minimum path count.
 	 *
-	 * @param int         $value         the minimum path count
-	 * @param null|string $error_message the error message
+	 * @param int         $value   the minimum path count
+	 * @param null|string $message the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function min($value, $error_message = null)
+	public function min(int $value, ?string $message = null): self
 	{
-		if (!\is_int($value) || $value < 1) {
+		if ($value < 1) {
 			throw new KliException(\sprintf('"%s" is not a valid integer(>0).', $value));
 		}
 
-		if (isset($this->max) && $value > $this->max) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->max));
+		if (isset($this->opt_max) && $value > $this->opt_max) {
+			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
 		}
 
-		$this->min = $value;
+		$this->opt_min = $value;
 
-		return $this->customErrorMessage('msg_path_count_lt_min', $error_message);
+		!empty($message) && $this->msg('msg_path_count_lt_min', $message);
+
+		return $this;
 	}
 
 	/**
 	 * Sets maximum path count.
 	 *
-	 * @param int         $value         the maximum path count
-	 * @param null|string $error_message the error message
+	 * @param int         $value   the maximum path count
+	 * @param null|string $message the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function max($value, $error_message = null)
+	public function max(int $value, ?string $message = null): self
 	{
-		if (!\is_int($value) || $value < 1) {
+		if ($value < 1) {
 			throw new KliException(\sprintf('"%s" is not a valid integer(>0).', $value));
 		}
 
-		if ($value < $this->min) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->min, $value));
+		if ($value < $this->opt_min) {
+			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
 		}
 
-		$this->max = $value;
+		$this->opt_max = $value;
 
-		return $this->customErrorMessage('msg_path_count_gt_max', $error_message);
+		!empty($message) && $this->msg('msg_path_count_gt_max', $message);
+
+		return $this;
 	}
 
 	/**
 	 * Sets the path pattern.
 	 *
-	 * @param string      $pattern       the pattern (regular expression)
-	 * @param null|string $error_message the error message
+	 * @param string      $reg_expression the regular expression
+	 * @param null|string $message        the error message
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 *
 	 * @return $this
 	 */
-	public function pattern($pattern, $error_message = null)
+	public function pattern(string $reg_expression, ?string $message = null): self
 	{
-		if (false === \preg_match($pattern, null)) {
-			throw new KliException(\sprintf('invalid regular expression: %s', $pattern));
+		if (false === \preg_match($reg_expression, '')) {
+			throw new KliException(\sprintf('invalid regular expression: %s', $reg_expression));
 		}
 
-		$this->reg = $pattern;
+		$this->reg = $reg_expression;
 
-		return $this->customErrorMessage('msg_pattern_check_fails', $error_message);
+		!empty($message) && $this->msg('msg_pattern_check_fails', $message);
+
+		return $this;
 	}
 
 	/**
@@ -137,7 +148,7 @@ class KliTypePath implements KliType
 	 *
 	 * @return $this
 	 */
-	public function multiple()
+	public function multiple(): self
 	{
 		$this->multi = true;
 
@@ -147,56 +158,64 @@ class KliTypePath implements KliType
 	/**
 	 * Accept file path only.
 	 *
-	 * @param null|string $error_message the error message
+	 * @param null|string $message the error message
 	 *
 	 * @return $this
 	 */
-	public function file($error_message = null)
+	public function file(?string $message = null): self
 	{
 		$this->is_file = true;
 		$this->is_dir  = false;
 
-		return $this->customErrorMessage('msg_require_file_path', $error_message);
+		!empty($message) && $this->msg('msg_require_file_path', $message);
+
+		return $this;
 	}
 
 	/**
 	 * Accept directory path only.
 	 *
-	 * @param null|string $error_message the error message
+	 * @param null|string $message the error message
 	 *
 	 * @return $this
 	 */
-	public function dir($error_message = null)
+	public function dir(?string $message = null): self
 	{
 		$this->is_file = false;
 		$this->is_dir  = true;
 
-		return $this->customErrorMessage('msg_require_dir_path', $error_message);
+		!empty($message) && $this->msg('msg_require_dir_path', $message);
+
+		return $this;
 	}
 
 	/**
 	 * Accept writable path only.
 	 *
-	 * @param null|string $error_message the error message
+	 * @param null|string $message the error message
 	 *
 	 * @return $this
 	 */
-	public function writable($error_message = null)
+	public function writable(?string $message = null): self
 	{
 		$this->is_writable = true;
 
-		return $this->customErrorMessage('msg_require_writable_path', $error_message);
+		!empty($message) && $this->msg('msg_require_writable_path', $message);
+
+		return $this;
 	}
 
 	/**
 	 * @inheritdoc
+	 *
+	 * @return string|string[]
 	 */
-	public function validate($opt_name, $value)
+	public function validate(string $opt_name, $value)
 	{
 		$paths = $this->resolvePath($value);
 
-		if (!\count($paths) || $paths[0] === false) {
-			throw new KliInputException(\sprintf($this->error_messages['msg_require_valid_path'], $opt_name));
+		if (!$paths || !\count($paths)) {
+			throw new KliInputException(\sprintf($this->msg('msg_require_valid_path'), $opt_name));
 		}
 
 		if (isset($this->reg)) {
@@ -204,7 +223,7 @@ class KliTypePath implements KliType
 
 			if (!\count($paths)) {
 				throw new KliInputException(
-					\sprintf($this->error_messages['msg_pattern_check_fails'], $value, $opt_name)
+					\sprintf($this->msg('msg_pattern_check_fails'), $value, $opt_name)
 				);
 			}
 		}
@@ -214,7 +233,7 @@ class KliTypePath implements KliType
 			$paths = \array_filter($paths, 'is_dir');
 
 			if (!\count($paths)) {
-				throw new KliInputException(\sprintf($this->error_messages['msg_require_dir_path'], $opt_name));
+				throw new KliInputException(\sprintf($this->msg('msg_require_dir_path'), $opt_name));
 			}
 		}
 
@@ -223,7 +242,7 @@ class KliTypePath implements KliType
 			$paths = \array_filter($paths, 'is_file');
 
 			if (!\count($paths)) {
-				throw new KliInputException(\sprintf($this->error_messages['msg_require_file_path'], $opt_name));
+				throw new KliInputException(\sprintf($this->msg('msg_require_file_path'), $opt_name));
 			}
 		}
 
@@ -232,21 +251,21 @@ class KliTypePath implements KliType
 			$paths = \array_filter($paths, 'is_writable');
 
 			if (!\count($paths)) {
-				throw new KliInputException(\sprintf($this->error_messages['msg_require_writable_path'], $opt_name));
+				throw new KliInputException(\sprintf($this->msg('msg_require_writable_path'), $opt_name));
 			}
 		}
 
 		$c = \count($paths);
 
-		if ($c < $this->min) {
+		if ($c < $this->opt_min) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_path_count_lt_min'], $opt_name, $this->min, $c)
+				\sprintf($this->msg('msg_path_count_lt_min'), $opt_name, $this->opt_min, $c)
 			);
 		}
 
-		if (isset($this->max) && $c > $this->max) {
+		if (isset($this->opt_max) && $c > $this->opt_max) {
 			throw new KliInputException(
-				\sprintf($this->error_messages['msg_path_count_gt_max'], $opt_name, $this->max, $c)
+				\sprintf($this->msg('msg_path_count_gt_max'), $opt_name, $this->opt_max, $c)
 			);
 		}
 
@@ -254,46 +273,35 @@ class KliTypePath implements KliType
 	}
 
 	/**
-	 * Sets custom error message
-	 *
-	 * @param string $key     the error key
-	 * @param string $message the error message
-	 *
-	 * @return $this
-	 */
-	private function customErrorMessage($key, $message)
-	{
-		if (!empty($message)) {
-			$this->error_messages[$key] = $message;
-		}
-
-		return $this;
-	}
-
-	/**
 	 * Resolve path use glob if enabled.
 	 *
 	 * @param string $path the path to resolve
 	 *
-	 * @return array path list
+	 * @return false|string[] path list
 	 */
-	private function resolvePath($path)
+	private function resolvePath(string $path)
 	{
-		if (!\is_string($path)) {
+		if (empty($path)) {
 			return [];
 		}
 
-		return ($this->glob) ? \glob($path) : [\realpath($path)];
+		if ($this->glob) {
+			return \glob($path);
+		}
+
+		$path = \realpath($path);
+
+		return $path ? [$path] : false;
 	}
 
 	/**
 	 * Filters path list with regular expression.
 	 *
-	 * @param array $list the path list to filter
+	 * @param string[] $list the path list to filter
 	 *
 	 * @return array path list
 	 */
-	private function filterReg(array $list)
+	private function filterReg(array $list): array
 	{
 		$found = [];
 
