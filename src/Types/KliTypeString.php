@@ -117,8 +117,8 @@ class KliTypeString extends KliType
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): self
 	{
-		if (false === \preg_match($reg_expression, '')) {
-			throw new KliRuntimeException(\sprintf('invalid regular expression: %s', $reg_expression));
+		if (false === \preg_match($pattern, '')) {
+			throw new KliException(\sprintf('invalid regular expression: %s', $pattern));
 		}
 
 		$this->reg = $reg_expression;
