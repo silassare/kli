@@ -110,7 +110,7 @@ class KliTypeString implements KliType
 	 */
 	public function pattern($pattern, $error_message = null)
 	{
-		if (false === \preg_match($pattern, null)) {
+		if (false === \preg_match($pattern, '')) {
 			throw new KliException(\sprintf('invalid regular expression: %s', $pattern));
 		}
 
