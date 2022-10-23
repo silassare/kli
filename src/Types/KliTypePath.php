@@ -72,9 +72,9 @@ class KliTypePath extends KliType
 	 * @param int         $value   the minimum path count
 	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function min(int $value, ?string $message = null): self
 	{
@@ -99,9 +99,9 @@ class KliTypePath extends KliType
 	 * @param int         $value   the maximum path count
 	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function max(int $value, ?string $message = null): self
 	{
@@ -126,9 +126,9 @@ class KliTypePath extends KliType
 	 * @param string      $reg_expression the regular expression
 	 * @param null|string $message        the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): self
 	{
@@ -206,7 +206,7 @@ class KliTypePath extends KliType
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 *
 	 * @return string|string[]
 	 */

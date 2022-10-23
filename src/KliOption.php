@@ -65,7 +65,7 @@ final class KliOption
 		$this->opt_type = new KliTypeString();
 		$len            = \strlen($this->name);
 
-		if ($len === 1) {
+		if (1 === $len) {
 			$this->flag($this->name);
 		} else {
 			$this->alias($this->name);
@@ -73,13 +73,31 @@ final class KliOption
 	}
 
 	/**
+	 * Option to string routine used as help.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		$text = $this->opt_flag ? '-' . $this->opt_flag . ' , ' : '';
+
+		if (\count($this->aliases)) {
+			$text .= '--' . \implode(' --', $this->aliases);
+		}
+
+		$text .= "\t" . $this->getDescription();
+
+		return KliUtils::indent($text, 6);
+	}
+
+	/**
 	 * Adds option alias.
 	 *
 	 * @param string $alias option alias to add
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function alias(string $alias): self
 	{
@@ -99,9 +117,9 @@ final class KliOption
 	 *
 	 * @param string $flag option flag
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function flag(string $flag): self
 	{
@@ -123,9 +141,9 @@ final class KliOption
 	 * @param int      $at
 	 * @param null|int $to
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function offsets(int $at, int $to = null): self
 	{
@@ -137,7 +155,7 @@ final class KliOption
 			throw new KliException(\sprintf('"%s" is not a valid arg offset.', $at));
 		}
 
-		if ($to !== null && ((!\is_int($to) && !\is_infinite($to)) || $to < $at)) {
+		if (null !== $to && ((!\is_int($to) && !\is_infinite($to)) || $to < $at)) {
 			throw new KliException(\sprintf('from=%s to=%s is not a valid arg offset range.', $at, $to));
 		}
 
@@ -225,14 +243,14 @@ final class KliOption
 	 * @param null|string $prompt_msg          prompt message
 	 * @param bool        $prompt_for_password prompt is for password
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function prompt(bool $prompt = true, ?string $prompt_msg = null, bool $prompt_for_password = false): self
 	{
 		if ($prompt && isset($prompt_msg)) {
-			if (\trim($prompt_msg) !== '') {
+			if ('' !== \trim($prompt_msg)) {
 				$this->prompt_msg = \trim($prompt_msg);
 			} else {
 				throw new KliException(\sprintf('the prompt for "-%s" should be a string.', $this->getName()));
@@ -363,23 +381,5 @@ final class KliOption
 	public function getDescription(): string
 	{
 		return $this->opt_description;
-	}
-
-	/**
-	 * Option to string routine used as help.
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		$text = $this->opt_flag ? '-' . $this->opt_flag . ' , ' : '';
-
-		if (\count($this->aliases)) {
-			$text .= '--' . \implode(' --', $this->aliases);
-		}
-
-		$text .= "\t" . $this->getDescription();
-
-		return KliUtils::indent($text, 6);
 	}
 }

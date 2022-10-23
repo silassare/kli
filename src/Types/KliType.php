@@ -23,7 +23,7 @@ abstract class KliType implements KliTypeInterface
 	protected array $error_messages = [];
 
 	/**
-	 * Sets/Gets custom error message
+	 * Sets/Gets custom error message.
 	 *
 	 * @param string      $key     the error key
 	 * @param null|string $message the error message

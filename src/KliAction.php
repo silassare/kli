@@ -52,13 +52,28 @@ final class KliAction
 	}
 
 	/**
+	 * Action to string routine used as help.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		$text = $this->getName() . ' [options]';
+		$text .= \PHP_EOL . KliUtils::indent($this->getDescription(), 4);
+		$sep  = \PHP_EOL . \PHP_EOL;
+		$text .= $sep . \implode($sep, $this->options);
+
+		return $text;
+	}
+
+	/**
 	 * Adds option(s) to this action.
 	 *
 	 * @param \Kli\KliOption ...$options
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function addOption(KliOption ...$options): self
 	{
@@ -108,7 +123,7 @@ final class KliAction
 
 				foreach ($this->offsets_lock as $locker => $lock) {
 					[$c, $d]      = $lock;
-					$ok           = ($a > $d || $b < $c);// some math lol
+					$ok           = ($a > $d || $b < $c); // some math lol
 
 					if (!$ok) {
 						throw new KliException(\sprintf(
@@ -172,9 +187,9 @@ final class KliAction
 	 *
 	 * @param string $name the option name or flag
 	 *
-	 * @throws \Kli\Exceptions\KliException when the option is not defined for this action
-	 *
 	 * @return \Kli\KliOption
+	 *
+	 * @throws \Kli\Exceptions\KliException when the option is not defined for this action
 	 */
 	public function getOption(string $name): KliOption
 	{
@@ -219,20 +234,5 @@ final class KliAction
 	public function getDescription(): string
 	{
 		return $this->description;
-	}
-
-	/**
-	 * Action to string routine used as help.
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		$text = $this->getName() . ' [options]';
-		$text .= \PHP_EOL . KliUtils::indent($this->getDescription(), 4);
-		$sep  = \PHP_EOL . \PHP_EOL;
-		$text .= $sep . \implode($sep, $this->options);
-
-		return $text;
 	}
 }

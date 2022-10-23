@@ -65,9 +65,9 @@ class KliTypeString extends KliType
 	 * @param int         $value   the minimum string length
 	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function min(int $value, ?string $message = null): self
 	{
@@ -92,9 +92,9 @@ class KliTypeString extends KliType
 	 * @param int         $value   the maximum string length
 	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function max(int $value, ?string $message = null): self
 	{
@@ -119,9 +119,9 @@ class KliTypeString extends KliType
 	 * @param string      $reg_expression the regular expression
 	 * @param null|string $message        the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): self
 	{
@@ -154,7 +154,7 @@ class KliTypeString extends KliType
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public function validate(string $opt_name, $value)
 	{

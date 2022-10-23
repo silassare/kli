@@ -111,7 +111,7 @@ class Kli
 			}
 		} catch (KliInputException $e) {
 			$this->error($e->getMessage())
-				 ->writeLn();
+				->writeLn();
 		}
 	}
 
@@ -145,8 +145,8 @@ class Kli
 			while ($this->is_interactive) {
 				$in = $this->readLine(\sprintf('%s> ', $this->getTitle()));
 
-				if ($in !== '') {
-					if ($in === 'quit' || $in === 'exit') {
+				if ('' !== $in) {
+					if ('quit' === $in || 'exit' === $in) {
 						$this->quit();
 					} else {
 						// construct command: exactly as if it was fully typed
@@ -180,7 +180,7 @@ class Kli
 	 */
 	public function writeLn(string $str = '', bool $wrap = true): self
 	{
-		print \PHP_EOL . ($wrap ? KliUtils::wrap($str) : $str);
+		echo \PHP_EOL . ($wrap ? KliUtils::wrap($str) : $str);
 
 		return $this;
 	}
@@ -240,7 +240,7 @@ class Kli
 	public function quit(): void
 	{
 		$this->is_interactive = false;
-		$this->writeLn();// silence is gold
+		$this->writeLn(); // silence is gold
 	}
 
 	/**
@@ -260,11 +260,11 @@ class Kli
 		}
 		$head = \basename($argv[0]);
 		$h    = \PHP_EOL . 'Usage:'
-				. \PHP_EOL . "  > $head command action [options]"
+				. \PHP_EOL . "  > {$head} command action [options]"
 				. \PHP_EOL . 'For interactive mode.'
-				. \PHP_EOL . "  > $head"
+				. \PHP_EOL . "  > {$head}"
 				. \PHP_EOL . 'To show help message.'
-				. \PHP_EOL . "  > $head [command [action]] -? or --help"
+				. \PHP_EOL . "  > {$head} [command [action]] -? or --help"
 				. \PHP_EOL . \PHP_EOL;
 
 		if (isset($command_name) && $this->hasCommand($command_name)) {
@@ -303,7 +303,7 @@ class Kli
 	 */
 	public function isHelp(string $str): bool
 	{
-		return $str === '--help' || $str === '-?';
+		return '--help' === $str || '-?' === $str;
 	}
 
 	/**
@@ -330,13 +330,13 @@ class Kli
 	 */
 	public function write(string $str, bool $wrap = false): self
 	{
-		print ($wrap ? KliUtils::wrap($str) : $str);
+		echo $wrap ? KliUtils::wrap($str) : $str;
 
 		return $this;
 	}
 
 	/**
-	 * Plays a bell sound in console (if available)
+	 * Plays a bell sound in console (if available).
 	 *
 	 * @param int $count Bell play count
 	 *
@@ -391,7 +391,7 @@ class Kli
 		$color = new KliColor();
 
 		return $this->writeLn($color->red()
-									->string($msg), false);
+			->string($msg), false);
 	}
 
 	/**
@@ -413,7 +413,7 @@ class Kli
 		$color = new KliColor();
 
 		return $this->writeLn($color->green()
-									->string($msg), false);
+			->string($msg), false);
 	}
 
 	/**
@@ -435,7 +435,7 @@ class Kli
 		$color = new KliColor();
 
 		return $this->writeLn($color->cyan()
-									->string($msg), false);
+			->string($msg), false);
 	}
 
 	/**

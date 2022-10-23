@@ -20,6 +20,9 @@ use Kli\Exceptions\KliInputException;
  */
 class KliTypeBool extends KliType
 {
+	protected array $error_messages = [
+		'msg_require_bool' => 'option "-%s" require a boolean.',
+	];
 	private static array $list = [true, false, 1, 0, '1', '0', 'true', 'false'];
 
 	private static array $extended_list = [true, false, 1, 0, '1', '0', 'true', 'false', 'yes', 'no', 'y', 'n'];
@@ -33,10 +36,6 @@ class KliTypeBool extends KliType
 		'no'    => false,
 		'y'     => true,
 		'n'     => false,
-	];
-
-	protected array $error_messages = [
-		'msg_require_bool' => 'option "-%s" require a boolean.',
 	];
 
 	private bool $strict;
@@ -55,11 +54,11 @@ class KliTypeBool extends KliType
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public function validate(string $opt_name, $value)
 	{
-		if (!\in_array($value, ($this->strict ? self::$list : self::$extended_list), true)) {
+		if (!\in_array($value, $this->strict ? self::$list : self::$extended_list, true)) {
 			throw new KliInputException(\sprintf($this->msg('msg_require_bool'), $value, $opt_name));
 		}
 

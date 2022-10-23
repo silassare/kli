@@ -39,6 +39,7 @@ final class KliParser
 	 * @param array          $opt_list option list
 	 *
 	 * @return array
+	 *
 	 * @throws \Kli\Exceptions\KliException
 	 * @throws \Kli\Exceptions\KliInputException
 	 */
@@ -51,9 +52,9 @@ final class KliParser
 		foreach ($opt_list as $item) {
 			if ($stop_parsing) {
 				$anonymous[] = $item;
-			} /* tmp the first -- and stop parsing */ elseif ($item === '--') {
+			} /* tmp the first -- and stop parsing */ elseif ('--' === $item) {
 				$stop_parsing = true;
-			} /* alias first */ elseif (\strpos($item, '--') === 0) {
+			} /* alias first */ elseif (0 === \strpos($item, '--')) {
 				$pos   = \strpos($item, '=');
 				$name  = \substr($item, 2);
 				$value = true;
@@ -71,13 +72,13 @@ final class KliParser
 
 				$name              = $this->checkOption($action, $name, true);
 				$in_options[$name] = $value;
-			} /* short after */ elseif (\strpos($item, '-') === 0) {
+			} /* short after */ elseif (0 === \strpos($item, '-')) {
 				$pos = \strpos($item, '=');
 
 				if (\is_int($pos)) {
 					// valid: -a=value
 					// invalid: -ab=value
-					if ($pos === 2) {
+					if (2 === $pos) {
 						$name              = $this->checkOption($action, \substr($item, 1, 1));
 						$value             = \substr($item, 3);
 						$in_options[$name] = $value;
@@ -88,7 +89,7 @@ final class KliParser
 					$flags = \substr($item, 1);
 					// single flag: -a
 					// combined flag: -abcdef
-					if ($flags !== '') {
+					if ('' !== $flags) {
 						$flags = \str_split($flags);
 
 						foreach ($flags as $flag) {
@@ -125,7 +126,7 @@ final class KliParser
 							$found = [];
 							while (isset($anonymous[$at]) && $at <= $to) {
 								$found[] = $anonymous[$at];
-								$at++;
+								++$at;
 								unset($anonymous[$at]);
 							}
 							$in_options[$opt_name] = $found;
@@ -168,7 +169,7 @@ final class KliParser
 			} else {
 				try {
 					$in = $option->getType()
-								 ->validate($option->getName(), $in);
+						->validate($option->getName(), $in);
 				} catch (KliInputException $e) {
 					$in = null;
 					$this->cli->error($e->getMessage());
@@ -187,6 +188,7 @@ final class KliParser
 	 * @param bool           $is_alias is it an alias
 	 *
 	 * @return string option short name
+	 *
 	 * @throws \Kli\Exceptions\KliException
 	 * @throws \Kli\Exceptions\KliInputException
 	 */
@@ -208,7 +210,7 @@ final class KliParser
 
 		if ($action->hasOption($opt_name)) {
 			return $action->getOption($opt_name)
-						  ->getName();
+				->getName();
 		}
 
 		throw new KliInputException(\sprintf(
@@ -224,7 +226,7 @@ final class KliParser
 	 * prompt user to define value: when an option is missing
 	 * and prompt is enabled for that option
 	 *
-	 * @param \Kli\KliAction  $action         action object
+	 * @param \Kli\KliAction $action          action object
 	 * @param array          &$parsed_options parsed options
 	 *
 	 * @throws \Kli\Exceptions\KliInputException
@@ -239,7 +241,7 @@ final class KliParser
 
 			if (isset($parsed_options[$opt_name])) {
 				$value = $option->getType()
-								->validate($opt_name, $parsed_options[$opt_name]);
+					->validate($opt_name, $parsed_options[$opt_name]);
 			} elseif ($option->isRequired()) {
 				/* first tentative */
 				if ($option->promptEnabled()) {
@@ -248,7 +250,7 @@ final class KliParser
 					$value = $option->getDefault();
 				}
 
-				if ($value === null) {
+				if (null === $value) {
 					throw new KliInputException(\sprintf('"%s" require option: -%s', $action->getName(), $opt_name));
 				}
 			} else {

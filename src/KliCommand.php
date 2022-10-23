@@ -50,6 +50,21 @@ abstract class KliCommand
 	}
 
 	/**
+	 * Command to string routine used as help.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		$text = '█ ' . $this->getName();
+		$text .= \PHP_EOL . KliUtils::indent($this->getDescription(), 1, '█ ');
+		$sep  = \PHP_EOL . \PHP_EOL . '  > ' . $this->getName() . ' ';
+		$text .= $sep . \implode($sep, $this->actions);
+
+		return $text;
+	}
+
+	/**
 	 * Executes command.
 	 *
 	 * @param \Kli\KliAction $action            requested action object
@@ -63,9 +78,9 @@ abstract class KliCommand
 	 *
 	 * @param \Kli\KliAction $action action object
 	 *
-	 * @throws \Kli\Exceptions\KliException when action is already defined
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException when action is already defined
 	 */
 	public function addAction(KliAction $action): self
 	{
@@ -118,9 +133,9 @@ abstract class KliCommand
 	 *
 	 * @param string $name the action name
 	 *
-	 * @throws \Kli\Exceptions\KliException when the action is not defined for this command
-	 *
 	 * @return \Kli\KliAction
+	 *
+	 * @throws \Kli\Exceptions\KliException when the action is not defined for this command
 	 */
 	public function getAction(string $name): KliAction
 	{
@@ -169,20 +184,5 @@ abstract class KliCommand
 	public function getDescription(): string
 	{
 		return $this->description;
-	}
-
-	/**
-	 * Command to string routine used as help.
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		$text = '█ ' . $this->getName();
-		$text .= \PHP_EOL . KliUtils::indent($this->getDescription(), 1, '█ ');
-		$sep  = \PHP_EOL . \PHP_EOL . '  > ' . $this->getName() . ' ';
-		$text .= $sep . \implode($sep, $this->actions);
-
-		return $text;
 	}
 }
