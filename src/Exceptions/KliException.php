@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace Kli\Exceptions;
 
+use Exception;
+
 /**
- * Class KliException
+ * Class KliException.
  *
  * When it is thrown, it may mean that
  * there is an error in your code
  */
-class KliException extends \Exception
+class KliException extends Exception
 {
 }

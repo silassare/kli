@@ -18,26 +18,30 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliColorTest.
+ *
+ * @internal
+ *
+ * @coversNothing
  */
-class KliColorTest extends TestCase
+final class KliColorTest extends TestCase
 {
 	public function testAnsiColors(): void
 	{
 		$color = new KliColor();
 
-		self::assertSame(' ', $color->string(' '));
+		static::assertSame(' ', $color->string(' '));
 
 		$color = new KliColor();
 		$color->red()
-			  ->backgroundYellow();
+			->backgroundYellow();
 
-		self::assertSame("\033[31;43m \033[39;49m", $color->string(' '));
+		static::assertSame("\033[31;43m \033[39;49m", $color->string(' '));
 
 		$color = new KliColor();
 		$color->red()
-			  ->backgroundYellow()
-			  ->underline();
+			->backgroundYellow()
+			->underline();
 
-		self::assertSame("\033[31;43;4m \033[39;49;24m", $color->string(' '));
+		static::assertSame("\033[31;43;4m \033[39;49;24m", $color->string(' '));
 	}
 }

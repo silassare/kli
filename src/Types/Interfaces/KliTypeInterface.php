@@ -24,9 +24,9 @@ interface KliTypeInterface
 	 * @param string $opt_name the option name
 	 * @param mixed  $value    the value to validate
 	 *
-	 * @throws \Kli\Exceptions\KliInputException when user input is invalid
-	 *
 	 * @return mixed the cleaned value to use
+	 *
+	 * @throws \Kli\Exceptions\KliInputException when user input is invalid
 	 */
 	public function validate(string $opt_name, $value);
 }

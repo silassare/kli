@@ -59,9 +59,9 @@ class KliTypeNumber extends KliType
 	 * @param float       $value   the minimum
 	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function min(float $value, ?string $message = null): self
 	{
@@ -82,9 +82,9 @@ class KliTypeNumber extends KliType
 	 * @param float       $value   the maximum
 	 * @param null|string $message the error message
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 *
 	 * @return $this
+	 *
+	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function max(float $value, ?string $message = null): self
 	{
@@ -116,7 +116,7 @@ class KliTypeNumber extends KliType
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public function validate(string $opt_name, $value): int
 	{
@@ -126,7 +126,7 @@ class KliTypeNumber extends KliType
 
 		$_value = $value + 0;
 
-		if ($this->is_int === true && !\is_int($_value)) {
+		if (true === $this->is_int && !\is_int($_value)) {
 			throw new KliInputException(
 				\sprintf($this->msg('msg_require_integer'), $value, $opt_name)
 			);

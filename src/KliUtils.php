@@ -35,11 +35,11 @@ class KliUtils
 		$in_double_quote  = false;
 		$in_single_quote  = false;
 
-		for ($i = 0; $i < $len; $i++) {
+		for ($i = 0; $i < $len; ++$i) {
 			$char = $command[$i];
 
-			if ($char === ' ' && !$in_double_quote && !$in_single_quote) {
-				if ($arg !== '') {
+			if (' ' === $char && !$in_double_quote && !$in_single_quote) {
+				if ('' !== $arg) {
 					$argv[] = $arg;
 				}
 				$arg = '';
@@ -47,25 +47,25 @@ class KliUtils
 				continue;
 			}
 
-			if ($in_single_quote && $char === "'") {
+			if ($in_single_quote && "'" === $char) {
 				$in_single_quote = false;
 
 				continue;
 			}
 
-			if ($in_double_quote && $char === '"') {
+			if ($in_double_quote && '"' === $char) {
 				$in_double_quote = false;
 
 				continue;
 			}
 
-			if ($char === '"' && !$in_single_quote) {
+			if ('"' === $char && !$in_single_quote) {
 				$in_double_quote = true;
 
 				continue;
 			}
 
-			if ($char === "'" && !$in_double_quote) {
+			if ("'" === $char && !$in_double_quote) {
 				$in_single_quote = true;
 
 				continue;

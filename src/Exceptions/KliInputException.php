@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Kli\Exceptions;
 
+use Exception;
+
 /**
- * Class KliInputException
+ * Class KliInputException.
  *
  * For user input error.
  */
-class KliInputException extends \Exception
+class KliInputException extends Exception
 {
 }
