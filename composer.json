@@ -1,7 +1,7 @@
 {
 	"name": "silassare/kli",
 	"description": "Kli helps you add an interactive command-line interface to your php project.",
-	"version": "1.0.4",
+	"version": "2.0.0",
 	"keywords": [
 		"kli",
 		"cli",
@@ -36,5 +36,10 @@
 	],
 	"license": "MIT",
 	"minimum-stability": "dev",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"extra": {
+		"branch-alias": {
+			"dev-dev": "2.0.x-dev"
+		}
+	}
 }
