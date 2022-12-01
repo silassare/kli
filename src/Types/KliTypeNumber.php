@@ -117,8 +117,10 @@ class KliTypeNumber extends KliType
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return float|int
 	 */
-	public function validate(string $opt_name, $value): int
+	public function validate(string $opt_name, $value)
 	{
 		if (!\is_numeric($value)) {
 			throw new KliInputException(\sprintf($this->msg('msg_require_number'), $opt_name));
