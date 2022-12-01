@@ -145,7 +145,7 @@ final class KliOption
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 */
-	public function offsets(int $at, int $to = null): self
+	public function offsets(int $at, ?int $to = null): self
 	{
 		if ($this->locked) {
 			throw new KliException("can't define offsets, option is locked.");
@@ -155,7 +155,7 @@ final class KliOption
 			throw new KliException(\sprintf('"%s" is not a valid arg offset.', $at));
 		}
 
-		if (null !== $to && ((!\is_int($to) && !\is_infinite($to)) || $to < $at)) {
+		if (null !== $to && (!\is_infinite($to) || $to < $at)) {
 			throw new KliException(\sprintf('from=%s to=%s is not a valid arg offset range.', $at, $to));
 		}
 
