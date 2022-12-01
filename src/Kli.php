@@ -198,6 +198,9 @@ class Kli
 		if ($is_password) {
 			$this->writeLn($prompt);
 			$line = $this->readPass();
+			if (null === $line || false === $line) {
+				$line = '';
+			}
 		} elseif (\function_exists('readline_add_history')) {
 			$this->writeLn();
 			$line = \readline($prompt);
@@ -441,9 +444,9 @@ class Kli
 	/**
 	 * Read password.
 	 *
-	 * @return string user input
+	 * @return null|false|string user input
 	 */
-	protected function readPass(): string
+	protected function readPass()
 	{
 		return \shell_exec('stty -echo; head -n1; stty echo');
 	}
