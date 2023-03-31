@@ -89,11 +89,11 @@ class Kli
 							// $ cli command action --help
 							$this->showHelp($a1, $a2);
 						} else { // $ cli command action [options]
-							$opt_list = \array_slice($_argv, 2);
-							$parser   = new KliParser($this);
-							$result   = $parser->parse($action, $opt_list);
+							$opt_list   = \array_slice($_argv, 2);
+							$parser     = new KliParser($this);
+							$kli_args   = $parser->parse($action, $opt_list);
 
-							$cmd->execute($action, $result['options'], $result['anonymous']);
+							$cmd->execute($action, $kli_args);
 						}
 					} else {
 						$this->error(\sprintf('%s: action "%s" not recognized.', $a1, $a2));

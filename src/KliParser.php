@@ -38,12 +38,12 @@ final class KliParser
 	 * @param \Kli\KliAction $action   action object
 	 * @param array          $opt_list option list
 	 *
-	 * @return array
+	 * @return \Kli\KliArgs
 	 *
 	 * @throws \Kli\Exceptions\KliException
 	 * @throws \Kli\Exceptions\KliInputException
 	 */
-	public function parse(KliAction $action, array $opt_list): array
+	public function parse(KliAction $action, array $opt_list): KliArgs
 	{
 		$in_options   = [];
 		$anonymous    = [];
@@ -138,7 +138,7 @@ final class KliParser
 
 		$this->validateOptions($action, $in_options);
 
-		return ['anonymous' => $anonymous, 'options' => $in_options];
+		return new KliArgs($action, $in_options, $anonymous);
 	}
 
 	/**
@@ -195,7 +195,7 @@ final class KliParser
 	private function checkOption(KliAction $action, string $opt_name, bool $is_alias = false): string
 	{
 		if ($is_alias) {
-			$real_name = $action->getRealName($opt_name);
+			$real_name = $action->getOptionRealName($opt_name);
 
 			if (empty($real_name)) {
 				throw new KliInputException(\sprintf(
