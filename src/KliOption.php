@@ -22,6 +22,9 @@ use Kli\Types\KliTypeString;
  */
 final class KliOption
 {
+	public const ALIAS_AND_NAME_REG = '/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/';
+	public const FLAG_REG           = '/^[a-zA-Z0-9]$/';
+
 	private string $name;
 
 	private ?string $opt_flag = null;
@@ -57,7 +60,7 @@ final class KliOption
 	 */
 	public function __construct(string $name)
 	{
-		if (!\preg_match('/^[a-zA-Z0-9?]$/', $name)) {
+		if (!\preg_match(self::ALIAS_AND_NAME_REG, $name)) {
 			throw new KliException(\sprintf('"%s" is not a valid option name.', $name));
 		}
 
@@ -101,7 +104,7 @@ final class KliOption
 	 */
 	public function alias(string $alias): self
 	{
-		if (!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/', $alias)) {
+		if (!\preg_match(self::ALIAS_AND_NAME_REG, $alias)) {
 			throw new KliException(\sprintf('"%s" is not a valid alias.', $alias));
 		}
 
@@ -123,7 +126,7 @@ final class KliOption
 	 */
 	public function flag(string $flag): self
 	{
-		if (!\preg_match('/^[a-zA-Z0-9]$/', $flag)) {
+		if (!\preg_match(self::FLAG_REG, $flag)) {
 			throw new KliException(\sprintf('"%s" is not a valid flag.', $flag));
 		}
 
