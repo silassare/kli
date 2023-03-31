@@ -70,7 +70,7 @@ final class KliParser
 					}
 				}
 
-				$name              = $this->checkOption($action, $name, true);
+				$name              = $this->checkOption($action, $name);
 				$in_options[$name] = $value;
 			} /* short after */ elseif (0 === \strpos($item, '-')) {
 				$pos = \strpos($item, '=');
@@ -184,40 +184,15 @@ final class KliParser
 	 * Checks if a given action contains a given option.
 	 *
 	 * @param \Kli\KliAction $action   action object
-	 * @param string         $opt_name option defined by user
-	 * @param bool           $is_alias is it an alias
+	 * @param string         $arg_name arg defined by user
 	 *
 	 * @return string option short name
 	 *
 	 * @throws \Kli\Exceptions\KliException
-	 * @throws \Kli\Exceptions\KliInputException
 	 */
-	private function checkOption(KliAction $action, string $opt_name, bool $is_alias = false): string
+	private function checkOption(KliAction $action, string $arg_name): string
 	{
-		if ($is_alias) {
-			$real_name = $action->getOptionRealName($opt_name);
-
-			if (empty($real_name)) {
-				throw new KliInputException(\sprintf(
-					'unrecognized option "%s" for action "%s"',
-					$opt_name,
-					$action->getName()
-				));
-			}
-
-			return $real_name;
-		}
-
-		if ($action->hasOption($opt_name)) {
-			return $action->getOption($opt_name)
-				->getName();
-		}
-
-		throw new KliInputException(\sprintf(
-			'unrecognized option "%s" for action "%s"',
-			$opt_name,
-			$action->getName()
-		));
+		return $action->getOption($arg_name)->getName();
 	}
 
 	/**
