@@ -179,7 +179,7 @@ final class KliAction
 	 */
 	public function hasOption(string $name): bool
 	{
-		return isset($this->options[$name]) || isset($this->used_flags[$name]);
+		return isset($this->options[$name]) || isset($this->used_flags[$name]) || isset($this->used_aliases[$name]);
 	}
 
 	/**
@@ -194,7 +194,7 @@ final class KliAction
 	public function getOption(string $name): KliOption
 	{
 		if (!isset($this->options[$name])) {
-			$resolved_name = $this->used_aliases[$name] ?? null;
+			$resolved_name = $this->used_aliases[$name] ?? $this->used_flags[$name] ?? null;
 			if (empty($resolved_name)) {
 				throw new KliException(\sprintf('"%s" - unrecognized option: "%s"', $this->getName(), $name));
 			}
@@ -216,15 +216,15 @@ final class KliAction
 	}
 
 	/**
-	 * Gets option name for a specific alias.
+	 * Gets option name for a specific alias or flag.
 	 *
-	 * @param string $alias
+	 * @param string $alias_or_flag
 	 *
 	 * @return null|string
 	 */
-	public function getOptionRealName(string $alias): ?string
+	public function getOptionRealName(string $alias_or_flag): ?string
 	{
-		return $this->used_aliases[$alias] ?? null;
+		return $this->used_aliases[$alias_or_flag] ?? $this->used_flags[$alias_or_flag] ?? null;
 	}
 
 	/**
