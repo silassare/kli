@@ -216,18 +216,6 @@ final class KliAction
 	}
 
 	/**
-	 * Gets option name for a specific alias or flag.
-	 *
-	 * @param string $alias_or_flag
-	 *
-	 * @return null|string
-	 */
-	public function getOptionRealName(string $alias_or_flag): ?string
-	{
-		return $this->used_aliases[$alias_or_flag] ?? $this->used_flags[$alias_or_flag] ?? null;
-	}
-
-	/**
 	 * Action description getter.
 	 *
 	 * @return string
