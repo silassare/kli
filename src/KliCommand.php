@@ -67,11 +67,10 @@ abstract class KliCommand
 	/**
 	 * Executes command.
 	 *
-	 * @param \Kli\KliAction $action            requested action object
-	 * @param array          $options           key value pairs options
-	 * @param array          $anonymous_options indexed unused anonymous options
+	 * @param \Kli\KliAction $action requested action object
+	 * @param \Kli\KliArgs   $args   the args object
 	 */
-	abstract public function execute(KliAction $action, array $options, array $anonymous_options);
+	abstract public function execute(KliAction $action, KliArgs $args): void;
 
 	/**
 	 * Adds action(s) to this command.
@@ -85,7 +84,7 @@ abstract class KliCommand
 	public function addAction(KliAction $action): self
 	{
 		/**
-		 * @var \Kli\KliAction[]
+		 * @var \Kli\KliAction[] $actions
 		 */
 		$actions = \func_get_args();
 
@@ -117,7 +116,7 @@ abstract class KliCommand
 	}
 
 	/**
-	 * Doe this command has a given action.
+	 * Does this command has a given action.
 	 *
 	 * @param string $name the action name
 	 *
