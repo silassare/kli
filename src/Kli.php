@@ -274,7 +274,7 @@ class Kli
 			$cmd = $this->commands[$command_name];
 
 			if (isset($action_name) && $cmd->hasAction($action_name)) {
-				$h .= \sprintf('  %s %s', $cmd->getName(), $cmd->getAction($action_name));
+				$h .= \sprintf('  %s %s', $cmd->getName(), (string) $cmd->getAction($action_name));
 			} else {
 				$h .= $cmd;
 			}
