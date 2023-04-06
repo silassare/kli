@@ -45,7 +45,7 @@ class KliTypePath extends KliType
 
 	private bool $is_writable = false;
 
-	private string $reg;
+	private string $reg = '';
 
 	/**
 	 * KliTypePath constructor.
@@ -214,11 +214,11 @@ class KliTypePath extends KliType
 	{
 		$paths = $this->resolvePath($value);
 
-		if (!$paths || !\count($paths)) {
+		if (!$paths) {
 			throw new KliInputException(\sprintf($this->msg('msg_require_valid_path'), $opt_name));
 		}
 
-		if (isset($this->reg)) {
+		if (!empty($this->reg)) {
 			$paths = $this->filterReg($paths);
 
 			if (!\count($paths)) {
