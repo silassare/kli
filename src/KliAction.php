@@ -20,6 +20,8 @@ use Kli\Exceptions\KliException;
  */
 final class KliAction
 {
+	public const NAME_REG = '/^[a-zA-Z0-9]([a-zA-Z0-9-_:]+)$/';
+
 	private string $name;
 
 	private string $description  = 'no description';
@@ -44,7 +46,7 @@ final class KliAction
 	 */
 	public function __construct(string $name)
 	{
-		if (!\preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9-_]+)$/', $name)) {
+		if (!\preg_match(self::NAME_REG, $name)) {
 			throw new KliException(\sprintf('"%s" is not a valid action name.', $name));
 		}
 
