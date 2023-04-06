@@ -20,6 +20,8 @@ use Kli\Exceptions\KliException;
  */
 abstract class KliCommand
 {
+	public const NAME_REG = '/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/';
+
 	private string $name;
 
 	private string $description = '';
@@ -41,7 +43,7 @@ abstract class KliCommand
 	 */
 	protected function __construct(string $name, Kli $cli)
 	{
-		if (!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/', $name)) {
+		if (!\preg_match(self::NAME_REG, $name)) {
 			throw new KliException(\sprintf('"%s" is not a valid command name.', $name));
 		}
 
