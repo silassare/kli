@@ -22,9 +22,9 @@ use Kli\Types\KliTypeString;
  */
 final class KliOption
 {
-	public const NAME_REG           = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*$/';
-	public const ALIAS_REG          = '/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/';
-	public const FLAG_REG           = '/^[a-zA-Z0-9]$/';
+	public const NAME_REG  = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*$/';
+	public const ALIAS_REG = '/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/';
+	public const FLAG_REG  = '/^[a-zA-Z0-9]$/';
 
 	private string $name;
 
