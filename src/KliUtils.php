@@ -29,11 +29,11 @@ class KliUtils
 	 */
 	public static function stringToArgv(string $command): array
 	{
-		$len              = \strlen($command);
-		$argv             = [];
-		$arg              = '';
-		$in_double_quote  = false;
-		$in_single_quote  = false;
+		$len             = \mb_strlen($command);
+		$argv            = [];
+		$arg             = '';
+		$in_double_quote = false;
+		$in_single_quote = false;
 
 		for ($i = 0; $i < $len; ++$i) {
 			$char = $command[$i];
@@ -90,7 +90,7 @@ class KliUtils
 	 */
 	public static function indent(string $text, int $size = 1, string $indent_char = ' '): string
 	{
-		return self::margins(self::wrap($text), [
+		return self::paddings(self::wrap($text), [
 			'left' => $size,
 			'pad'  => $indent_char,
 		]);
@@ -113,12 +113,12 @@ class KliUtils
 	}
 
 	/**
-	 * Adds margins to text.
+	 * Add paddings to text.
 	 *
 	 * ```php
 	 *
 	 * $text = 'My text';
-	 * $text = KliUtils::margins($text, [
+	 * $text = KliUtils::paddings($text, [
 	 *   'left'   => 4,
 	 *   'right'  => 4,
 	 *   'top'    => 1,
@@ -128,18 +128,18 @@ class KliUtils
 	 *
 	 * ```
 	 *
-	 * @param string $text    the text string
-	 * @param array  $options margin options
+	 * @param string                                                  $text    the text string
+	 * @param array{top?: int, left?: int, right?: int, bottom?: int} $options paddings options
 	 *
 	 * @return string
 	 */
-	public static function margins(string $text, array $options = []): string
+	public static function paddings(string $text, array $options = []): string
 	{
-		$left         = isset($options['left']) ? \max(0, $options['left']) : 0;
-		$right        = isset($options['right']) ? \max(0, $options['right']) : 0;
-		$top          = isset($options['top']) ? \max(0, $options['top']) : 0;
-		$bottom       = isset($options['bottom']) ? \max(0, $options['bottom']) : 0;
-		$pad          = $options['pad'] ?? ' ';
+		$left   = isset($options['left']) ? \max(0, $options['left']) : 0;
+		$right  = isset($options['right']) ? \max(0, $options['right']) : 0;
+		$top    = isset($options['top']) ? \max(0, $options['top']) : 0;
+		$bottom = isset($options['bottom']) ? \max(0, $options['bottom']) : 0;
+		$pad    = $options['pad'] ?? ' ';
 
 		$text         = \preg_replace("~\n|\r\n?~", \PHP_EOL, $text);
 		$parts        = \explode(\PHP_EOL, $text);
@@ -149,7 +149,7 @@ class KliUtils
 		$out          = '';
 
 		foreach ($parts as $line) {
-			$len = \strlen($line);
+			$len = \mb_strlen($line);
 
 			if ($len > $line_length) {
 				$line_length = $len;
@@ -157,7 +157,7 @@ class KliUtils
 		}
 
 		foreach ($parts as $line) {
-			$len  = \strlen($line);
+			$len  = \mb_strlen($line);
 			$fill = '';
 
 			if ($len < $line_length) {
