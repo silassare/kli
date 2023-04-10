@@ -22,6 +22,7 @@ class KliTable
 {
 	public const MIN_CELL_WIDTH   = 5;
 	public const MIN_CELL_PADDING = 2;
+	public const TRUNCATE_CHAR    = '…';
 
 	/**
 	 * @var string[]
@@ -255,7 +256,7 @@ class KliTable
 			$style     = $formatter ? $formatter->getStyle($value, $header, $row) : null;
 		}
 
-		$value = \mb_strimwidth($value, 0, $width - self::MIN_CELL_PADDING, '...');
+		$value = \mb_strimwidth($value, 0, $width - self::MIN_CELL_PADDING, self::TRUNCATE_CHAR);
 
 		$padding      = $width - \mb_strlen($value);
 		$padding_left = $padding_right = 0;
