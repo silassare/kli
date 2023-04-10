@@ -391,7 +391,20 @@ class Kli
 			$msg = KliUtils::wrap($msg);
 		}
 
-		$color = new KliColor();
+		return $this->writeLn($this->style()
+			->red()
+			->apply($msg), false);
+	}
+
+	/**
+	 * Gets color instance.
+	 *
+	 * @return \Kli\KliStyle
+	 */
+	public function style(): KliStyle
+	{
+		return new KliStyle();
+	}
 
 		return $this->writeLn($color->red()
 			->string($msg), false);
@@ -413,10 +426,9 @@ class Kli
 			$msg = KliUtils::wrap($msg);
 		}
 
-		$color = new KliColor();
-
-		return $this->writeLn($color->green()
-			->string($msg), false);
+		return $this->writeLn($this->style()
+			->green()
+			->apply($msg), false);
 	}
 
 	/**
@@ -435,10 +447,9 @@ class Kli
 			$msg = KliUtils::wrap($msg);
 		}
 
-		$color = new KliColor();
-
-		return $this->writeLn($color->cyan()
-			->string($msg), false);
+		return $this->writeLn($this->style()
+			->cyan()
+			->apply($msg), false);
 	}
 
 	/**

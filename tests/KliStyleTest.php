@@ -13,35 +13,35 @@ declare(strict_types=1);
 
 namespace Kli\Tests;
 
-use Kli\KliColor;
+use Kli\KliStyle;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class KliColorTest.
+ * Class KliStyleTest.
  *
  * @internal
  *
  * @coversNothing
  */
-final class KliColorTest extends TestCase
+final class KliStyleTest extends TestCase
 {
 	public function testAnsiColors(): void
 	{
-		$color = new KliColor();
+		$color = new KliStyle();
 
-		static::assertSame(' ', $color->string(' '));
+		static::assertSame(' ', $color->apply(' '));
 
-		$color = new KliColor();
+		$color = new KliStyle();
 		$color->red()
 			->backgroundYellow();
 
-		static::assertSame("\033[31;43m \033[39;49m", $color->string(' '));
+		static::assertSame("\033[31;43m \033[39;49m", $color->apply(' '));
 
-		$color = new KliColor();
+		$color = new KliStyle();
 		$color->red()
 			->backgroundYellow()
 			->underline();
 
-		static::assertSame("\033[31;43;4m \033[39;49;24m", $color->string(' '));
+		static::assertSame("\033[31;43;4m \033[39;49;24m", $color->apply(' '));
 	}
 }
