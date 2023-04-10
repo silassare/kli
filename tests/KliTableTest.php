@@ -16,6 +16,7 @@ namespace Kli\Tests;
 use Kli\KliStyle;
 use Kli\Table\Interfaces\KliTableCellFormatterInterface;
 use Kli\Table\KliTable;
+use Kli\Table\KliTableFormatter;
 use Kli\Table\KliTableHeader;
 use PHPUnit\Framework\TestCase;
 
@@ -56,6 +57,10 @@ final class KliTableTest extends TestCase
 					return $row['color'] ? (new KliStyle())->yellow() : null;
 				}
 			});
+
+		$table->addHeader('Color', 'color')
+			->setCellFormatter(KliTableFormatter::bool())
+			->alignCenter();
 
 		$time = \mktime(13, 8, 35, 1, 1, 2023);
 		$table->addRows([
