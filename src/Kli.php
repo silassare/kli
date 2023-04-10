@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli;
 
 use Kli\Exceptions\KliInputException;
+use Kli\Table\KliTable;
 
 /**
  * Class Kli.
@@ -89,9 +90,9 @@ class Kli
 							// $ cli command action --help
 							$this->showHelp($a1, $a2);
 						} else { // $ cli command action [options]
-							$opt_list   = \array_slice($_argv, 2);
-							$parser     = new KliParser($this);
-							$kli_args   = $parser->parse($action, $opt_list);
+							$opt_list = \array_slice($_argv, 2);
+							$parser   = new KliParser($this);
+							$kli_args = $parser->parse($action, $opt_list);
 
 							$cmd->execute($action, $kli_args);
 						}
@@ -406,8 +407,14 @@ class Kli
 		return new KliStyle();
 	}
 
-		return $this->writeLn($color->red()
-			->string($msg), false);
+	/**
+	 * Gets table instance.
+	 *
+	 * @return \Kli\Table\KliTable
+	 */
+	public function table(): KliTable
+	{
+		return new KliTable();
 	}
 
 	/**
