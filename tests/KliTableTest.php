@@ -41,16 +41,16 @@ final class KliTableTest extends TestCase
 		$table->addHeader('Date', 'date')
 			->setCellFormatter(new class() implements KliTableCellFormatterInterface {
 				/**
-			  	 * {@inheritDoc}
-			  	 */
+				 * {@inheritDoc}
+				 */
 				public function format($value, KliTableHeader $header, array $row): string
 				{
 					return \date('jS F Y, g:i a', $value);
 				}
 
 				/**
-			  	 * {@inheritDoc}
-			  	 */
+				 * {@inheritDoc}
+				 */
 				public function getStyle($value, KliTableHeader $header, array $row): ?KliStyle
 				{
 					return $row['color'] ? (new KliStyle())->yellow() : null;
