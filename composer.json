@@ -13,7 +13,8 @@
 	"require": {
 		"php": ">=7.4",
 		"ext-readline": "*",
-		"ext-posix": "*"
+		"ext-posix": "*",
+		"ext-mbstring": "*"
 	},
 	"require-dev": {
 	  "phpunit/phpunit": "^9.5.9",
