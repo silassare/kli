@@ -38,6 +38,11 @@ final class KliAction
 	private array $used_flags = [];
 
 	/**
+	 * @var null|callable
+	 */
+	private $handler_fn;
+
+	/**
 	 * KliAction constructor.
 	 *
 	 * @param string $name action name
@@ -66,6 +71,30 @@ final class KliAction
 		$text .= $sep . \implode($sep, $this->options);
 
 		return $text;
+	}
+
+	/**
+	 * Sets the action handler.
+	 *
+	 * @param callable $handler
+	 *
+	 * @return $this
+	 */
+	public function handler(callable $handler): self
+	{
+		$this->handler_fn = $handler;
+
+		return $this;
+	}
+
+	/**
+	 * Gets the action handler.
+	 *
+	 * @return null|callable
+	 */
+	public function getHandler(): ?callable
+	{
+		return $this->handler_fn;
 	}
 
 	/**
