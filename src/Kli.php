@@ -93,8 +93,13 @@ class Kli
 							$opt_list = \array_slice($_argv, 2);
 							$parser   = new KliParser($this);
 							$kli_args = $parser->parse($action, $opt_list);
+							$handler  = $action->getHandler();
 
-							$cmd->execute($action, $kli_args);
+							if ($handler) {
+								$handler($kli_args);
+							} else {
+								$cmd->execute($action, $kli_args);
+							}
 						}
 					} else {
 						$this->error(\sprintf('%s: action "%s" not recognized.', $a1, $a2));
