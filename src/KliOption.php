@@ -325,17 +325,11 @@ final class KliOption
 	 * @param bool        $prompt_for_password prompt is for password
 	 *
 	 * @return $this
-	 *
-	 * @throws \Kli\Exceptions\KliException
 	 */
 	public function prompt(bool $prompt = true, ?string $prompt_msg = null, bool $prompt_for_password = false): self
 	{
-		if ($prompt && isset($prompt_msg)) {
-			if ('' !== \trim($prompt_msg)) {
-				$this->prompt_msg = \trim($prompt_msg);
-			} else {
-				throw new KliException(\sprintf('the prompt for "-%s" should be a string.', $this->getName()));
-			}
+		if ($prompt && null !== $prompt_msg) {
+			$this->prompt_msg = \trim($prompt_msg);
 		}
 
 		$this->prompt              = $prompt;
