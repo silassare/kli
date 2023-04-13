@@ -19,6 +19,29 @@ namespace Kli\Types\Interfaces;
 interface KliTypeInterface
 {
 	/**
+	 * Explicitly set the default value.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return $this
+	 */
+	public function def($value): self;
+
+	/**
+	 * Checks if we have a default value.
+	 *
+	 * @return bool
+	 */
+	public function hasDefault(): bool;
+
+	/**
+	 * Gets the default value.
+	 *
+	 * @return mixed
+	 */
+	public function getDefault();
+
+	/**
 	 * Called to validate an option value.
 	 *
 	 * @param string $opt_name the option name

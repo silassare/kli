@@ -49,10 +49,6 @@ final class KliOption
 
 	private bool $required = false;
 
-	private $default;
-
-	private bool $has_default = false;
-
 	private bool $locked = false;
 
 	/**
@@ -262,22 +258,6 @@ final class KliOption
 	}
 
 	/**
-	 * Explicitly set the default value.
-	 *
-	 * @param mixed $value the value to use as default
-	 *
-	 * @return $this
-	 */
-	public function def($value): self
-	{
-		// the default should comply with all rules or not ?
-		$this->default     = $value;
-		$this->has_default = true;
-
-		return $this;
-	}
-
-	/**
 	 * Define this option description.
 	 *
 	 * @param string $description option description
@@ -389,16 +369,6 @@ final class KliOption
 	}
 
 	/**
-	 * Option default value getter.
-	 *
-	 * @return mixed
-	 */
-	public function getDefault()
-	{
-		return $this->default;
-	}
-
-	/**
 	 * Option offsets value getter.
 	 *
 	 * @return null|array
@@ -406,16 +376,6 @@ final class KliOption
 	public function getOffsets(): ?array
 	{
 		return $this->opt_offsets;
-	}
-
-	/**
-	 * Does the default value was explicitly set.
-	 *
-	 * @return bool
-	 */
-	public function hasDefault(): bool
-	{
-		return $this->has_default;
 	}
 
 	/**
