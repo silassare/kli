@@ -23,6 +23,40 @@ abstract class KliType implements KliTypeInterface
 	protected array $error_messages = [];
 
 	/**
+	 * @var mixed
+	 */
+	protected $default;
+	protected bool $has_default = false;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function def($value): self
+	{
+		// the default should comply with all rules or not ?
+		$this->default     = $value;
+		$this->has_default = true;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function hasDefault(): bool
+	{
+		return $this->has_default;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDefault()
+	{
+		return $this->default;
+	}
+
+	/**
 	 * Sets/Gets custom error message.
 	 *
 	 * @param string      $key     the error key
