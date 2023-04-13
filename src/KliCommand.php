@@ -31,7 +31,7 @@ abstract class KliCommand
 	/**
 	 * @var \Kli\KliAction[]
 	 */
-	private array $actions     = [];
+	private array $actions = [];
 
 	/**
 	 * KliCommand constructor.
@@ -73,6 +73,27 @@ abstract class KliCommand
 	 * @param \Kli\KliArgs   $args   the args object
 	 */
 	abstract public function execute(KliAction $action, KliArgs $args): void;
+
+	/**
+	 * Creates a new action.
+	 *
+	 * @param string $name
+	 * @param string $description
+	 *
+	 * @return \Kli\KliAction
+	 *
+	 * @throws \Kli\Exceptions\KliException
+	 */
+	public function action(string $name, string $description = ''): KliAction
+	{
+		$action = new KliAction($name);
+
+		$description && $action->description($description);
+
+		$this->addAction($action);
+
+		return $action;
+	}
 
 	/**
 	 * Adds action(s) to this command.

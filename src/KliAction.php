@@ -24,12 +24,12 @@ final class KliAction
 
 	private string $name;
 
-	private string $description  = 'no description';
+	private string $description = 'no description';
 
 	/**
 	 * @var \Kli\KliOption[]
 	 */
-	private array $options      = [];
+	private array $options = [];
 
 	private array $offsets_lock = [];
 
@@ -66,6 +66,42 @@ final class KliAction
 		$text .= $sep . \implode($sep, $this->options);
 
 		return $text;
+	}
+
+	/**
+	 * Adds a new option.
+	 *
+	 * @param string   $name
+	 * @param string   $flag
+	 * @param array    $aliases
+	 * @param null|int $offset_start
+	 * @param null|int $offset_end
+	 *
+	 * @return \Kli\KliOption
+	 *
+	 * @throws \Kli\Exceptions\KliException
+	 */
+	public function option(string $name, string $flag = '', array $aliases = [], ?int $offset_start = null, ?int $offset_end = null): KliOption
+	{
+		$opt = new KliOption($name);
+
+		if ($flag) {
+			$opt->flag($flag);
+		}
+
+		if ($aliases) {
+			foreach ($aliases as $alias) {
+				$opt->alias($alias);
+			}
+		}
+
+		if (null !== $offset_start) {
+			$opt->offsets($offset_start, $offset_end);
+		}
+
+		$this->addOption($opt);
+
+		return $opt;
 	}
 
 	/**
@@ -124,8 +160,8 @@ final class KliAction
 				[$a, $b] = $offsets;
 
 				foreach ($this->offsets_lock as $locker => $lock) {
-					[$c, $d]      = $lock;
-					$ok           = ($a > $d || $b < $c); // some math lol
+					[$c, $d] = $lock;
+					$ok      = ($a > $d || $b < $c); // some math lol
 
 					if (!$ok) {
 						throw new KliException(\sprintf(

@@ -15,6 +15,9 @@ namespace Kli;
 
 use Kli\Exceptions\KliException;
 use Kli\Types\Interfaces\KliTypeInterface;
+use Kli\Types\KliTypeBool;
+use Kli\Types\KliTypeNumber;
+use Kli\Types\KliTypePath;
 use Kli\Types\KliTypeString;
 
 /**
@@ -38,19 +41,19 @@ final class KliOption
 
 	private ?array $opt_offsets = null;
 
-	private bool $prompt              = false;
+	private bool $prompt = false;
 
 	private string $prompt_msg = '';
 
 	private bool $prompt_for_password = false;
 
-	private bool $required            = false;
+	private bool $required = false;
 
 	private $default;
 
-	private bool $has_default         = false;
+	private bool $has_default = false;
 
-	private bool $locked              = false;
+	private bool $locked = false;
 
 	/**
 	 * KliOption constructor.
@@ -92,6 +95,80 @@ final class KliOption
 		$text .= "\t" . $this->getDescription();
 
 		return KliUtils::indent($text, 6);
+	}
+
+	/**
+	 * Sets option type as string.
+	 *
+	 * @param null|int $min the minimum length of the option value
+	 * @param null|int $max the maximum length of the option value
+	 *
+	 * @return \Kli\Types\KliTypeString
+	 *
+	 * @throws \Kli\Exceptions\KliException
+	 */
+	public function string(?int $min = null, ?int $max = null): KliTypeString
+	{
+		$type = new KliTypeString($min, $max);
+
+		$this->type($type);
+
+		return $type;
+	}
+
+	/**
+	 * Sets option type as bool.
+	 *
+	 * @param bool        $strict  if true, the option value must be a boolean
+	 * @param null|string $message the error message to display if the option value is not a boolean
+	 *
+	 * @return \Kli\Types\KliTypeBool
+	 */
+	public function bool(bool $strict = false, ?string $message = null): KliTypeBool
+	{
+		$type = new KliTypeBool($strict, $message);
+
+		$this->type($type);
+
+		return $type;
+	}
+
+	/**
+	 * Sets option type as number.
+	 *
+	 * @param null|float $min
+	 * @param null|float $max
+	 *
+	 * @return \Kli\Types\KliTypeNumber
+	 *
+	 * @throws \Kli\Exceptions\KliException
+	 */
+	public function number(?float $min = null, ?float $max = null): KliTypeNumber
+	{
+		$type = new KliTypeNumber($min, $max);
+
+		$this->type($type);
+
+		return $type;
+	}
+
+	/**
+	 * Sets option type as path.
+	 *
+	 * @param null|int $min min path count
+	 * @param null|int $max max path count
+	 *
+	 * @return \Kli\Types\KliTypePath
+	 *
+	 * @throws \Kli\Exceptions\KliException
+	 */
+	public function path(?int $min = null, ?int $max = null): KliTypePath
+	{
+		$type = new KliTypePath($min, $max);
+
+		$this->type($type);
+
+		return $type;
 	}
 
 	/**
