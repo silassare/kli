@@ -33,7 +33,7 @@ class KliTypePath extends KliType
 
 	private int $opt_min = 1;
 
-	private int $opt_max;
+	private ?int $opt_max = null;
 
 	private bool $multi = false;
 

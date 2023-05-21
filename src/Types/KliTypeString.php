@@ -29,14 +29,14 @@ class KliTypeString extends KliType
 		'msg_pattern_check_fails'   => '"%s" -> fails on regular expression for option "-%s".',
 	];
 
-	private int $opt_min;
+	private ?int $opt_min = null;
 
-	private int $opt_max;
+	private ?int $opt_max = null;
 
-	private string $reg;
+	private string $reg = '';
 
 	/**
-	 * @var callable
+	 * @var null|callable
 	 */
 	private $validator_fn;
 
@@ -174,7 +174,7 @@ class KliTypeString extends KliType
 			);
 		}
 
-		if (isset($this->reg) && !\preg_match($this->reg, $value)) {
+		if (!empty($this->reg) && !\preg_match($this->reg, $value)) {
 			throw new KliInputException(
 				\sprintf($this->msg('msg_pattern_check_fails'), $value, $opt_name)
 			);

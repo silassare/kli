@@ -28,11 +28,11 @@ class KliTypeNumber extends KliType
 		'msg_number_gt_max'   => '"%s" -> fails on max=%s for option "-%s".',
 	];
 
-	private ?float $opt_min;
+	private ?float $opt_min = null;
 
-	private ?float $opt_max;
+	private ?float $opt_max = null;
 
-	private bool $is_int         = false;
+	private bool $is_int = false;
 
 	/**
 	 * KliTypeNumber constructor.
