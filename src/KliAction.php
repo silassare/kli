@@ -65,7 +65,11 @@ final class KliAction
 	 */
 	public function __toString()
 	{
-		$text = $this->getName() . ' [options]';
+		$text = $this->getName();
+
+		if (\count($this->options) > 0) {
+			$text .= ' [options]';
+		}
 		$text .= \PHP_EOL . KliUtils::indent($this->getDescription(), 4);
 		$sep  = \PHP_EOL . \PHP_EOL;
 		$text .= $sep . \implode($sep, $this->options);
