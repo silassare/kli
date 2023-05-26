@@ -80,6 +80,35 @@ class KliUtils
 	}
 
 	/**
+	 * Parse argv like array to command string.
+	 *
+	 * @param array $argv the argv like array
+	 *
+	 * @return string
+	 */
+	public static function argvToString(array $argv): string
+	{
+		$args_string = '';
+
+		foreach ($argv as $k => $v) {
+			$is_flag = \is_string($k) && 1 === \strlen($k);
+			$prefix  = $is_flag ? '-' : '--';
+
+			if (\is_int($k)) {
+				$args_string .= ' ' . \escapeshellarg($v);
+			} elseif (\str_starts_with($k, '-') /* || str_starts_with($k, '--') */) {
+				$args_string .= ' ' . $k . '=' . \escapeshellarg($v);
+			} elseif (\is_bool($v)) {
+				$args_string .= ' ' . $prefix . $k . '=' . ($v ? 'true' : 'false');
+			} else {
+				$args_string .= ' ' . $prefix . $k . '=' . \escapeshellarg($v);
+			}
+		}
+
+		return \trim($args_string);
+	}
+
+	/**
 	 * Indent text.
 	 *
 	 * @param string $text        the text string to indent
