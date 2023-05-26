@@ -43,10 +43,8 @@ class Kli
 	 */
 	public function __construct(string $title = '', bool $enable_interactive = false, ?string $log_file = null)
 	{
-		global $argv;
-
 		if (empty($title)) {
-			$title = \basename($argv[0]);
+			$title = \basename($this->getCliEntryPoint());
 		}
 
 		$this->enable_interactive = $enable_interactive;
@@ -130,10 +128,49 @@ class Kli
 	 */
 	final public function executeString(string $cmd): void
 	{
-		global $argv;
-		$absolute_cmd = $argv[0] . ' ' . $cmd;
+		$this->execute(KliUtils::stringToArgv($this->getCliEntryPoint() . ' ' . $cmd));
+	}
 
-		$this->execute(KliUtils::stringToArgv($absolute_cmd));
+	/**
+	 * Gets the cli entry point.
+	 *
+	 * @return string
+	 */
+	public function getCliEntryPoint(): string
+	{
+		global $argv;
+
+		return $argv[0];
+	}
+
+	/**
+	 * Gets the cli executable.
+	 *
+	 * @return string
+	 */
+	public function getExecutable(): string
+	{
+		$entry_point = $this->getCliEntryPoint();
+
+		if (\str_ends_with($entry_point, '.php') && \is_file($entry_point)) {
+			return \PHP_BINARY . ' ' . $entry_point;
+		}
+
+		return $entry_point;
+	}
+
+	/**
+	 * Builds command line string.
+	 *
+	 * @param string $command
+	 * @param string $action
+	 * @param array  $args
+	 *
+	 * @return string
+	 */
+	public function buildCommand(string $command, string $action, array $args): string
+	{
+		return $this->getExecutable() . ' ' . $command . ' ' . $action . ' ' . KliUtils::argvToString($args);
 	}
 
 	/**
@@ -262,12 +299,10 @@ class Kli
 	 */
 	public function showHelp(?string $command_name = null, ?string $action_name = null): void
 	{
-		global $argv;
-
 		if (!$this->is_interactive) {
 			$this->welcome();
 		}
-		$head = \basename($argv[0]);
+		$head = \basename($this->getCliEntryPoint());
 		$h    = \PHP_EOL . 'Usage:'
 				. \PHP_EOL . "  > {$head} command action [options]"
 				. \PHP_EOL . 'For interactive mode.'
