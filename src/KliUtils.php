@@ -212,4 +212,21 @@ class KliUtils
 			   $out .
 			   $margin_bottom;
 	}
+
+	/**
+	 * Shorten text.
+	 *
+	 * @param string $text
+	 * @param int    $max_length
+	 *
+	 * @return string
+	 */
+	public static function shorten(string $text, int $max_length = 80): string
+	{
+		if (\strlen($text) > $max_length) {
+			$text = \substr($text, 0, $max_length) . '...';
+		}
+
+		return $text;
+	}
 }
