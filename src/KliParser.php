@@ -164,7 +164,7 @@ final class KliParser
 				$prompt = \sprintf('%s [y/n]: ', $prompt);
 			}
 		} elseif (!empty($default)) {
-			$prompt = \sprintf('%s [%s]: ', $prompt, $default);
+			$prompt = \sprintf('%s [%s]: ', $prompt, \is_string($default) ? KliUtils::shorten($default, 20) : $default);
 		} else {
 			$prompt = \sprintf('%s: ', $prompt);
 		}
@@ -176,14 +176,15 @@ final class KliParser
 
 			if (empty($in)) {
 				$in = $default;
-			} else {
-				try {
-					$in = $option->getType()
-						->validate($option->getName(), $in);
-				} catch (KliInputException $e) {
-					$in = null;
-					$this->cli->error($e->getMessage());
-				}
+			}
+
+			try {
+				$in = $type->validate($option->getName(), $in);
+
+				break;
+			} catch (KliInputException $e) {
+				$in = null;
+				$this->cli->error($e->getMessage());
 			}
 		}
 
