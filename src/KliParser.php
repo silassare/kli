@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli;
 
 use Kli\Exceptions\KliInputException;
+use Kli\Types\KliTypeBool;
 
 /**
  * Class KliParser.
@@ -152,9 +153,18 @@ final class KliParser
 	public function interactivePrompt(KliOption $option, $default = null)
 	{
 		$prompt = $option->getPrompt();
+		$type   = $option->getType();
 
-		if (!empty($default)) {
-			$prompt = \sprintf('%s (%s): ', $prompt, $default);
+		if ($type instanceof KliTypeBool) {
+			if (true === $default) {
+				$prompt = \sprintf('%s [Y/n]: ', $prompt);
+			} elseif (false === $default) {
+				$prompt = \sprintf('%s [y/N]: ', $prompt);
+			} else {
+				$prompt = \sprintf('%s [y/n]: ', $prompt);
+			}
+		} elseif (!empty($default)) {
+			$prompt = \sprintf('%s [%s]: ', $prompt, $default);
 		} else {
 			$prompt = \sprintf('%s: ', $prompt);
 		}
