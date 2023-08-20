@@ -21,7 +21,7 @@ use Kli\Exceptions\KliInputException;
 class KliTypeBool extends KliType
 {
 	protected array      $error_messages = [
-		'msg_require_bool' => 'option "-%s" require a boolean.',
+		'msg_require_bool' => 'option "%s" require a boolean.',
 	];
 	private static array $list           = [true, false, 'y', 'n', 'yes', 'no'];
 

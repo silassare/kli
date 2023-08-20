@@ -365,7 +365,7 @@ final class KliOption
 	 */
 	public function getPrompt(): string
 	{
-		return empty($this->prompt_msg) ? \sprintf('Please provide -%s', $this->getName()) : $this->prompt_msg;
+		return empty($this->prompt_msg) ? \sprintf('Please provide --%s', $this->getName()) : $this->prompt_msg;
 	}
 
 	/**

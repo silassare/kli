@@ -22,10 +22,10 @@ use Kli\Exceptions\KliInputException;
 class KliTypeNumber extends KliType
 {
 	protected array $error_messages = [
-		'msg_require_number'  => 'option "-%s" require a number as value.',
-		'msg_require_integer' => '"%s" is not a valid integer for option "-%s".',
-		'msg_number_lt_min'   => '"%s" -> fails on min=%s for option "-%s".',
-		'msg_number_gt_max'   => '"%s" -> fails on max=%s for option "-%s".',
+		'msg_require_number'  => 'option "%s" require a number as value.',
+		'msg_require_integer' => '"%s" is not a valid integer for option "%s".',
+		'msg_number_lt_min'   => '"%s" -> fails on min=%s for option "%s".',
+		'msg_number_gt_max'   => '"%s" -> fails on max=%s for option "%s".',
 	];
 
 	private ?float $opt_min = null;
