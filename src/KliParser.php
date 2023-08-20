@@ -46,9 +46,10 @@ final class KliParser
 	 */
 	public function parse(KliAction $action, array $opt_list): KliArgs
 	{
-		$in_options   = [];
-		$anonymous    = [];
-		$stop_parsing = false;
+		$in_options      = [];
+		$names_as_passed = [];
+		$anonymous       = [];
+		$stop_parsing    = false;
 
 		foreach ($opt_list as $item) {
 			if ($stop_parsing) {
@@ -71,8 +72,10 @@ final class KliParser
 					}
 				}
 
-				$name              = $this->checkOption($action, $name);
-				$in_options[$name] = $value;
+				$name_as_passed         = '--' . $name;
+				$name                   = $this->checkOption($action, $name);
+				$names_as_passed[$name] = $name_as_passed;
+				$in_options[$name]      = $value;
 			} /* short after */ elseif (0 === \strpos($item, '-')) {
 				$pos = \strpos($item, '=');
 
@@ -80,9 +83,12 @@ final class KliParser
 					// valid: -a=value
 					// invalid: -ab=value
 					if (2 === $pos) {
-						$name              = $this->checkOption($action, \substr($item, 1, 1));
-						$value             = \substr($item, 3);
-						$in_options[$name] = $value;
+						$name                   = \substr($item, 1, 1);
+						$name_as_passed         = '-' . $name;
+						$name                   = $this->checkOption($action, $name);
+						$names_as_passed[$name] = $name_as_passed;
+						$value                  = \substr($item, 3);
+						$in_options[$name]      = $value;
 					} else {
 						throw new KliInputException(\sprintf('invalid option: "%s"', \substr($item, 0, $pos)));
 					}
@@ -137,7 +143,7 @@ final class KliParser
 			}
 		}
 
-		$this->validateOptions($action, $in_options);
+		$this->validateOptions($action, $in_options, $names_as_passed);
 
 		return new KliArgs($action, $in_options, $anonymous);
 	}
@@ -218,7 +224,7 @@ final class KliParser
 	 *
 	 * @throws \Kli\Exceptions\KliInputException
 	 */
-	private function validateOptions(KliAction $action, array &$parsed_options): void
+	private function validateOptions(KliAction $action, array &$parsed_options, array $names_as_passed): void
 	{
 		$options = $action->getOptions();
 
@@ -228,7 +234,7 @@ final class KliParser
 			$type     = $option->getType();
 
 			if (isset($parsed_options[$opt_name])) {
-				$value = $type->validate($opt_name, $parsed_options[$opt_name]);
+				$value = $type->validate($names_as_passed[$opt_name] ?? $opt_name, $parsed_options[$opt_name]);
 			} elseif ($option->isRequired()) {
 				/* first tentative */
 				if ($option->promptEnabled()) {
@@ -238,7 +244,7 @@ final class KliParser
 				}
 
 				if (null === $value) {
-					throw new KliInputException(\sprintf('"%s" require option: -%s', $action->getName(), $opt_name));
+					throw new KliInputException(\sprintf('"%s" require option: --%s', $action->getName(), $opt_name));
 				}
 			} else {
 				$value = $type->getDefault();
