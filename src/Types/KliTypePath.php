@@ -22,13 +22,13 @@ use Kli\Exceptions\KliInputException;
 class KliTypePath extends KliType
 {
 	protected array $error_messages = [
-		'msg_require_valid_path'    => 'option "-%s" require valid path.',
-		'msg_require_writable_path' => 'option "-%s" require writable path.',
-		'msg_require_file_path'     => 'option "-%s" require file.',
-		'msg_require_dir_path'      => 'option "-%s" require directory.',
-		'msg_path_count_lt_min'     => 'option "-%s" require minimum %d path(s) (found=%d).',
-		'msg_path_count_gt_max'     => 'option "-%s" require maximum %d path(s) (found=%d).',
-		'msg_pattern_check_fails'   => '"%s" fails on regular expression for option "-%s".',
+		'msg_require_valid_path'    => 'option "%s" require valid path.',
+		'msg_require_writable_path' => 'option "%s" require writable path.',
+		'msg_require_file_path'     => 'option "%s" require file.',
+		'msg_require_dir_path'      => 'option "%s" require directory.',
+		'msg_path_count_lt_min'     => 'option "%s" require minimum %d path(s) (found=%d).',
+		'msg_path_count_gt_max'     => 'option "%s" require maximum %d path(s) (found=%d).',
+		'msg_pattern_check_fails'   => '"%s" fails on regular expression for option "%s".',
 	];
 
 	private int $opt_min = 1;

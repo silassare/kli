@@ -44,7 +44,7 @@ interface KliTypeInterface
 	/**
 	 * Called to validate an option value.
 	 *
-	 * @param string $opt_name the option name
+	 * @param string $opt_name the option name may be as provided by the user prefixed with "--" or "-"
 	 * @param mixed  $value    the value to validate
 	 *
 	 * @return mixed the cleaned value to use

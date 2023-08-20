@@ -153,7 +153,7 @@ final class KliAction
 
 			if (isset($this->options[$opt_name])) {
 				throw new KliException(
-					\sprintf('option "-%s" is already defined in action "%s".', $opt_name, $this->getName())
+					\sprintf('option "--%s" is already defined in action "%s".', $opt_name, $this->getName())
 				);
 			}
 
@@ -198,7 +198,7 @@ final class KliAction
 
 					if (!$ok) {
 						throw new KliException(\sprintf(
-							'all or parts of offsets(%s,%s) is used by option "-%s" of action "%s".',
+							'all or parts of offsets(%s,%s) is used by option "%s" of action "%s".',
 							$a,
 							$b,
 							$locker,
