@@ -56,7 +56,7 @@ final class KliOption
 	 *
 	 * @param string $name option name
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function __construct(string $name)
 	{
@@ -99,9 +99,9 @@ final class KliOption
 	 * @param null|int $min the minimum length of the option value
 	 * @param null|int $max the maximum length of the option value
 	 *
-	 * @return \Kli\Types\KliTypeString
+	 * @return KliTypeString
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function string(?int $min = null, ?int $max = null): KliTypeString
 	{
@@ -118,7 +118,7 @@ final class KliOption
 	 * @param bool        $strict  if true, the option value must be a boolean
 	 * @param null|string $message the error message to display if the option value is not a boolean
 	 *
-	 * @return \Kli\Types\KliTypeBool
+	 * @return KliTypeBool
 	 */
 	public function bool(bool $strict = false, ?string $message = null): KliTypeBool
 	{
@@ -135,9 +135,9 @@ final class KliOption
 	 * @param null|float $min
 	 * @param null|float $max
 	 *
-	 * @return \Kli\Types\KliTypeNumber
+	 * @return KliTypeNumber
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function number(?float $min = null, ?float $max = null): KliTypeNumber
 	{
@@ -154,9 +154,9 @@ final class KliOption
 	 * @param null|int $min min path count
 	 * @param null|int $max max path count
 	 *
-	 * @return \Kli\Types\KliTypePath
+	 * @return KliTypePath
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function path(?int $min = null, ?int $max = null): KliTypePath
 	{
@@ -174,7 +174,7 @@ final class KliOption
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function alias(string $alias): self
 	{
@@ -196,7 +196,7 @@ final class KliOption
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function flag(string $flag): self
 	{
@@ -220,7 +220,7 @@ final class KliOption
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function offsets(int $at, ?int $to = null): self
 	{
@@ -274,7 +274,7 @@ final class KliOption
 	/**
 	 * Sets this option value type.
 	 *
-	 * @param \Kli\Types\Interfaces\KliTypeInterface $type
+	 * @param KliTypeInterface $type
 	 *
 	 * @return $this
 	 */
@@ -391,7 +391,7 @@ final class KliOption
 	/**
 	 * Option type getter.
 	 *
-	 * @return \Kli\Types\Interfaces\KliTypeInterface
+	 * @return KliTypeInterface
 	 */
 	public function getType(): KliTypeInterface
 	{

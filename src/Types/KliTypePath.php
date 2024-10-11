@@ -53,7 +53,7 @@ class KliTypePath extends KliType
 	 * @param null|int $min the minimum path count
 	 * @param null|int $max the maximum path count
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function __construct(?int $min = null, ?int $max = null)
 	{
@@ -74,7 +74,7 @@ class KliTypePath extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function min(int $value, ?string $message = null): self
 	{
@@ -101,7 +101,7 @@ class KliTypePath extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function max(int $value, ?string $message = null): self
 	{
@@ -128,7 +128,7 @@ class KliTypePath extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): self
 	{
@@ -210,7 +210,7 @@ class KliTypePath extends KliType
 	 *
 	 * @return string|string[]
 	 */
-	public function validate(string $opt_name, $value)
+	public function validate(string $opt_name, mixed $value): array|string
 	{
 		$paths = $this->resolvePath($value);
 

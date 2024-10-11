@@ -20,6 +20,4 @@ use Exception;
  *
  * For user input error.
  */
-class KliInputException extends Exception
-{
-}
+class KliInputException extends Exception {}

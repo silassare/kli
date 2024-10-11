@@ -40,7 +40,7 @@ final class KliTableTest extends TestCase
 		$phone_header = $table->addHeader('Phone', 'phone')
 			->alignCenter();
 		$table->addHeader('Date', 'date')
-			->setCellFormatter(new class() implements KliTableCellFormatterInterface {
+			->setCellFormatter(new class implements KliTableCellFormatterInterface {
 				/**
 				 * {@inheritDoc}
 				 */
@@ -92,7 +92,7 @@ final class KliTableTest extends TestCase
 		$content = $table->render();
 
 		self::ensureSnapshotFile($path, $content);
-		static::assertStringEqualsFile($path, $content);
+		self::assertStringEqualsFile($path, $content);
 		echo $content . \PHP_EOL;
 
 		$table->borderStyle()
@@ -101,7 +101,7 @@ final class KliTableTest extends TestCase
 		$path    = $dir . '/table.colored.txt';
 		$content = $table->render();
 		self::ensureSnapshotFile($path, $content);
-		static::assertStringEqualsFile($path, $content);
+		self::assertStringEqualsFile($path, $content);
 		echo $content . \PHP_EOL;
 
 		$table->borderStyle()
@@ -110,7 +110,7 @@ final class KliTableTest extends TestCase
 		$path    = $dir . '/table.fixed.width.txt';
 		$content = $table->render();
 		self::ensureSnapshotFile($path, $content);
-		static::assertStringEqualsFile($path, $content);
+		self::assertStringEqualsFile($path, $content);
 		echo $content . \PHP_EOL;
 
 		$table->setBorderChars([
@@ -137,7 +137,7 @@ final class KliTableTest extends TestCase
 		$path    = $dir . '/table.custom.border.txt';
 		$content = $table->render();
 		self::ensureSnapshotFile($path, $content);
-		static::assertStringEqualsFile($path, $content);
+		self::assertStringEqualsFile($path, $content);
 		echo $content;
 	}
 

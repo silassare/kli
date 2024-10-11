@@ -13,21 +13,23 @@ declare(strict_types=1);
 
 namespace Kli;
 
+use Kli\Exceptions\KliException;
+
 /**
  * Class KliArgs.
  */
 class KliArgs
 {
 	protected KliAction $action;
-	protected array     $named;
-	protected array     $anonymous;
+	protected array $named;
+	protected array $anonymous;
 
 	/**
 	 * KliArgs constructor.
 	 *
-	 * @param \Kli\KliAction $action
-	 * @param array          $named
-	 * @param array          $anonymous
+	 * @param KliAction $action
+	 * @param array     $named
+	 * @param array     $anonymous
 	 */
 	public function __construct(KliAction $action, array $named, array $anonymous)
 	{
@@ -43,7 +45,7 @@ class KliArgs
 	 *
 	 * @return null|mixed
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function get(string $name)
 	{

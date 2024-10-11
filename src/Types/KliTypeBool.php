@@ -20,7 +20,7 @@ use Kli\Exceptions\KliInputException;
  */
 class KliTypeBool extends KliType
 {
-	protected array      $error_messages = [
+	protected array $error_messages = [
 		'msg_require_bool' => 'option "%s" require a boolean.',
 	];
 	private static array $list           = [true, false, 'y', 'n', 'yes', 'no'];
@@ -56,7 +56,7 @@ class KliTypeBool extends KliType
 	/**
 	 * {@inheritDoc}
 	 */
-	public function validate(string $opt_name, $value)
+	public function validate(string $opt_name, mixed $value): bool
 	{
 		$is_str = \is_string($value);
 		$value  = $is_str ? \strtolower($value) : $value;

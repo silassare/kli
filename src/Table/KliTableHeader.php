@@ -21,14 +21,14 @@ use Kli\Table\Interfaces\KliTableCellFormatterInterface;
  */
 class KliTableHeader
 {
-	private string    $label;
-	private string    $key;
-	private string    $align = 'left';
+	private string $label;
+	private string $key;
+	private string $align    = 'left';
 	private ?KliStyle $style = null;
-	private ?int      $width = null;
+	private ?int $width      = null;
 
 	/**
-	 * @var null|\Kli\Table\Interfaces\KliTableCellFormatterInterface
+	 * @var null|KliTableCellFormatterInterface
 	 */
 	private ?KliTableCellFormatterInterface $cell_formatter = null;
 
@@ -134,7 +134,7 @@ class KliTableHeader
 	/**
 	 * Gets the header style.
 	 *
-	 * @return null|\Kli\KliStyle
+	 * @return null|KliStyle
 	 */
 	public function getStyle(): ?KliStyle
 	{
@@ -144,7 +144,7 @@ class KliTableHeader
 	/**
 	 * Sets the cell formatter.
 	 *
-	 * @param \Kli\Table\Interfaces\KliTableCellFormatterInterface $formatter
+	 * @param KliTableCellFormatterInterface $formatter
 	 *
 	 * @return $this
 	 */
@@ -158,7 +158,7 @@ class KliTableHeader
 	/**
 	 * Returns the cell formatter.
 	 *
-	 * @return null|\Kli\Table\Interfaces\KliTableCellFormatterInterface
+	 * @return null|KliTableCellFormatterInterface
 	 */
 	public function getCellFormatter(): ?KliTableCellFormatterInterface
 	{

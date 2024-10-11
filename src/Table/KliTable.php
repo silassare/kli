@@ -25,7 +25,7 @@ class KliTable
 	public const TRUNCATE_CHAR    = '…';
 
 	/**
-	 * @var string[]
+	 * @var array<string,string>
 	 */
 	protected array $border_chars = [
 		'top'          => '═',
@@ -52,9 +52,6 @@ class KliTable
 
 	private array $rows = [];
 
-	/**
-	 * @var \Kli\KliStyle
-	 */
 	private KliStyle $border_style;
 
 	/**
@@ -92,7 +89,7 @@ class KliTable
 	/**
 	 * Gets the table border style.
 	 *
-	 * @return \Kli\KliStyle
+	 * @return KliStyle
 	 */
 	public function borderStyle(): KliStyle
 	{
@@ -105,7 +102,7 @@ class KliTable
 	 * @param string $label
 	 * @param string $key
 	 *
-	 * @return \Kli\Table\KliTableHeader
+	 * @return KliTableHeader
 	 */
 	public function addHeader(string $label, string $key): KliTableHeader
 	{
@@ -237,11 +234,11 @@ class KliTable
 	/**
 	 * Renders a single cell.
 	 *
-	 * @param mixed                     $value
-	 * @param \Kli\Table\KliTableHeader $header
-	 * @param int                       $width
-	 * @param bool                      $is_header
-	 * @param array                     $row
+	 * @param mixed          $value
+	 * @param KliTableHeader $header
+	 * @param int            $width
+	 * @param bool           $is_header
+	 * @param array          $row
 	 *
 	 * @return string
 	 */

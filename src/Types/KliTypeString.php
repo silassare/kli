@@ -46,7 +46,7 @@ class KliTypeString extends KliType
 	 * @param null|int $min the minimum string length
 	 * @param null|int $max the maximum string length
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function __construct(?int $min = null, ?int $max = null)
 	{
@@ -67,7 +67,7 @@ class KliTypeString extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function min(int $value, ?string $message = null): self
 	{
@@ -94,7 +94,7 @@ class KliTypeString extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function max(int $value, ?string $message = null): self
 	{
@@ -121,7 +121,7 @@ class KliTypeString extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): self
 	{
@@ -156,7 +156,7 @@ class KliTypeString extends KliType
 	/**
 	 * {@inheritDoc}
 	 */
-	public function validate(string $opt_name, $value)
+	public function validate(string $opt_name, mixed $value): string
 	{
 		if (!\is_string($value)) {
 			throw new KliInputException(\sprintf($this->msg('msg_require_string'), $opt_name));

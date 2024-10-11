@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Kli;
 
+use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 use Kli\Types\KliTypeBool;
 
@@ -26,7 +27,7 @@ final class KliParser
 	/**
 	 * KliParser constructor.
 	 *
-	 * @param \Kli\Kli $cli the cli object to use
+	 * @param Kli $cli the cli object to use
 	 */
 	public function __construct(Kli $cli)
 	{
@@ -36,13 +37,13 @@ final class KliParser
 	/**
 	 * Parse command arg list for a specific action.
 	 *
-	 * @param \Kli\KliAction $action   action object
-	 * @param array          $opt_list option list
+	 * @param KliAction $action   action object
+	 * @param array     $opt_list option list
 	 *
-	 * @return \Kli\KliArgs
+	 * @return KliArgs
 	 *
-	 * @throws \Kli\Exceptions\KliException
-	 * @throws \Kli\Exceptions\KliInputException
+	 * @throws KliException
+	 * @throws KliInputException
 	 */
 	public function parse(KliAction $action, array $opt_list): KliArgs
 	{
@@ -151,8 +152,8 @@ final class KliParser
 	/**
 	 * Prompt user to provide value for a given option.
 	 *
-	 * @param \Kli\KliOption $option  option object
-	 * @param mixed          $default default value
+	 * @param KliOption $option  option object
+	 * @param mixed     $default default value
 	 *
 	 * @return mixed
 	 */
@@ -200,12 +201,12 @@ final class KliParser
 	/**
 	 * Checks if a given action contains a given option.
 	 *
-	 * @param \Kli\KliAction $action   action object
-	 * @param string         $arg_name arg defined by user
+	 * @param KliAction $action   action object
+	 * @param string    $arg_name arg defined by user
 	 *
 	 * @return string option short name
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	private function checkOption(KliAction $action, string $arg_name): string
 	{
@@ -219,10 +220,10 @@ final class KliParser
 	 * prompt user to define value: when an option is missing
 	 * and prompt is enabled for that option
 	 *
-	 * @param \Kli\KliAction $action          action object
-	 * @param array          &$parsed_options parsed options
+	 * @param KliAction $action          action object
+	 * @param array     &$parsed_options parsed options
 	 *
-	 * @throws \Kli\Exceptions\KliInputException
+	 * @throws KliInputException
 	 */
 	private function validateOptions(KliAction $action, array &$parsed_options, array $names_as_passed): void
 	{

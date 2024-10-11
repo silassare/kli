@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Kli;
 
+use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 use Kli\Table\KliTable;
 
@@ -28,7 +29,7 @@ class Kli
 	private ?string $log_file;
 
 	/**
-	 * @var \Kli\KliCommand[]
+	 * @var KliCommand[]
 	 */
 	private array $commands = [];
 
@@ -57,7 +58,7 @@ class Kli
 	 *
 	 * @param array $_argv the command argv like array
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	final public function execute(array $_argv): void
 	{
@@ -124,7 +125,7 @@ class Kli
 	 *
 	 * @param string $cmd the command line string
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	final public function executeString(string $cmd): void
 	{
@@ -176,7 +177,7 @@ class Kli
 	/**
 	 * Enable interactive mode.
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function interactiveMode(): void
 	{
@@ -295,7 +296,7 @@ class Kli
 	 * @param null|string $command_name the command name
 	 * @param null|string $action_name  the action name
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function showHelp(?string $command_name = null, ?string $action_name = null): void
 	{
@@ -304,12 +305,12 @@ class Kli
 		}
 		$head = \basename($this->getCliEntryPoint());
 		$h    = \PHP_EOL . 'Usage:'
-				. \PHP_EOL . "  > {$head} command action [options]"
-				. \PHP_EOL . 'For interactive mode.'
-				. \PHP_EOL . "  > {$head}"
-				. \PHP_EOL . 'To show help message.'
-				. \PHP_EOL . "  > {$head} [command [action]] -? or --help"
-				. \PHP_EOL . \PHP_EOL;
+			. \PHP_EOL . "  > {$head} command action [options]"
+			. \PHP_EOL . 'For interactive mode.'
+			. \PHP_EOL . "  > {$head}"
+			. \PHP_EOL . 'To show help message.'
+			. \PHP_EOL . "  > {$head} [command [action]] -? or --help"
+			. \PHP_EOL . \PHP_EOL;
 
 		if (isset($command_name) && $this->hasCommand($command_name)) {
 			$cmd = $this->commands[$command_name];
@@ -353,7 +354,7 @@ class Kli
 	/**
 	 * Adds command to cli.
 	 *
-	 * @param \Kli\KliCommand $command the command to add
+	 * @param KliCommand $command the command to add
 	 *
 	 * @return $this
 	 */
@@ -440,7 +441,7 @@ class Kli
 	/**
 	 * Gets color instance.
 	 *
-	 * @return \Kli\KliStyle
+	 * @return KliStyle
 	 */
 	public function style(): KliStyle
 	{
@@ -450,7 +451,7 @@ class Kli
 	/**
 	 * Gets table instance.
 	 *
-	 * @return \Kli\Table\KliTable
+	 * @return KliTable
 	 */
 	public function table(): KliTable
 	{
@@ -504,8 +505,9 @@ class Kli
 	 *
 	 * @return null|false|string user input
 	 */
-	protected function readPass()
+	protected function readPass(): null|bool|string
 	{
+		/** @psalm-suppress ForbiddenCode */
 		return \shell_exec('stty -echo; head -n1; stty echo');
 	}
 }

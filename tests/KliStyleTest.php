@@ -29,19 +29,19 @@ final class KliStyleTest extends TestCase
 	{
 		$color = new KliStyle();
 
-		static::assertSame(' ', $color->apply(' '));
+		self::assertSame(' ', $color->apply(' '));
 
 		$color = new KliStyle();
 		$color->red()
 			->backgroundYellow();
 
-		static::assertSame("\033[31;43m \033[39;49m", $color->apply(' '));
+		self::assertSame("\033[31;43m \033[39;49m", $color->apply(' '));
 
 		$color = new KliStyle();
 		$color->red()
 			->backgroundYellow()
 			->underline();
 
-		static::assertSame("\033[31;43;4m \033[39;49;24m", $color->apply(' '));
+		self::assertSame("\033[31;43;4m \033[39;49;24m", $color->apply(' '));
 	}
 }

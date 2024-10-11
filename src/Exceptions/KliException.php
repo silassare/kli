@@ -21,6 +21,4 @@ use Exception;
  * When it is thrown, it may mean that
  * there is an error in your code
  */
-class KliException extends Exception
-{
-}
+class KliException extends Exception {}

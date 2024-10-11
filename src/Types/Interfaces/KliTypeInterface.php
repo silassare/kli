@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Kli\Types\Interfaces;
 
+use Kli\Exceptions\KliInputException;
+
 /**
  * Interface KliTypeInterface.
  */
@@ -23,9 +25,9 @@ interface KliTypeInterface
 	 *
 	 * @param mixed $value
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function def($value): self;
+	public function def(mixed $value): static;
 
 	/**
 	 * Checks if we have a default value.
@@ -39,7 +41,7 @@ interface KliTypeInterface
 	 *
 	 * @return mixed
 	 */
-	public function getDefault();
+	public function getDefault(): mixed;
 
 	/**
 	 * Called to validate an option value.
@@ -49,7 +51,7 @@ interface KliTypeInterface
 	 *
 	 * @return mixed the cleaned value to use
 	 *
-	 * @throws \Kli\Exceptions\KliInputException when user input is invalid
+	 * @throws KliInputException when user input is invalid
 	 */
-	public function validate(string $opt_name, $value);
+	public function validate(string $opt_name, mixed $value): mixed;
 }
