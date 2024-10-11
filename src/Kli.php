@@ -101,14 +101,14 @@ class Kli
 							}
 						}
 					} else {
-						$this->error(\sprintf('%s: action "%s" not recognized.', $a1, $a2));
+						$this->error(\sprintf('%s: unknown action "%s"', $a1, $a2));
 					}
 				} else {
 					$action_list = \implode(' , ', \array_keys($cmd->getActions()));
 					$this->info(\sprintf('actions available for the command "%s": %s', $a1, $action_list));
 				}
 			} else {
-				$this->error(\sprintf('command "%s" not recognized.', $_argv[1]));
+				$this->error(\sprintf('unknown command: %s', $_argv[1]));
 			}
 
 			if (!$this->is_interactive) {
@@ -163,9 +163,9 @@ class Kli
 	/**
 	 * Builds command line string.
 	 *
-	 * @param string $command
-	 * @param string $action
-	 * @param array  $args
+	 * @param string $command the command
+	 * @param string $action  the action
+	 * @param array  $args    the arguments
 	 *
 	 * @return string
 	 */
@@ -295,8 +295,6 @@ class Kli
 	 *
 	 * @param null|string $command_name the command name
 	 * @param null|string $action_name  the action name
-	 *
-	 * @throws KliException
 	 */
 	public function showHelp(?string $command_name = null, ?string $action_name = null): void
 	{
@@ -498,6 +496,36 @@ class Kli
 		return $this->writeLn($this->style()
 			->cyan()
 			->apply($msg), false);
+	}
+
+	/**
+	 * Create a new instance of Kli.
+	 *
+	 * @param string      $name               the cli title
+	 * @param bool        $enable_interactive to enable interactive cli
+	 * @param null|string $log_file           path to log file
+	 *
+	 * @return self
+	 */
+	public static function new(
+		string $name,
+		bool $enable_interactive = false,
+		?string $log_file = null
+	): self {
+		return new self($name, $enable_interactive, $log_file);
+	}
+
+	/**
+	 * Create a new command.
+	 *
+	 * @param string $name the command name
+	 */
+	public function command(string $name): KliCommand
+	{
+		$cmd = new KliCommand($name, $this);
+		$this->addCommand($cmd);
+
+		return $cmd;
 	}
 
 	/**
