@@ -12,5 +12,5 @@
 	<rule ref="vendor/oliup/oliup-cs-php/src"/>
 
 	<!-- You should use at least PHP 7 -->
-	<config name="testVersion" value="7.4-"/>
+	<config name="testVersion" value="8.1-"/>
 </ruleset>
