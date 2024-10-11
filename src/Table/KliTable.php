@@ -210,7 +210,9 @@ class KliTable
 		$bottom_line = $this->border_style->apply($bottom_line);
 
 		$output[] = $top_line;
-		$output[] = $this->getStyledBorderChar('left') . \implode($this->getStyledBorderChar('middle'), $header_cells) . $this->getStyledBorderChar('right');
+		$output[] = $this->getStyledBorderChar('left')
+			. \implode($this->getStyledBorderChar('middle'), $header_cells)
+			. $this->getStyledBorderChar('right');
 
 		foreach ($formatted_rows as $index => $formatted_row) {
 			$output[] = $mid_line;
@@ -223,7 +225,9 @@ class KliTable
 				$cells[] = $this->renderCell($value, $header, $width, false, $this->rows[$index]);
 			}
 
-			$output[] = $this->getStyledBorderChar('left') . \implode($this->getStyledBorderChar('middle'), $cells) . $this->getStyledBorderChar('right');
+			$output[] = $this->getStyledBorderChar('left')
+				. \implode($this->getStyledBorderChar('middle'), $cells)
+				. $this->getStyledBorderChar('right');
 		}
 
 		$output[] = $bottom_line;
@@ -242,15 +246,20 @@ class KliTable
 	 *
 	 * @return string
 	 */
-	public function renderCell(string $value, KliTableHeader $header, int $width, bool $is_header, array $row = []): string
-	{
+	public function renderCell(
+		string $value,
+		KliTableHeader $header,
+		int $width,
+		bool $is_header,
+		array $row = []
+	): string {
 		$align = $header->getAlign();
 
 		if ($is_header) {
 			$style = $header->getStyle();
 		} else {
 			$formatter = $header->getCellFormatter();
-			$style     = $formatter ? $formatter->getStyle($value, $header, $row) : null;
+			$style     = $formatter?->getStyle($value, $header, $row);
 		}
 
 		$value = \mb_strimwidth($value, 0, $width - self::MIN_CELL_PADDING, self::TRUNCATE_CHAR);

@@ -48,24 +48,17 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	 */
 	public function format($value, KliTableHeader $header, array $row): string
 	{
-		switch ($this->type) {
-			case 'bool':
-				return $value ? 'Yes' : 'No';
-
-			case 'number':
-				return \number_format(
-					$value,
-					$this->params['decimals'] ?? 0,
-					$this->params['decimal_point'] ?? '.',
-					$this->params['thousands_sep'] ?? ','
-				);
-
-			case 'date':
-				return $value ? \date($this->params['format'], $value) : 'N/A';
-
-			default:
-				return (string) $value;
-		}
+		return match ($this->type) {
+			'bool'   => $value ? 'Yes' : 'No',
+			'number' => \number_format(
+				$value,
+				$this->params['decimals'] ?? 0,
+				$this->params['decimal_point'] ?? '.',
+				$this->params['thousands_sep'] ?? ','
+			),
+			'date'   => $value ? \date($this->params['format'], $value) : 'N/A',
+			default  => (string) $value,
+		};
 	}
 
 	/**
@@ -98,8 +91,12 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	 *
 	 * @return KliTableFormatter
 	 */
-	public static function number(int $decimals = 0, string $decimal_point = '.', string $thousands_sep = ',', ?KliStyle $style = null): self
-	{
+	public static function number(
+		int $decimals = 0,
+		string $decimal_point = '.',
+		string $thousands_sep = ',',
+		?KliStyle $style = null
+	): self {
 		return new self('number', $style, [
 			'decimals'      => $decimals,
 			'decimal_point' => $decimal_point,

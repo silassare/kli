@@ -21,12 +21,8 @@ use Kli\Types\Interfaces\KliTypeInterface;
 abstract class KliType implements KliTypeInterface
 {
 	protected array $error_messages = [];
-
-	/**
-	 * @var mixed
-	 */
-	protected $default;
-	protected bool $has_default = false;
+	protected mixed $default        = null;
+	protected bool $has_default     = false;
 
 	/**
 	 * {@inheritDoc}
@@ -51,7 +47,7 @@ abstract class KliType implements KliTypeInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDefault()
+	public function getDefault(): mixed
 	{
 		return $this->default;
 	}

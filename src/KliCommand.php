@@ -29,7 +29,7 @@ abstract class KliCommand
 	private Kli $cli;
 
 	/**
-	 * @var \Kli\KliAction[]
+	 * @var KliAction[]
 	 */
 	private array $actions = [];
 
@@ -107,7 +107,7 @@ abstract class KliCommand
 	public function addAction(KliAction $action): self
 	{
 		/**
-		 * @var \Kli\KliAction[] $actions
+		 * @var KliAction[] $actions
 		 */
 		$actions = \func_get_args();
 
@@ -181,7 +181,7 @@ abstract class KliCommand
 	/**
 	 * Gets this command actions list.
 	 *
-	 * @return \Kli\KliAction[]
+	 * @return KliAction[]
 	 */
 	public function getActions(): array
 	{

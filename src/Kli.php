@@ -316,7 +316,7 @@ class Kli
 			$cmd = $this->commands[$command_name];
 
 			if (isset($action_name) && $cmd->hasAction($action_name)) {
-				$h .= \sprintf('  %s %s', $cmd->getName(), (string) $cmd->getAction($action_name));
+				$h .= \sprintf('  %s %s', $cmd->getName(), $cmd->getAction($action_name));
 			} else {
 				$h .= $cmd;
 			}
@@ -404,7 +404,7 @@ class Kli
 	 *
 	 * @return $this
 	 */
-	public function log($msg, bool $wrap = true): self
+	public function log(mixed $msg, bool $wrap = true): self
 	{
 		if (\is_string($msg) && $this->log_file) {
 			if ($wrap) {

@@ -57,7 +57,7 @@ final class KliParser
 				$anonymous[] = $item;
 			} /* tmp the first -- and stop parsing */ elseif ('--' === $item) {
 				$stop_parsing = true;
-			} /* alias first */ elseif (0 === \strpos($item, '--')) {
+			} /* alias first */ elseif (\str_starts_with($item, '--')) {
 				$pos   = \strpos($item, '=');
 				$name  = \substr($item, 2);
 				$value = true;
@@ -77,7 +77,7 @@ final class KliParser
 				$name                   = $this->checkOption($action, $name);
 				$names_as_passed[$name] = $name_as_passed;
 				$in_options[$name]      = $value;
-			} /* short after */ elseif (0 === \strpos($item, '-')) {
+			} /* short after */ elseif (\str_starts_with($item, '-')) {
 				$pos = \strpos($item, '=');
 
 				if (\is_int($pos)) {
@@ -152,12 +152,12 @@ final class KliParser
 	/**
 	 * Prompt user to provide value for a given option.
 	 *
-	 * @param KliOption $option  option object
-	 * @param mixed     $default default value
+	 * @param KliOption  $option  option object
+	 * @param null|mixed $default default value
 	 *
 	 * @return mixed
 	 */
-	public function interactivePrompt(KliOption $option, $default = null)
+	public function interactivePrompt(KliOption $option, mixed $default = null): mixed
 	{
 		$prompt = $option->getPrompt();
 		$type   = $option->getType();
