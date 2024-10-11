@@ -157,8 +157,14 @@ class KliUtils
 	 *
 	 * ```
 	 *
-	 * @param string                                                                $text    the text string
-	 * @param array{top?: int, left?: int, right?: int, bottom?: int, pad?: string} $options paddings options
+	 * @param string $text the text string
+	 * @param array{
+	 *     top?: int,
+	 *     left?: int,
+	 *     right?: int,
+	 *     bottom?: int,
+	 *     pad?: string
+	 * } $options paddings options
 	 *
 	 * @return string
 	 */

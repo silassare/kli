@@ -279,7 +279,7 @@ class KliTypePath extends KliType
 	 *
 	 * @return false|string[] path list
 	 */
-	private function resolvePath(string $path)
+	private function resolvePath(string $path): array|bool
 	{
 		if (empty($path)) {
 			return [];

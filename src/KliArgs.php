@@ -47,7 +47,7 @@ class KliArgs
 	 *
 	 * @throws KliException
 	 */
-	public function get(string $name)
+	public function get(string $name): mixed
 	{
 		$name = $this->action->getOption($name)
 			->getName();
@@ -62,7 +62,7 @@ class KliArgs
 	 *
 	 * @return null|mixed
 	 */
-	public function getAnonymousAt(int $index)
+	public function getAnonymousAt(int $index): mixed
 	{
 		return $this->anonymous[$index] ?? null;
 	}

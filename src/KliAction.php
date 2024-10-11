@@ -27,7 +27,7 @@ final class KliAction
 	private string $description = 'no description';
 
 	/**
-	 * @var \Kli\KliOption[]
+	 * @var KliOption[]
 	 */
 	private array $options = [];
 
@@ -114,8 +114,13 @@ final class KliAction
 	 *
 	 * @throws KliException
 	 */
-	public function option(string $name, string $flag = '', array $aliases = [], ?int $offset_start = null, ?int $offset_end = null): KliOption
-	{
+	public function option(
+		string $name,
+		string $flag = '',
+		array $aliases = [],
+		?int $offset_start = null,
+		?int $offset_end = null
+	): KliOption {
 		$opt = new KliOption($name);
 
 		if ($flag) {
@@ -279,7 +284,7 @@ final class KliAction
 	/**
 	 * Gets this action options list.
 	 *
-	 * @return \Kli\KliOption[]
+	 * @return KliOption[]
 	 */
 	public function getOptions(): array
 	{
