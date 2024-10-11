@@ -91,7 +91,7 @@ final class KliTableTest extends TestCase
 		$path    = $dir . '/table.txt';
 		$content = $table->render();
 
-		self::ensureSnapshotFile($path, $content);
+		TestUtils::ensureSnapshotFile($path, $content);
 		self::assertStringEqualsFile($path, $content);
 		echo $content . \PHP_EOL;
 
@@ -100,7 +100,7 @@ final class KliTableTest extends TestCase
 
 		$path    = $dir . '/table.colored.txt';
 		$content = $table->render();
-		self::ensureSnapshotFile($path, $content);
+		TestUtils::ensureSnapshotFile($path, $content);
 		self::assertStringEqualsFile($path, $content);
 		echo $content . \PHP_EOL;
 
@@ -109,7 +109,7 @@ final class KliTableTest extends TestCase
 		$phone_header->setWidth(15);
 		$path    = $dir . '/table.fixed.width.txt';
 		$content = $table->render();
-		self::ensureSnapshotFile($path, $content);
+		TestUtils::ensureSnapshotFile($path, $content);
 		self::assertStringEqualsFile($path, $content);
 		echo $content . \PHP_EOL;
 
@@ -136,19 +136,8 @@ final class KliTableTest extends TestCase
 		$phone_header->setWidth(null);
 		$path    = $dir . '/table.custom.border.txt';
 		$content = $table->render();
-		self::ensureSnapshotFile($path, $content);
+		TestUtils::ensureSnapshotFile($path, $content);
 		self::assertStringEqualsFile($path, $content);
 		echo $content;
-	}
-
-	/**
-	 * @param $file
-	 * @param $content
-	 */
-	public static function ensureSnapshotFile($file, $content): void
-	{
-		if (!\file_exists($file)) {
-			\file_put_contents($file, $content);
-		}
 	}
 }
