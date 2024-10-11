@@ -24,19 +24,19 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	private string $type;
 
 	/**
-	 * @var null|\Kli\KliStyle
+	 * @var null|KliStyle
 	 */
 	private ?KliStyle $style;
-	private array     $params;
+	private array $params;
 
 	/**
 	 * KliTableFormatter constructor.
 	 *
-	 * @param string             $type
-	 * @param null|\Kli\KliStyle $style
-	 * @param array              $params
+	 * @param string        $type
+	 * @param null|KliStyle $style
+	 * @param array         $params
 	 */
-	protected function __construct(string $type, KliStyle $style = null, array $params = [])
+	protected function __construct(string $type, ?KliStyle $style = null, array $params = [])
 	{
 		$this->type   = $type;
 		$this->style  = $style;
@@ -61,7 +61,7 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 				);
 
 			case 'date':
-				return $value ? (string) \date($this->params['format'], $value) : 'N/A';
+				return $value ? \date($this->params['format'], $value) : 'N/A';
 
 			default:
 				return (string) $value;
@@ -79,11 +79,11 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	/**
 	 * Creates a boolean formatter.
 	 *
-	 * @param null|\Kli\KliStyle $style
+	 * @param null|KliStyle $style
 	 *
-	 * @return \Kli\Table\KliTableFormatter
+	 * @return KliTableFormatter
 	 */
-	public static function bool(KliStyle $style = null): self
+	public static function bool(?KliStyle $style = null): self
 	{
 		return new self('bool', $style);
 	}
@@ -91,14 +91,14 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	/**
 	 * Creates a number formatter.
 	 *
-	 * @param int                $decimals
-	 * @param string             $decimal_point
-	 * @param string             $thousands_sep
-	 * @param null|\Kli\KliStyle $style
+	 * @param int           $decimals
+	 * @param string        $decimal_point
+	 * @param string        $thousands_sep
+	 * @param null|KliStyle $style
 	 *
-	 * @return \Kli\Table\KliTableFormatter
+	 * @return KliTableFormatter
 	 */
-	public static function number(int $decimals = 0, string $decimal_point = '.', string $thousands_sep = ',', KliStyle $style = null): self
+	public static function number(int $decimals = 0, string $decimal_point = '.', string $thousands_sep = ',', ?KliStyle $style = null): self
 	{
 		return new self('number', $style, [
 			'decimals'      => $decimals,
@@ -110,12 +110,12 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	/**
 	 * Creates a date formatter.
 	 *
-	 * @param string             $format
-	 * @param null|\Kli\KliStyle $style
+	 * @param string        $format
+	 * @param null|KliStyle $style
 	 *
-	 * @return \Kli\Table\KliTableFormatter
+	 * @return KliTableFormatter
 	 */
-	public static function date(string $format = 'Y-m-d H:i:s', KliStyle $style = null): self
+	public static function date(string $format = 'Y-m-d H:i:s', ?KliStyle $style = null): self
 	{
 		return new self('date', $style, ['format' => $format]);
 	}

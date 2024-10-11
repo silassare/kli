@@ -31,7 +31,7 @@ abstract class KliType implements KliTypeInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function def($value): self
+	public function def(mixed $value): static
 	{
 		// the default should comply with all rules or not ?
 		$this->default     = $value;

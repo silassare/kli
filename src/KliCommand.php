@@ -36,10 +36,10 @@ abstract class KliCommand
 	/**
 	 * KliCommand constructor.
 	 *
-	 * @param string   $name command name
-	 * @param \Kli\Kli $cli  cli object to use
+	 * @param string $name command name
+	 * @param Kli    $cli  cli object to use
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	protected function __construct(string $name, Kli $cli)
 	{
@@ -69,8 +69,8 @@ abstract class KliCommand
 	/**
 	 * Executes command.
 	 *
-	 * @param \Kli\KliAction $action requested action object
-	 * @param \Kli\KliArgs   $args   the args object
+	 * @param KliAction $action requested action object
+	 * @param KliArgs   $args   the args object
 	 */
 	abstract public function execute(KliAction $action, KliArgs $args): void;
 
@@ -80,9 +80,9 @@ abstract class KliCommand
 	 * @param string $name
 	 * @param string $description
 	 *
-	 * @return \Kli\KliAction
+	 * @return KliAction
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function action(string $name, string $description = ''): KliAction
 	{
@@ -98,11 +98,11 @@ abstract class KliCommand
 	/**
 	 * Adds action(s) to this command.
 	 *
-	 * @param \Kli\KliAction $action action object
+	 * @param KliAction $action action object
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException when action is already defined
+	 * @throws KliException when action is already defined
 	 */
 	public function addAction(KliAction $action): self
 	{
@@ -155,9 +155,9 @@ abstract class KliCommand
 	 *
 	 * @param string $name the action name
 	 *
-	 * @return \Kli\KliAction
+	 * @return KliAction
 	 *
-	 * @throws \Kli\Exceptions\KliException when the action is not defined for this command
+	 * @throws KliException when the action is not defined for this command
 	 */
 	public function getAction(string $name): KliAction
 	{
@@ -191,7 +191,7 @@ abstract class KliCommand
 	/**
 	 * Command cli getter.
 	 *
-	 * @return \Kli\Kli
+	 * @return Kli
 	 */
 	public function getCli(): Kli
 	{

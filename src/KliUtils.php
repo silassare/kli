@@ -157,8 +157,8 @@ class KliUtils
 	 *
 	 * ```
 	 *
-	 * @param string                                                  $text    the text string
-	 * @param array{top?: int, left?: int, right?: int, bottom?: int} $options paddings options
+	 * @param string                                                                $text    the text string
+	 * @param array{top?: int, left?: int, right?: int, bottom?: int, pad?: string} $options paddings options
 	 *
 	 * @return string
 	 */
@@ -209,8 +209,8 @@ class KliUtils
 		}
 
 		return $margin_top .
-			   $out .
-			   $margin_bottom;
+			$out .
+			$margin_bottom;
 	}
 
 	/**

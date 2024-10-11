@@ -40,7 +40,7 @@ class KliTypeNumber extends KliType
 	 * @param null|float $min the minimum number
 	 * @param null|float $max the maximum number
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function __construct(?float $min = null, ?float $max = null)
 	{
@@ -61,7 +61,7 @@ class KliTypeNumber extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function min(float $value, ?string $message = null): self
 	{
@@ -84,7 +84,7 @@ class KliTypeNumber extends KliType
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function max(float $value, ?string $message = null): self
 	{
@@ -120,7 +120,7 @@ class KliTypeNumber extends KliType
 	 *
 	 * @return float|int
 	 */
-	public function validate(string $opt_name, $value)
+	public function validate(string $opt_name, mixed $value): float|int
 	{
 		if (!\is_numeric($value)) {
 			throw new KliInputException(\sprintf($this->msg('msg_require_number'), $opt_name));

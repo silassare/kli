@@ -24,22 +24,22 @@ interface KliTableCellFormatterInterface
 	/**
 	 * Formats a cell value.
 	 *
-	 * @param mixed                     $value  the cell value
-	 * @param \Kli\Table\KliTableHeader $header the header
-	 * @param array                     $row    the row
+	 * @param mixed          $value  the cell value
+	 * @param KliTableHeader $header the header
+	 * @param array          $row    the row
 	 *
 	 * @return string
 	 */
-	public function format($value, KliTableHeader $header, array $row): string;
+	public function format(mixed $value, KliTableHeader $header, array $row): string;
 
 	/**
 	 * Gets the style of a cell.
 	 *
-	 * @param mixed                     $value  the cell value
-	 * @param \Kli\Table\KliTableHeader $header the header
-	 * @param array                     $row    the row
+	 * @param mixed          $value  the cell value
+	 * @param KliTableHeader $header the header
+	 * @param array          $row    the row
 	 *
-	 * @return null|\Kli\KliStyle
+	 * @return null|KliStyle
 	 */
-	public function getStyle($value, KliTableHeader $header, array $row): ?KliStyle;
+	public function getStyle(mixed $value, KliTableHeader $header, array $row): ?KliStyle;
 }

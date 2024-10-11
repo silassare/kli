@@ -47,7 +47,7 @@ final class KliAction
 	 *
 	 * @param string $name action name
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function __construct(string $name)
 	{
@@ -110,9 +110,9 @@ final class KliAction
 	 * @param null|int $offset_start
 	 * @param null|int $offset_end
 	 *
-	 * @return \Kli\KliOption
+	 * @return KliOption
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function option(string $name, string $flag = '', array $aliases = [], ?int $offset_start = null, ?int $offset_end = null): KliOption
 	{
@@ -140,11 +140,11 @@ final class KliAction
 	/**
 	 * Adds option(s) to this action.
 	 *
-	 * @param \Kli\KliOption ...$options
+	 * @param KliOption ...$options
 	 *
 	 * @return $this
 	 *
-	 * @throws \Kli\Exceptions\KliException
+	 * @throws KliException
 	 */
 	public function addOption(KliOption ...$options): self
 	{
@@ -258,9 +258,9 @@ final class KliAction
 	 *
 	 * @param string $name the option name or flag
 	 *
-	 * @return \Kli\KliOption
+	 * @return KliOption
 	 *
-	 * @throws \Kli\Exceptions\KliException when the option is not defined for this action
+	 * @throws KliException when the option is not defined for this action
 	 */
 	public function getOption(string $name): KliOption
 	{
