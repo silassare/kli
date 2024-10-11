@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Kli;
 
-use Kli\Exceptions\KliException;
-
 /**
  * Class KliArgs.
  */
@@ -44,8 +42,6 @@ class KliArgs
 	 * @param string $name name or alias
 	 *
 	 * @return null|mixed
-	 *
-	 * @throws KliException
 	 */
 	public function get(string $name): mixed
 	{

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Kli;
 
-use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 use Kli\Types\KliTypeBool;
 
@@ -42,7 +41,6 @@ final class KliParser
 	 *
 	 * @return KliArgs
 	 *
-	 * @throws KliException
 	 * @throws KliInputException
 	 */
 	public function parse(KliAction $action, array $opt_list): KliArgs
@@ -205,8 +203,6 @@ final class KliParser
 	 * @param string    $arg_name arg defined by user
 	 *
 	 * @return string option short name
-	 *
-	 * @throws KliException
 	 */
 	private function checkOption(KliAction $action, string $arg_name): string
 	{

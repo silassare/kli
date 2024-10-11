@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Kli;
 
-use Kli\Exceptions\KliException;
+use Kli\Exceptions\KliRuntimeException;
 use Kli\Types\Interfaces\KliTypeInterface;
 use Kli\Types\KliTypeBool;
 use Kli\Types\KliTypeNumber;
@@ -25,9 +25,9 @@ use Kli\Types\KliTypeString;
  */
 final class KliOption
 {
-	public const NAME_REG  = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*$/';
-	public const ALIAS_REG = '/^[a-zA-Z0-9][a-zA-Z0-9-_]+$/';
-	public const FLAG_REG  = '/^[a-zA-Z0-9]$/';
+	public const NAME_REG  = '~^[a-zA-Z0-9][a-zA-Z0-9-_]*$~';
+	public const ALIAS_REG = '~^[a-zA-Z0-9][a-zA-Z0-9-_]+$~';
+	public const FLAG_REG  = '~^[a-zA-Z0-9]$~';
 
 	private string $name;
 
@@ -55,13 +55,11 @@ final class KliOption
 	 * KliOption constructor.
 	 *
 	 * @param string $name option name
-	 *
-	 * @throws KliException
 	 */
 	public function __construct(string $name)
 	{
 		if (!\preg_match(self::NAME_REG, $name)) {
-			throw new KliException(\sprintf('"%s" is not a valid option name.', $name));
+			throw new KliRuntimeException(\sprintf('"%s" is not a valid option name.', $name));
 		}
 
 		$this->name     = $name;
@@ -100,8 +98,6 @@ final class KliOption
 	 * @param null|int $max the maximum length of the option value
 	 *
 	 * @return KliTypeString
-	 *
-	 * @throws KliException
 	 */
 	public function string(?int $min = null, ?int $max = null): KliTypeString
 	{
@@ -136,8 +132,6 @@ final class KliOption
 	 * @param null|float $max
 	 *
 	 * @return KliTypeNumber
-	 *
-	 * @throws KliException
 	 */
 	public function number(?float $min = null, ?float $max = null): KliTypeNumber
 	{
@@ -155,8 +149,6 @@ final class KliOption
 	 * @param null|int $max max path count
 	 *
 	 * @return KliTypePath
-	 *
-	 * @throws KliException
 	 */
 	public function path(?int $min = null, ?int $max = null): KliTypePath
 	{
@@ -173,13 +165,11 @@ final class KliOption
 	 * @param string $alias option alias to add
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function alias(string $alias): self
 	{
 		if (!\preg_match(self::ALIAS_REG, $alias)) {
-			throw new KliException(\sprintf('"%s" is not a valid alias.', $alias));
+			throw new KliRuntimeException(\sprintf('"%s" is not a valid alias.', $alias));
 		}
 
 		if (!\in_array($alias, $this->aliases, true)) {
@@ -195,13 +185,11 @@ final class KliOption
 	 * @param string $flag option flag
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function flag(string $flag): self
 	{
 		if (!\preg_match(self::FLAG_REG, $flag)) {
-			throw new KliException(\sprintf('"%s" is not a valid flag.', $flag));
+			throw new KliRuntimeException(\sprintf('"%s" is not a valid flag.', $flag));
 		}
 
 		$this->opt_flag = $flag;
@@ -215,25 +203,23 @@ final class KliOption
 	 * when $to is set, any anonymous argument in offset range($at,$to) will be used.
 	 * NOTE: $to could be set to infinity (INF)
 	 *
-	 * @param int      $at
-	 * @param null|int $to
+	 * @param int      $at the offset to start from
+	 * @param null|int $to the end offset to use
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function offsets(int $at, ?int $to = null): self
 	{
 		if ($this->locked) {
-			throw new KliException("can't define offsets, option is locked.");
+			throw new KliRuntimeException("can't define offsets, option is locked.");
 		}
 
 		if ($at < 0) {
-			throw new KliException(\sprintf('"%s" is not a valid arg offset.', $at));
+			throw new KliRuntimeException(\sprintf('"%s" is not a valid arg offset.', $at));
 		}
 
 		if (null !== $to && (!\is_infinite($to) || $to < $at)) {
-			throw new KliException(\sprintf('from=%s to=%s is not a valid arg offset range.', $at, $to));
+			throw new KliRuntimeException(\sprintf('from=%s to=%s is not a valid arg offset range.', $at, $to));
 		}
 
 		$range = [$at, $to ?? $at];

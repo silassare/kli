@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Kli\Types;
 
-use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
+use Kli\Exceptions\KliRuntimeException;
 
 /**
  * Class KliTypeString.
@@ -45,8 +45,6 @@ class KliTypeString extends KliType
 	 *
 	 * @param null|int $min the minimum string length
 	 * @param null|int $max the maximum string length
-	 *
-	 * @throws KliException
 	 */
 	public function __construct(?int $min = null, ?int $max = null)
 	{
@@ -66,17 +64,15 @@ class KliTypeString extends KliType
 	 * @param null|string $message the error message
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function min(int $value, ?string $message = null): self
 	{
 		if ($value < 1) {
-			throw new KliException(\sprintf('"%s" is not a valid integer(>0).', $value));
+			throw new KliRuntimeException(\sprintf('"%s" is not a valid integer(>0).', $value));
 		}
 
 		if (isset($this->opt_max) && $value > $this->opt_max) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
+			throw new KliRuntimeException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
 		}
 
 		$this->opt_min = $value;
@@ -93,17 +89,15 @@ class KliTypeString extends KliType
 	 * @param null|string $message the error message
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function max(int $value, ?string $message = null): self
 	{
 		if ($value < 1) {
-			throw new KliException(\sprintf('"%s" is not a valid integer(>0).', $value));
+			throw new KliRuntimeException(\sprintf('"%s" is not a valid integer(>0).', $value));
 		}
 
 		if (isset($this->opt_min) && $value < $this->opt_min) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
+			throw new KliRuntimeException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
 		}
 
 		$this->opt_max = $value;
@@ -120,13 +114,11 @@ class KliTypeString extends KliType
 	 * @param null|string $message        the error message
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): self
 	{
 		if (false === \preg_match($reg_expression, '')) {
-			throw new KliException(\sprintf('invalid regular expression: %s', $reg_expression));
+			throw new KliRuntimeException(\sprintf('invalid regular expression: %s', $reg_expression));
 		}
 
 		$this->reg = $reg_expression;
@@ -139,14 +131,14 @@ class KliTypeString extends KliType
 	/**
 	 * Sets a validator.
 	 *
-	 * @param callable    $fn
-	 * @param null|string $message
+	 * @param callable    $validator the validator function
+	 * @param null|string $message   the error message
 	 *
 	 * @return $this
 	 */
-	public function validator(callable $fn, ?string $message = null): self
+	public function validator(callable $validator, ?string $message = null): self
 	{
-		$this->validator_fn = $fn;
+		$this->validator_fn = $validator;
 
 		!empty($message) && $this->msg('msg_validator_check_fails', $message);
 

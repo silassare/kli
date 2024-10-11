@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Kli\Types;
 
-use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
+use Kli\Exceptions\KliRuntimeException;
 
 /**
  * Class KliTypeNumber.
@@ -40,7 +40,7 @@ class KliTypeNumber extends KliType
 	 * @param null|float $min the minimum number
 	 * @param null|float $max the maximum number
 	 *
-	 * @throws KliException
+	 * @throws KliRuntimeException
 	 */
 	public function __construct(?float $min = null, ?float $max = null)
 	{
@@ -60,13 +60,11 @@ class KliTypeNumber extends KliType
 	 * @param null|string $message the error message
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function min(float $value, ?string $message = null): self
 	{
 		if (isset($this->opt_max) && $value > $this->opt_max) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
+			throw new KliRuntimeException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
 		}
 
 		$this->opt_min = $value;
@@ -83,13 +81,11 @@ class KliTypeNumber extends KliType
 	 * @param null|string $message the error message
 	 *
 	 * @return $this
-	 *
-	 * @throws KliException
 	 */
 	public function max(float $value, ?string $message = null): self
 	{
 		if (isset($this->opt_min) && $value < $this->opt_min) {
-			throw new KliException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
+			throw new KliRuntimeException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
 		}
 
 		$this->opt_max = $value;
