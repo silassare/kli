@@ -31,10 +31,10 @@ $rules = [
 		'header'       => $header,
 		'comment_type' => 'PHPDoc',
 		'separate'     => 'both',
-		'location'     => 'after_open'
+		'location'     => 'after_open',
 	],
-	'comment_to_phpdoc' => [],
+	'fopen_flags'    => ['b_mode' => true],
 ];
 
 return (new PhpCS())->mergeRules($finder, $rules)
-					->setRiskyAllowed(true);
+	->setRiskyAllowed(true);
