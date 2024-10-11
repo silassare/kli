@@ -17,8 +17,5 @@ use Exception;
 
 /**
  * Class KliException.
- *
- * When it is thrown, it may mean that
- * there is an error in your code
  */
 class KliException extends Exception {}
