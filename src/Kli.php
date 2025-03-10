@@ -73,6 +73,8 @@ class Kli
 				}
 			} elseif ($this->isHelp($_argv[1])) { // $ cli --help
 				$this->showHelp();
+			} elseif ($this->isVersion($_argv[1])) { // $ cli --version
+				$this->showVersion();
 			} elseif ($this->hasCommand($_argv[1])) { // $ cli command
 				$a1  = $_argv[1];
 				$cmd = $this->commands[$a1];
@@ -302,12 +304,15 @@ class Kli
 			$this->welcome();
 		}
 		$head = \basename($this->getCliEntryPoint());
-		$h    = \PHP_EOL . 'Usage:'
+
+		$h = \PHP_EOL . 'Usage:'
 			. \PHP_EOL . "  > {$head} command action [options]"
 			. \PHP_EOL . 'For interactive mode.'
 			. \PHP_EOL . "  > {$head}"
 			. \PHP_EOL . 'To show help message.'
-			. \PHP_EOL . "  > {$head} [command [action]] -? or --help"
+			. \PHP_EOL . "  > {$head} [command [action]] -?|--help"
+			. \PHP_EOL . 'To show version.'
+			. \PHP_EOL . "  > {$head} -v|--version"
 			. \PHP_EOL . \PHP_EOL;
 
 		if (isset($command_name) && $this->hasCommand($command_name)) {
@@ -322,7 +327,31 @@ class Kli
 			$h .= \implode(\PHP_EOL . \PHP_EOL, $this->commands) . \PHP_EOL;
 		}
 
+		$this->showVersion();
 		$this->writeLn($h, false);
+	}
+
+	/**
+	 * Show the version string.
+	 */
+	public function showVersion(): void
+	{
+		$this->writeLn($this->getVersion(true));
+	}
+
+	/**
+	 * Gets the cli version.
+	 */
+	public function getVersion(bool $full = false): string
+	{
+		$version = '1.0.0';
+
+		if ($full) {
+			$head    = \basename($this->getCliEntryPoint());
+			$version = $head . ' v' . $version;
+		}
+
+		return $version;
 	}
 
 	/**
@@ -347,6 +376,18 @@ class Kli
 	public function isHelp(string $str): bool
 	{
 		return '--help' === $str || '-?' === $str;
+	}
+
+	/**
+	 * Checks if string is a version flag.
+	 *
+	 * @param string $str the string to check
+	 *
+	 * @return bool
+	 */
+	public function isVersion(string $str): bool
+	{
+		return '--version' === $str || '-v' === $str;
 	}
 
 	/**
