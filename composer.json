@@ -1,6 +1,7 @@
 {
 	"name": "silassare/kli",
 	"description": "Kli helps you add an interactive command-line interface to your php project.",
+	"version": "2.0.0",
 	"keywords": [
 		"kli",
 		"cli",
