@@ -214,9 +214,9 @@ class KliUtils
 			$margin_bottom = \str_repeat($margin_left . $sp . $margin_right, $bottom);
 		}
 
-		return $margin_top .
-			$out .
-			$margin_bottom;
+		return $margin_top
+			. $out
+			. $margin_bottom;
 	}
 
 	/**
