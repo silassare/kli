@@ -23,10 +23,19 @@
 		"vimeo/psalm": "^5.26.1"
 	},
 	"homepage": "https://github.com/silassare/kli#readme",
+	"archive": {
+		"exclude": [
+			"/tests"
+		]
+	},
 	"autoload": {
 		"psr-4": {
-			"Kli\\": "src",
-			"Kli\\Tests\\": "tests"
+			"Kli\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Kli\\Tests\\": "tests/"
 		}
 	},
 	"authors": [
