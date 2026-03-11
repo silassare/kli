@@ -77,9 +77,9 @@ class KliTable
 	 *
 	 * @param array $chars
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setBorderChars(array $chars): self
+	public function setBorderChars(array $chars): static
 	{
 		$this->border_chars = \array_merge($this->border_chars, $chars);
 
@@ -118,9 +118,9 @@ class KliTable
 	 *
 	 * @param array $row
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addRow(array $row): self
+	public function addRow(array $row): static
 	{
 		$this->rows[] = $row;
 
@@ -132,9 +132,9 @@ class KliTable
 	 *
 	 * @param array $rows
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addRows(array $rows): self
+	public function addRows(array $rows): static
 	{
 		foreach ($rows as $row) {
 			if (\is_array($row)) {

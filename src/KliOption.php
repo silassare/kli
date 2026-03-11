@@ -164,9 +164,9 @@ final class KliOption
 	 *
 	 * @param string $alias option alias to add
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function alias(string $alias): self
+	public function alias(string $alias): static
 	{
 		if (!\preg_match(self::ALIAS_REG, $alias)) {
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid alias.', $alias));
@@ -184,9 +184,9 @@ final class KliOption
 	 *
 	 * @param string $flag option flag
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function flag(string $flag): self
+	public function flag(string $flag): static
 	{
 		if (!\preg_match(self::FLAG_REG, $flag)) {
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid flag.', $flag));
@@ -206,9 +206,9 @@ final class KliOption
 	 * @param int      $at the offset to start from
 	 * @param null|int $to the end offset to use
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function offsets(int $at, ?int $to = null): self
+	public function offsets(int $at, ?int $to = null): static
 	{
 		if ($this->locked) {
 			throw new KliRuntimeException("can't define offsets, option is locked.");
@@ -234,9 +234,9 @@ final class KliOption
 	 *
 	 * Options are locked and should not be modified when added to an action.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lock(): self
+	public function lock(): static
 	{
 		$this->locked = true;
 
@@ -248,9 +248,9 @@ final class KliOption
 	 *
 	 * @param string $description option description
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function description(string $description): self
+	public function description(string $description): static
 	{
 		$this->opt_description = \trim($description);
 
@@ -262,9 +262,9 @@ final class KliOption
 	 *
 	 * @param KliTypeInterface $type
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function type(KliTypeInterface $type): self
+	public function type(KliTypeInterface $type): static
 	{
 		$this->opt_type = $type;
 
@@ -274,9 +274,9 @@ final class KliOption
 	/**
 	 * Mark this option as required.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function required(): self
+	public function required(): static
 	{
 		$this->required = true;
 
@@ -290,9 +290,9 @@ final class KliOption
 	 * @param null|string $prompt_msg          prompt message
 	 * @param bool        $prompt_for_password prompt is for password
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function prompt(bool $prompt = true, ?string $prompt_msg = null, bool $prompt_for_password = false): self
+	public function prompt(bool $prompt = true, ?string $prompt_msg = null, bool $prompt_for_password = false): static
 	{
 		if ($prompt && null !== $prompt_msg) {
 			$this->prompt_msg = \trim($prompt_msg);

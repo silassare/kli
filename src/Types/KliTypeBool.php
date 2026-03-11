@@ -61,7 +61,7 @@ class KliTypeBool extends KliType
 		$is_str = \is_string($value);
 		$value  = $is_str ? \strtolower($value) : $value;
 
-		if (!\in_array($value, $this->strict ? self::$list : self::$extended_list, true)) {
+		if (!\in_array($value, $this->strict ? self::$list : static::$extended_list, true)) {
 			throw new KliInputException(\sprintf($this->msg('msg_require_bool'), $value, $opt_name));
 		}
 

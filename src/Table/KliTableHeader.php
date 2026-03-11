@@ -66,9 +66,9 @@ class KliTableHeader
 	 *
 	 * @param null|int $width
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setWidth(?int $width): self
+	public function setWidth(?int $width): static
 	{
 		$this->width = $width;
 
@@ -98,9 +98,9 @@ class KliTableHeader
 	/**
 	 * Aligns the header to the left.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function alignLeft(): self
+	public function alignLeft(): static
 	{
 		$this->align = 'left';
 
@@ -110,9 +110,9 @@ class KliTableHeader
 	/**
 	 * Aligns the header to the right.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function alignRight(): self
+	public function alignRight(): static
 	{
 		$this->align = 'right';
 
@@ -122,9 +122,9 @@ class KliTableHeader
 	/**
 	 * Aligns the header to the center.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function alignCenter(): self
+	public function alignCenter(): static
 	{
 		$this->align = 'center';
 
@@ -146,9 +146,9 @@ class KliTableHeader
 	 *
 	 * @param KliTableCellFormatterInterface $formatter
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setCellFormatter(KliTableCellFormatterInterface $formatter): self
+	public function setCellFormatter(KliTableCellFormatterInterface $formatter): static
 	{
 		$this->cell_formatter = $formatter;
 

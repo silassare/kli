@@ -222,9 +222,9 @@ class Kli
 	 * @param string $str  the string to write
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function writeLn(string $str = '', bool $wrap = true): self
+	public function writeLn(string $str = '', bool $wrap = true): static
 	{
 		echo \PHP_EOL . ($wrap ? KliUtils::wrap($str) : $str);
 
@@ -274,9 +274,9 @@ class Kli
 	 *
 	 * @param string $title the cli title
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setTitle(string $title): self
+	public function setTitle(string $title): static
 	{
 		$this->title = $title;
 
@@ -321,7 +321,7 @@ class Kli
 			if (isset($action_name) && $cmd->hasAction($action_name)) {
 				$h .= \sprintf('  %s %s', $cmd->getName(), $cmd->getAction($action_name));
 			} else {
-				$h .= $cmd;
+				$h .= (string) $cmd;
 			}
 		} else {
 			$h .= \implode(\PHP_EOL . \PHP_EOL, $this->commands) . \PHP_EOL;
@@ -395,9 +395,9 @@ class Kli
 	 *
 	 * @param KliCommand $command the command to add
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addCommand(KliCommand $command): self
+	public function addCommand(KliCommand $command): static
 	{
 		$this->commands[$command->getName()] = $command;
 
@@ -410,9 +410,9 @@ class Kli
 	 * @param string $str  the string to write
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function write(string $str, bool $wrap = false): self
+	public function write(string $str, bool $wrap = false): static
 	{
 		echo $wrap ? KliUtils::wrap($str) : $str;
 
@@ -424,9 +424,9 @@ class Kli
 	 *
 	 * @param int $count Bell play count
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function bell(int $count = 1): self
+	public function bell(int $count = 1): static
 	{
 		if (\posix_isatty(\STDOUT)) {
 			return $this->write(\str_repeat("\007", $count));
@@ -441,9 +441,9 @@ class Kli
 	 * @param mixed $msg  the message to log
 	 * @param bool  $wrap to wrap string or not
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function log(mixed $msg, bool $wrap = true): self
+	public function log(mixed $msg, bool $wrap = true): static
 	{
 		if (\is_string($msg) && $this->log_file) {
 			if ($wrap) {
@@ -462,9 +462,9 @@ class Kli
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function error(string $msg, bool $wrap = true): self
+	public function error(string $msg, bool $wrap = true): static
 	{
 		$msg = '✖ ' . $msg;
 
@@ -503,9 +503,9 @@ class Kli
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function success(string $msg, bool $wrap = true): self
+	public function success(string $msg, bool $wrap = true): static
 	{
 		$msg = '✔ ' . $msg;
 
@@ -524,9 +524,9 @@ class Kli
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function info(string $msg, bool $wrap = true): self
+	public function info(string $msg, bool $wrap = true): static
 	{
 		$msg = 'ℹ ' . $msg;
 
@@ -546,14 +546,14 @@ class Kli
 	 * @param bool        $enable_interactive to enable interactive cli
 	 * @param null|string $log_file           path to log file
 	 *
-	 * @return self
+	 * @return static
 	 */
 	public static function new(
 		string $name,
 		bool $enable_interactive = false,
 		?string $log_file = null
-	): self {
-		return new self($name, $enable_interactive, $log_file);
+	): static {
+		return new static($name, $enable_interactive, $log_file);
 	}
 
 	/**
@@ -574,7 +574,7 @@ class Kli
 	 *
 	 * @return null|false|string user input
 	 */
-	protected function readPass(): null|bool|string
+	protected function readPass(): bool|string|null
 	{
 		/** @psalm-suppress ForbiddenCode */
 		return \shell_exec('stty -echo; head -n1; stty echo');

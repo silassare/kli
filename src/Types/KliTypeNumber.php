@@ -59,9 +59,9 @@ class KliTypeNumber extends KliType
 	 * @param float       $value   the minimum
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function min(float $value, ?string $message = null): self
+	public function min(float $value, ?string $message = null): static
 	{
 		if (isset($this->opt_max) && $value > $this->opt_max) {
 			throw new KliRuntimeException(\sprintf('min=%s and max=%s is not a valid condition.', $value, $this->opt_max));
@@ -80,9 +80,9 @@ class KliTypeNumber extends KliType
 	 * @param float       $value   the maximum
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function max(float $value, ?string $message = null): self
+	public function max(float $value, ?string $message = null): static
 	{
 		if (isset($this->opt_min) && $value < $this->opt_min) {
 			throw new KliRuntimeException(\sprintf('min=%s and max=%s is not a valid condition.', $this->opt_min, $value));
@@ -100,9 +100,9 @@ class KliTypeNumber extends KliType
 	 *
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function integer(?string $message = null): self
+	public function integer(?string $message = null): static
 	{
 		$this->is_int = true;
 
@@ -122,7 +122,7 @@ class KliTypeNumber extends KliType
 			throw new KliInputException(\sprintf($this->msg('msg_require_number'), $opt_name));
 		}
 
-		$_value = $value + 0;
+		$_value = \str_contains((string) $value, '.') ? (float) $value : (int) $value;
 
 		if (true === $this->is_int && !\is_int($_value)) {
 			throw new KliInputException(

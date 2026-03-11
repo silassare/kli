@@ -63,9 +63,9 @@ class KliTypeString extends KliType
 	 * @param int         $value   the minimum string length
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function min(int $value, ?string $message = null): self
+	public function min(int $value, ?string $message = null): static
 	{
 		if ($value < 1) {
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid integer(>0).', $value));
@@ -88,9 +88,9 @@ class KliTypeString extends KliType
 	 * @param int         $value   the maximum string length
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function max(int $value, ?string $message = null): self
+	public function max(int $value, ?string $message = null): static
 	{
 		if ($value < 1) {
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid integer(>0).', $value));
@@ -113,9 +113,9 @@ class KliTypeString extends KliType
 	 * @param string      $reg_expression the regular expression
 	 * @param null|string $message        the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function pattern(string $reg_expression, ?string $message = null): self
+	public function pattern(string $reg_expression, ?string $message = null): static
 	{
 		if (false === \preg_match($reg_expression, '')) {
 			throw new KliRuntimeException(\sprintf('invalid regular expression: %s', $reg_expression));
@@ -134,9 +134,9 @@ class KliTypeString extends KliType
 	 * @param callable    $validator the validator function
 	 * @param null|string $message   the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function validator(callable $validator, ?string $message = null): self
+	public function validator(callable $validator, ?string $message = null): static
 	{
 		$this->validator_fn = $validator;
 

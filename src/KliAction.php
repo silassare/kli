@@ -80,9 +80,9 @@ final class KliAction
 	 *
 	 * @param callable $handler
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function handler(callable $handler): self
+	public function handler(callable $handler): static
 	{
 		$this->handler_fn = $handler;
 
@@ -143,9 +143,9 @@ final class KliAction
 	 *
 	 * @param KliOption ...$options
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addOption(KliOption ...$options): self
+	public function addOption(KliOption ...$options): static
 	{
 		foreach ($options as $o) {
 			$opt_name = $o->getName();
@@ -231,9 +231,9 @@ final class KliAction
 	 *
 	 * @param string $description action description
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function description(string $description): self
+	public function description(string $description): static
 	{
 		$this->description = \trim($description);
 

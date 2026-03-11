@@ -89,9 +89,9 @@ class KliCommand
 	 *
 	 * @param callable(KliAction, KliArgs): void $handler
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function handler(callable $handler): self
+	public function handler(callable $handler): static
 	{
 		$this->fallback_handler = $handler;
 
@@ -122,9 +122,9 @@ class KliCommand
 	 *
 	 * @param KliAction $action action object
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addAction(KliAction $action): self
+	public function addAction(KliAction $action): static
 	{
 		/**
 		 * @var KliAction[] $actions
@@ -149,9 +149,9 @@ class KliCommand
 	 *
 	 * @param string $description command description
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function description(string $description): self
+	public function description(string $description): static
 	{
 		$this->description = \trim($description);
 

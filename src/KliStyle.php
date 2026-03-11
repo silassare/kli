@@ -129,14 +129,14 @@ class KliStyle
 	 *
 	 * @param array $options
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function box(array $options = [
 		'top'    => 1,
 		'right'  => 1,
 		'left'   => 1,
 		'bottom' => 1,
-	]): self
+	]): static
 	{
 		$this->box_options = $options;
 
@@ -146,9 +146,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to black.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function black(): self
+	public function black(): static
 	{
 		$this->opt_color = 'black';
 
@@ -158,9 +158,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to dark gray.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function darkGray(): self
+	public function darkGray(): static
 	{
 		$this->opt_color = 'dark_gray';
 
@@ -170,9 +170,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to blue.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function blue(): self
+	public function blue(): static
 	{
 		$this->opt_color = 'blue';
 
@@ -182,9 +182,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to light blue.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lightBlue(): self
+	public function lightBlue(): static
 	{
 		$this->opt_color = 'light_blue';
 
@@ -194,9 +194,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to green.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function green(): self
+	public function green(): static
 	{
 		$this->opt_color = 'green';
 
@@ -206,9 +206,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to light green.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lightGreen(): self
+	public function lightGreen(): static
 	{
 		$this->opt_color = 'light_green';
 
@@ -218,9 +218,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to cyan.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function cyan(): self
+	public function cyan(): static
 	{
 		$this->opt_color = 'cyan';
 
@@ -230,9 +230,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to light cyan.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lightCyan(): self
+	public function lightCyan(): static
 	{
 		$this->opt_color = 'light_cyan';
 
@@ -242,9 +242,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to red.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function red(): self
+	public function red(): static
 	{
 		$this->opt_color = 'red';
 
@@ -254,9 +254,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to light red.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lightRed(): self
+	public function lightRed(): static
 	{
 		$this->opt_color = 'light_red';
 
@@ -266,9 +266,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to magenta.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function magenta(): self
+	public function magenta(): static
 	{
 		$this->opt_color = 'magenta';
 
@@ -278,9 +278,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to light magenta.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lightMagenta(): self
+	public function lightMagenta(): static
 	{
 		$this->opt_color = 'light_magenta';
 
@@ -290,9 +290,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to brown.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function yellow(): self
+	public function yellow(): static
 	{
 		$this->opt_color = 'yellow';
 
@@ -302,9 +302,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to light gray.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lightGray(): self
+	public function lightGray(): static
 	{
 		$this->opt_color = 'light_gray';
 
@@ -314,9 +314,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to white.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function white(): self
+	public function white(): static
 	{
 		$this->opt_color = 'white';
 
@@ -326,9 +326,9 @@ class KliStyle
 	/**
 	 * Sets the foreground color to normal.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function normal(): self
+	public function normal(): static
 	{
 		$this->opt_color = 'normal';
 
@@ -338,9 +338,9 @@ class KliStyle
 	/**
 	 * Sets the background color to black.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundBlack(): self
+	public function backgroundBlack(): static
 	{
 		$this->opt_bg = 'black';
 
@@ -350,9 +350,9 @@ class KliStyle
 	/**
 	 * Sets the background color to red.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundRed(): self
+	public function backgroundRed(): static
 	{
 		$this->opt_bg = 'red';
 
@@ -362,9 +362,9 @@ class KliStyle
 	/**
 	 * Sets the background color to green.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundGreen(): self
+	public function backgroundGreen(): static
 	{
 		$this->opt_bg = 'green';
 
@@ -374,9 +374,9 @@ class KliStyle
 	/**
 	 * Sets the background color to yellow.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundYellow(): self
+	public function backgroundYellow(): static
 	{
 		$this->opt_bg = 'yellow';
 
@@ -386,9 +386,9 @@ class KliStyle
 	/**
 	 * Sets the background color to blue.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundBlue(): self
+	public function backgroundBlue(): static
 	{
 		$this->opt_bg = 'blue';
 
@@ -398,9 +398,9 @@ class KliStyle
 	/**
 	 * Sets the background color to magenta.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundMagenta(): self
+	public function backgroundMagenta(): static
 	{
 		$this->opt_bg = 'magenta';
 
@@ -410,9 +410,9 @@ class KliStyle
 	/**
 	 * Sets the background color to cyan.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundCyan(): self
+	public function backgroundCyan(): static
 	{
 		$this->opt_bg = 'cyan';
 
@@ -422,9 +422,9 @@ class KliStyle
 	/**
 	 * Sets the background color to light gray.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function backgroundLightGray(): self
+	public function backgroundLightGray(): static
 	{
 		$this->opt_bg = 'light_gray';
 
@@ -434,9 +434,9 @@ class KliStyle
 	/**
 	 * Sets bold style.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function bold(): self
+	public function bold(): static
 	{
 		$this->opt_style = 'bold';
 
@@ -446,9 +446,9 @@ class KliStyle
 	/**
 	 * Sets dim style.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function dim(): self
+	public function dim(): static
 	{
 		$this->opt_style = 'dim';
 
@@ -458,9 +458,9 @@ class KliStyle
 	/**
 	 * Sets underline style.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function underline(): self
+	public function underline(): static
 	{
 		$this->opt_style = 'underline';
 
@@ -470,9 +470,9 @@ class KliStyle
 	/**
 	 * Sets blink style.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function blink(): self
+	public function blink(): static
 	{
 		$this->opt_style = 'blink';
 
@@ -482,9 +482,9 @@ class KliStyle
 	/**
 	 * Sets invert style.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function invert(): self
+	public function invert(): static
 	{
 		$this->opt_style = 'invert';
 
@@ -494,9 +494,9 @@ class KliStyle
 	/**
 	 * Sets hidden style.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function hidden(): self
+	public function hidden(): static
 	{
 		$this->opt_style = 'hidden';
 

@@ -70,9 +70,9 @@ class KliTypePath extends KliType
 	 * @param int         $value   the minimum path count
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function min(int $value, ?string $message = null): self
+	public function min(int $value, ?string $message = null): static
 	{
 		if ($value < 1) {
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid integer(>0).', $value));
@@ -95,9 +95,9 @@ class KliTypePath extends KliType
 	 * @param int         $value   the maximum path count
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function max(int $value, ?string $message = null): self
+	public function max(int $value, ?string $message = null): static
 	{
 		if ($value < 1) {
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid integer(>0).', $value));
@@ -120,9 +120,9 @@ class KliTypePath extends KliType
 	 * @param string      $reg_expression the regular expression
 	 * @param null|string $message        the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function pattern(string $reg_expression, ?string $message = null): self
+	public function pattern(string $reg_expression, ?string $message = null): static
 	{
 		if (false === \preg_match($reg_expression, '')) {
 			throw new KliRuntimeException(\sprintf('invalid regular expression: %s', $reg_expression));
@@ -138,9 +138,9 @@ class KliTypePath extends KliType
 	/**
 	 * Allow multiple path.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function multiple(): self
+	public function multiple(): static
 	{
 		$this->multi = true;
 
@@ -152,9 +152,9 @@ class KliTypePath extends KliType
 	 *
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function file(?string $message = null): self
+	public function file(?string $message = null): static
 	{
 		$this->is_file = true;
 		$this->is_dir  = false;
@@ -169,9 +169,9 @@ class KliTypePath extends KliType
 	 *
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function dir(?string $message = null): self
+	public function dir(?string $message = null): static
 	{
 		$this->is_file = false;
 		$this->is_dir  = true;
@@ -186,9 +186,9 @@ class KliTypePath extends KliType
 	 *
 	 * @param null|string $message the error message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function writable(?string $message = null): self
+	public function writable(?string $message = null): static
 	{
 		$this->is_writable = true;
 
