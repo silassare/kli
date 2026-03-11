@@ -1,7 +1,6 @@
 {
 	"name": "silassare/kli",
 	"description": "Kli helps you add an interactive command-line interface to your php project.",
-	"version": "2.0.0",
 	"keywords": [
 		"kli",
 		"cli",
@@ -17,10 +16,10 @@
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^9.6.21",
 		"oliup/oliup-cs-php": "dev-main",
 		"roave/security-advisories": "dev-latest",
-		"vimeo/psalm": "^5.26.1"
+		"phpunit/phpunit": "^9.6.21",
+		"vimeo/psalm": "^6.0"
 	},
 	"homepage": "https://github.com/silassare/kli#readme",
 	"archive": {
@@ -49,7 +48,12 @@
 	"prefer-stable": true,
 	"extra": {
 		"branch-alias": {
-			"dev-main": "2.0.x-dev"
+			"dev-main": "2.x-dev"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": false
 		}
 	}
 }
