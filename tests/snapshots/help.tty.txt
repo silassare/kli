@@ -1,0 +1,14 @@
+
+  [1mphpunit v1.0.0[22m
+
+  [1mUsage[22m
+
+    [2m$ phpunit <command> <action> [options][22m    Run a command
+    [2m$ phpunit[22m                                 Start interactive mode
+    [2m$ phpunit [command [action]] --help[22m       Show help
+    [2m$ phpunit --version[22m                       Show version
+
+  [1mCommands[22m
+
+    [36;1mhello[39;22m    Say hello to someone.
+

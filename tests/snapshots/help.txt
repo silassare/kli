@@ -1,23 +1,14 @@
 
+  phpunit v1.0.0
 
-Usage:
-  > phpunit command action [options]
-For interactive mode.
-  > phpunit
-To show help message.
-  > phpunit [command [action]] -? or --help
+  Usage
 
-█ hello
-█ Say hello to someone.
+    $ phpunit <command> <action> [options]    Run a command
+    $ phpunit                                 Start interactive mode
+    $ phpunit [command [action]] --help       Show help
+    $ phpunit --version                       Show version
 
+  Commands
 
-  > hello say [options]
-    Say hello to someone.
-
-
-      -n , --name	no description
-
-
-      -a , --age	no description
-
+    hello    Say hello to someone.
 

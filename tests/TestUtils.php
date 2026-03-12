@@ -27,7 +27,26 @@ final class TestUtils
 	public static function ensureSnapshotFile(string $snapshot_path, string $content): void
 	{
 		if (!\file_exists($snapshot_path)) {
+			$dir = \dirname($snapshot_path);
+
+			if (!\is_dir($dir)) {
+				\mkdir($dir, 0777, true);
+			}
+
 			\file_put_contents($snapshot_path, $content);
 		}
+	}
+
+	/**
+	 * Strip ANSI escape codes from a string so that snapshot comparisons
+	 * remain stable regardless of whether stdout is a TTY.
+	 *
+	 * @param string $str
+	 *
+	 * @return string
+	 */
+	public static function stripAnsi(string $str): string
+	{
+		return (string) \preg_replace('/\033\[[0-9;]*m/', '', $str);
 	}
 }
