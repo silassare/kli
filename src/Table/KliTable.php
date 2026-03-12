@@ -30,8 +30,10 @@ class KliTable
 {
 	/** Minimum content width (excluding padding) for any cell, in characters. */
 	public const MIN_CELL_WIDTH   = 5;
+
 	/** Horizontal space reserved for padding on each side of cell content. */
 	public const MIN_CELL_PADDING = 2;
+
 	/** Character appended to cell content that exceeds the available width. */
 	public const TRUNCATE_CHAR    = '…';
 
