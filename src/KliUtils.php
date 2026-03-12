@@ -29,7 +29,7 @@ class KliUtils
 	 */
 	public static function stringToArgv(string $command): array
 	{
-		$len             = \mb_strlen($command);
+		$len             = \strlen($command);
 		$argv            = [];
 		$arg             = '';
 		$in_double_quote = false;
@@ -138,7 +138,7 @@ class KliUtils
 	{
 		$width = \max(1, $width);
 
-		return \wordwrap(\preg_replace("~\n|\r\n?~", '', $text), $width, "\n", $cut_long_word);
+		return \wordwrap(\preg_replace("~\r\n?~", "\n", $text), $width, "\n", $cut_long_word);
 	}
 
 	/**
@@ -229,8 +229,8 @@ class KliUtils
 	 */
 	public static function shorten(string $text, int $max_length = 80): string
 	{
-		if (\strlen($text) > $max_length) {
-			$text = \substr($text, 0, $max_length) . '...';
+		if (\mb_strlen($text) > $max_length) {
+			$text = \mb_substr($text, 0, $max_length) . '...';
 		}
 
 		return $text;

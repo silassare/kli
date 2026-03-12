@@ -66,6 +66,21 @@ class KliStyle
 		'hidden'    => '28',
 	];
 
+	/**
+	 * When set to true, ANSI codes are always emitted regardless of whether
+	 * STDOUT is a TTY. Intended for tests that need to assert ANSI output
+	 * without a real terminal.
+	 */
+	public static bool $forceAnsi = false;
+
+	/**
+	 * When set to true, ANSI codes are never emitted regardless of whether
+	 * STDOUT is a TTY. Takes precedence over $forceAnsi.
+	 * Intended for tests that need to assert plain-text output
+	 * even when running in a real terminal.
+	 */
+	public static bool $disableAnsi = false;
+
 	private static string $foreground_reset = '39';
 
 	private static string $background_reset = '49';
@@ -97,7 +112,7 @@ class KliStyle
 		$set   = [];
 		$reset = [];
 
-		if (\stream_isatty(\STDOUT)) {
+		if (!self::$disableAnsi && (self::$forceAnsi || \stream_isatty(\STDOUT))) {
 			if (isset(self::FOREGROUND_COLORS[$color])) {
 				$set[]   = self::FOREGROUND_COLORS[$color];
 				$reset[] = self::$foreground_reset;

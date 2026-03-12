@@ -168,7 +168,7 @@ class KliTable
 
 				$formatter           = $header->getCellFormatter();
 				$formatted_row[$key] = $formatter ? $formatter->format($value, $header, $row) : (string) $value;
-				$len                 = \strlen($formatted_row[$key]);
+				$len                 = \mb_strlen($formatted_row[$key]);
 				if (!isset($max_widths[$key]) || $max_widths[$key] < $len) {
 					$max_widths[$key] = $len;
 				}
@@ -184,7 +184,7 @@ class KliTable
 			if ($width) {
 				$width = \max($width, self::MIN_CELL_WIDTH) + self::MIN_CELL_PADDING;
 			} else {
-				$width = \max($max_widths[$key], \strlen($header->getLabel())) + self::MIN_CELL_PADDING;
+				$width = \max($max_widths[$key], \mb_strlen($header->getLabel())) + self::MIN_CELL_PADDING;
 			}
 
 			$max_widths[$key] = $width;

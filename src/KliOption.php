@@ -203,12 +203,12 @@ final class KliOption
 	 * when $to is set, any anonymous argument in offset range($at,$to) will be used.
 	 * NOTE: $to could be set to infinity (INF)
 	 *
-	 * @param int      $at the offset to start from
-	 * @param null|int $to the end offset to use
+	 * @param int            $at the offset to start from
+	 * @param null|float|int $to the end offset to use
 	 *
 	 * @return static
 	 */
-	public function offsets(int $at, ?int $to = null): static
+	public function offsets(int $at, float|int|null $to = null): static
 	{
 		if ($this->locked) {
 			throw new KliRuntimeException("can't define offsets, option is locked.");
@@ -218,11 +218,14 @@ final class KliOption
 			throw new KliRuntimeException(\sprintf('"%s" is not a valid arg offset.', $at));
 		}
 
-		if (null !== $to && (!\is_infinite($to) || $to < $at)) {
+		if (null !== $to && $to < $at) {
 			throw new KliRuntimeException(\sprintf('from=%s to=%s is not a valid arg offset range.', $at, $to));
 		}
 
-		$range = [$at, $to ?? $at];
+		// Store INF as-is (float); cast any other finite value to int so that
+		// the stored pair is always [int, int|float] with int both ends for
+		// finite ranges, preserving the === equality check in the parser.
+		$range = [$at, null === $to ? $at : (\INF === $to ? \INF : (int) $to)];
 
 		$this->opt_offsets = $range;
 

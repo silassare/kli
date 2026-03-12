@@ -154,13 +154,13 @@ class KliTypeString extends KliType
 			throw new KliInputException(\sprintf($this->msg('msg_require_string'), $opt_name));
 		}
 
-		if (isset($this->opt_min) && \strlen($value) < $this->opt_min) {
+		if (isset($this->opt_min) && \mb_strlen($value) < $this->opt_min) {
 			throw new KliInputException(
 				\sprintf($this->msg('msg_length_lt_min'), $value, $this->opt_min, $opt_name)
 			);
 		}
 
-		if (isset($this->opt_max) && \strlen($value) > $this->opt_max) {
+		if (isset($this->opt_max) && \mb_strlen($value) > $this->opt_max) {
 			throw new KliInputException(
 				\sprintf($this->msg('msg_length_gt_max'), $value, $this->opt_max, $opt_name)
 			);

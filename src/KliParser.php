@@ -168,7 +168,7 @@ final class KliParser
 			} else {
 				$prompt = \sprintf('%s [y/n]: ', $prompt);
 			}
-		} elseif (!empty($default)) {
+		} elseif (null !== $default) {
 			$prompt = \sprintf('%s [%s]: ', $prompt, \is_string($default) ? KliUtils::shorten($default, 20) : $default);
 		} else {
 			$prompt = \sprintf('%s: ', $prompt);
@@ -176,10 +176,10 @@ final class KliParser
 
 		$in = null;
 
-		while (empty($in)) {
+		while (null === $in) {
 			$in = $this->cli->readLine($prompt, $option->promptForPassword());
 
-			if (empty($in)) {
+			if ('' === $in) {
 				$in = $default;
 			}
 
