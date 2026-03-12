@@ -1,0 +1,218 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * kli-demo — a self-contained preview tool for the Kli framework.
+ *
+ * Commands
+ *   demo  cat     [--file=<path>]          Print file contents with line numbers
+ *   demo  head    [--file=<path>] [-n=10]  Print first N lines of a file
+ *   demo  msg     [--type=info|ok|err]     Show a sample message
+ *   demo  table   [--color]                Render a demo table
+ *   demo  style                            Show all available ANSI styles
+ *
+ * Run:
+ *   php kli-demo --help
+ *   php kli-demo demo cat --file=README.md
+ *   php kli-demo demo msg --type=ok
+ *   php kli-demo demo table --color
+ *   php kli-demo              (interactive mode)
+ */
+
+declare(strict_types=1);
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Kli\Kli;
+use Kli\KliArgs;
+use Kli\KliStyle;
+use Kli\Table\KliTable;
+use Kli\Table\KliTableFormatter;
+
+// ---------------------------------------------------------------------------
+// Build the CLI
+// ---------------------------------------------------------------------------
+
+$kli = Kli::new('kli-demo', enable_interactive: true);
+
+$kli->setTitle('kli-demo');
+
+// ---------------------------------------------------------------------------
+// Command: demo
+// ---------------------------------------------------------------------------
+
+$demo = $kli->command('demo');
+$demo->description('Showcase commands for Kli features.');
+
+// ---- action: cat ----------------------------------------------------------
+
+$act = $demo->action('cat', 'Print a file with line numbers.');
+$act->option('file', 'f')
+    ->description('Path to the file to read.')
+    ->path()
+    ->file()
+    ->def(__FILE__);
+
+$act->handler(function (KliArgs $args) use ($kli): void {
+    $path  = $args->get('file');
+    $lines = \file($path, \FILE_IGNORE_NEW_LINES);
+
+    if (false === $lines) {
+        $kli->error('Cannot read file: ' . $path);
+
+        return;
+    }
+
+    $total  = \count($lines);
+    $pad    = \strlen((string) $total);
+    $style  = $kli->style()->dim();
+    $header = $kli->style()->bold()->apply($path . '  (' . $total . ' lines)');
+
+    $kli->writeLn($header);
+    $kli->writeLn();
+
+    foreach ($lines as $i => $line) {
+        $num = $style->apply(\str_pad((string) ($i + 1), $pad, ' ', \STR_PAD_LEFT));
+        $kli->writeLn($num . '  ' . $line, false);
+    }
+});
+
+// ---- action: head ---------------------------------------------------------
+
+$act = $demo->action('head', 'Print the first N lines of a file.');
+$act->option('file', 'f')
+    ->description('Path to the file to read.')
+    ->path()
+    ->file()
+    ->def(__FILE__);
+$act->option('lines', 'n')
+    ->description('Number of lines to show.')
+    ->number()
+    ->integer()
+    ->min(1)
+    ->def(10);
+
+$act->handler(function (KliArgs $args) use ($kli): void {
+    $path  = $args->get('file');
+    $count = $args->get('lines');
+    $lines = \file($path, \FILE_IGNORE_NEW_LINES);
+
+    if (false === $lines) {
+        $kli->error('Cannot read file: ' . $path);
+
+        return;
+    }
+
+    $lines  = \array_slice($lines, 0, $count);
+    $pad    = \strlen((string) $count);
+    $header = $kli->style()->bold()->apply($path . '  (first ' . $count . ' lines)');
+
+    $kli->writeLn($header);
+    $kli->writeLn();
+
+    $dim = $kli->style()->dim();
+
+    foreach ($lines as $i => $line) {
+        $num = $dim->apply(\str_pad((string) ($i + 1), $pad, ' ', \STR_PAD_LEFT));
+        $kli->writeLn($num . '  ' . $line, false);
+    }
+});
+
+// ---- action: msg ----------------------------------------------------------
+
+$act = $demo->action('msg', 'Display a styled message.');
+$act->option('type', 't')
+    ->description('Message type: info, ok, err, warn.')
+    ->string()
+    ->def('info');
+
+$act->handler(function (KliArgs $args) use ($kli): void {
+    $type = $args->get('type');
+
+    match ($type) {
+        'ok'   => $kli->success('Everything went smoothly — operation completed.'),
+        'err'  => $kli->error('Something went wrong — please check your input.'),
+        'warn' => $kli->writeLn(
+            '  ' . $kli->style()->yellow()->apply('!') . '  Watch out — this might cause issues.'
+        ),
+        default => $kli->info('Here is some useful information for you.'),
+    };
+});
+
+// ---- action: table --------------------------------------------------------
+
+$act = $demo->action('table', 'Render a demo table.');
+$act->option('color', 'c')
+    ->description('Apply colored borders.')
+    ->bool()
+    ->def(false);
+
+$act->handler(function (KliArgs $args) use ($kli): void {
+    $color = $args->get('color');
+
+    $table = $kli->table();
+    $table->addHeader('ID',      'id')->alignCenter();
+    $table->addHeader('Name',    'name')->alignRight();
+    $table->addHeader('Role',    'role')->alignLeft();
+    $table->addHeader('Active',  'active')->alignCenter()
+        ->setCellFormatter(KliTableFormatter::bool());
+    $table->addHeader('Score',   'score')->alignRight()
+        ->setCellFormatter(KliTableFormatter::number());
+
+    $table->addRows([
+        ['id' => 1, 'name' => 'Alice',   'role' => 'admin',     'active' => true,  'score' => 98.5],
+        ['id' => 2, 'name' => 'Bob',     'role' => 'editor',    'active' => true,  'score' => 74.0],
+        ['id' => 3, 'name' => 'Charlie', 'role' => 'viewer',    'active' => false, 'score' => 51.25],
+        ['id' => 4, 'name' => 'Diana',   'role' => 'moderator', 'active' => true,  'score' => 88.0],
+        ['id' => 5, 'name' => 'Eve',     'role' => 'editor',    'active' => false, 'score' => 62.75],
+    ]);
+
+    if ($color) {
+        $table->borderStyle()->cyan();
+    }
+
+    $kli->writeLn($table->render(), false);
+});
+
+// ---- action: style --------------------------------------------------------
+
+$act = $demo->action('style', 'Preview all ANSI styles and foreground colors.');
+$act->handler(function (KliArgs $args) use ($kli): void {
+    $kli->writeLn($kli->style()->bold()->apply('  Styles'));
+    $kli->writeLn();
+
+    $styles = ['bold', 'dim', 'underline', 'blink', 'invert'];
+
+    foreach ($styles as $s) {
+        $styled = (new KliStyle())->{$s}()->apply('  ' . \str_pad($s, 12));
+        $kli->writeLn($styled, false);
+    }
+
+    $kli->writeLn();
+    $kli->writeLn($kli->style()->bold()->apply('  Foreground colors'));
+    $kli->writeLn();
+
+    $colors = [
+        'black', 'darkGray', 'red', 'lightRed', 'green', 'lightGreen',
+        'yellow', 'blue', 'lightBlue', 'magenta', 'lightMagenta',
+        'cyan', 'lightCyan', 'lightGray', 'white', 'normal',
+    ];
+
+    foreach ($colors as $c) {
+        $swatch = (new KliStyle())->{$c}()->apply('  ' . \str_pad($c, 16) . ' ████████');
+        $kli->writeLn($swatch, false);
+    }
+
+    $kli->writeLn();
+    $kli->writeLn($kli->style()->bold()->apply('  Messages'));
+    $kli->writeLn();
+    $kli->info('This is an info message.');
+    $kli->success('This is a success message.');
+    $kli->error('This is an error message.');
+});
+
+// ---------------------------------------------------------------------------
+// Run
+// ---------------------------------------------------------------------------
+
+$kli->execute($argv);
