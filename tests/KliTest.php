@@ -91,16 +91,16 @@ final class KliTest extends TestCase
 		$dir = __DIR__ . '/snapshots';
 
 		foreach ([['', false], ['.tty', true]] as [$suffix, $tty]) {
-			KliStyle::$disableAnsi = !$tty;
-			KliStyle::$forceAnsi   = $tty;
+			KliStyle::disableAnsi(!$tty);
+			KliStyle::forceAnsi($tty);
 
 			try {
 				\ob_start();
 				$kli->execute(['kli', '--help']);
 				$content = (string) \ob_get_clean();
 			} finally {
-				KliStyle::$disableAnsi = false;
-				KliStyle::$forceAnsi   = false;
+				KliStyle::disableAnsi(false);
+				KliStyle::forceAnsi(false);
 			}
 
 			$path = $dir . '/help' . $suffix . '.txt';

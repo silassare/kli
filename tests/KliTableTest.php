@@ -146,14 +146,14 @@ final class KliTableTest extends TestCase
 	 * Renders all four table-snapshot variants and asserts them against the golden files.
 	 *
 	 * @param string $suffix    Appended before ".txt" -- '' for plain text, '.tty' for ANSI.
-	 * @param bool   $forceAnsi when true, forces ANSI codes via KliStyle::$forceAnsi
+	 * @param bool   $forceAnsi when true, forces ANSI codes via KliStyle::forceAnsi()
 	 */
 	private function renderAllSnapshots(string $suffix, bool $forceAnsi): void
 	{
 		$dir = __DIR__ . '/snapshots';
 
-		KliStyle::$forceAnsi   = $forceAnsi;
-		KliStyle::$disableAnsi = !$forceAnsi;
+		KliStyle::forceAnsi($forceAnsi);
+		KliStyle::disableAnsi(!$forceAnsi);
 
 		try {
 			[$table, $phone_header] = $this->buildTable();
@@ -200,8 +200,8 @@ final class KliTableTest extends TestCase
 			TestUtils::ensureSnapshotFile($dir . '/table.custom.border' . $suffix . '.txt', $content);
 			self::assertStringEqualsFile($dir . '/table.custom.border' . $suffix . '.txt', $content);
 		} finally {
-			KliStyle::$forceAnsi   = false;
-			KliStyle::$disableAnsi = false;
+			KliStyle::forceAnsi(false);
+			KliStyle::disableAnsi(false);
 		}
 	}
 }

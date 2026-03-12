@@ -76,19 +76,19 @@ class KliStyle
 	];
 
 	/**
-	 * When set to true, ANSI codes are always emitted regardless of whether
-	 * STDOUT is a TTY. Intended for tests that need to assert ANSI output
-	 * without a real terminal.
+	 * When true, ANSI codes are always emitted regardless of whether STDOUT is
+	 * a TTY. Intended for tests that need to assert ANSI output without a real
+	 * terminal. Set via forceAnsi().
 	 */
-	public static bool $forceAnsi = false;
+	private static bool $forceAnsi = false;
 
 	/**
-	 * When set to true, ANSI codes are never emitted regardless of whether
-	 * STDOUT is a TTY. Takes precedence over $forceAnsi.
-	 * Intended for tests that need to assert plain-text output
-	 * even when running in a real terminal.
+	 * When true, ANSI codes are never emitted regardless of whether STDOUT is
+	 * a TTY. Takes precedence over $forceAnsi. Intended for tests that need to
+	 * assert plain-text output even when running in a real terminal. Set via
+	 * disableAnsi().
 	 */
-	public static bool $disableAnsi = false;
+	private static bool $disableAnsi = false;
 
 	private static string $foreground_reset = '39';
 
@@ -150,6 +150,33 @@ class KliStyle
 		}
 
 		return $str;
+	}
+
+	/**
+	 * Forces ANSI codes on or off globally, regardless of whether STDOUT is a TTY.
+	 *
+	 * Pass true to always emit ANSI codes (useful in tests that assert styled
+	 * output). Pass false to restore automatic TTY detection.
+	 *
+	 * @param bool $force true to force-enable ANSI, false to restore auto-detect
+	 */
+	public static function forceAnsi(bool $force = true): void
+	{
+		self::$forceAnsi = $force;
+	}
+
+	/**
+	 * Disables ANSI codes globally, regardless of whether STDOUT is a TTY.
+	 *
+	 * Takes precedence over forceAnsi(). Pass true to suppress all ANSI output
+	 * (useful in tests that assert plain-text output). Pass false to restore
+	 * automatic TTY detection.
+	 *
+	 * @param bool $disable true to disable ANSI output, false to restore auto-detect
+	 */
+	public static function disableAnsi(bool $disable = true): void
+	{
+		self::$disableAnsi = $disable;
 	}
 
 	/**

@@ -32,7 +32,7 @@ final class KliStyleTest extends TestCase
 
 		// Force ANSI output so these assertions run regardless of whether
 		// STDOUT happens to be a TTY.
-		KliStyle::$forceAnsi = true;
+		KliStyle::forceAnsi(true);
 
 		try {
 			$color = new KliStyle();
@@ -48,7 +48,7 @@ final class KliStyleTest extends TestCase
 
 			self::assertSame("\033[31;43;4m \033[39;49;24m", $color->apply(' '));
 		} finally {
-			KliStyle::$forceAnsi = false;
+			KliStyle::forceAnsi(false);
 		}
 	}
 
