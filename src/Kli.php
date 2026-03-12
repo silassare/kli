@@ -303,32 +303,114 @@ class Kli
 		if (!$this->is_interactive) {
 			$this->welcome();
 		}
-		$head = \basename($this->getCliEntryPoint());
 
-		$h = \PHP_EOL . 'Usage:'
-			. \PHP_EOL . "  > {$head} command action [options]"
-			. \PHP_EOL . 'For interactive mode.'
-			. \PHP_EOL . "  > {$head}"
-			. \PHP_EOL . 'To show help message.'
-			. \PHP_EOL . "  > {$head} [command [action]] -?|--help"
-			. \PHP_EOL . 'To show version.'
-			. \PHP_EOL . "  > {$head} -v|--version"
-			. \PHP_EOL . \PHP_EOL;
+		$head = \basename($this->getCliEntryPoint());
+		$s    = $this->style();
+		$out  = '  ' . $s->bold()->apply($this->getVersion(true)) . \PHP_EOL;
+		$out .= \PHP_EOL;
 
 		if (isset($command_name) && $this->hasCommand($command_name)) {
 			$cmd = $this->commands[$command_name];
 
 			if (isset($action_name) && $cmd->hasAction($action_name)) {
-				$h .= \sprintf('  %s %s', $cmd->getName(), $cmd->getAction($action_name));
+				// Action-level help
+				$action  = $cmd->getAction($action_name);
+				$options = $action->getOptions();
+				$sig     = $cmd->getName() . ' ' . $action->getName();
+
+				if (\count($options) > 0) {
+					$sig .= ' [options]';
+				}
+
+				$out .= '  ' . $s->bold()->apply($sig) . \PHP_EOL;
+				$out .= '  ' . $action->getDescription() . \PHP_EOL;
+
+				if (\count($options) > 0) {
+					$out .= \PHP_EOL;
+					$out .= '  ' . $s->bold()->apply('Options') . \PHP_EOL;
+					$out .= \PHP_EOL;
+
+					foreach ($options as $opt) {
+						$out .= $this->renderOptionHelp($opt, 4);
+					}
+				}
 			} else {
-				$h .= (string) $cmd;
+				// Command-level help
+				$out .= '  ' . $s->bold()->apply($cmd->getName()) . \PHP_EOL;
+
+				if ('' !== $cmd->getDescription()) {
+					$out .= '  ' . $cmd->getDescription() . \PHP_EOL;
+				}
+
+				$out .= \PHP_EOL;
+				$out .= '  ' . $s->bold()->apply('Actions') . \PHP_EOL;
+
+				foreach ($cmd->getActions() as $action) {
+					$options = $action->getOptions();
+					$sig     = $action->getName();
+
+					if (\count($options) > 0) {
+						$sig .= ' [options]';
+					}
+
+					$out .= \PHP_EOL;
+					$out .= '    ' . $s->cyan()->apply($sig) . \PHP_EOL;
+					$out .= '      ' . $action->getDescription() . \PHP_EOL;
+
+					foreach ($options as $opt) {
+						$out .= $this->renderOptionHelp($opt, 6);
+					}
+				}
 			}
 		} else {
-			$h .= \implode(\PHP_EOL . \PHP_EOL, $this->commands) . \PHP_EOL;
+			// Top-level help
+			$out .= '  ' . $s->bold()->apply('Usage') . \PHP_EOL;
+			$out .= \PHP_EOL;
+
+			$usages = [
+				'$ ' . $head . ' <command> <action> [options]' => 'Run a command',
+				'$ ' . $head                                   => 'Start interactive mode',
+				'$ ' . $head . ' [command [action]] --help'    => 'Show help',
+				'$ ' . $head . ' --version'                    => 'Show version',
+			];
+
+			$max_usage_len = 0;
+
+			foreach ($usages as $usage => $_) {
+				$len = \mb_strlen($usage);
+
+				if ($len > $max_usage_len) {
+					$max_usage_len = $len;
+				}
+			}
+
+			foreach ($usages as $usage => $desc) {
+				$gap  = \str_repeat(' ', $max_usage_len - \mb_strlen($usage) + 4);
+				$out .= '    ' . $s->dim()->apply($usage) . $gap . $desc . \PHP_EOL;
+			}
+
+			$out .= \PHP_EOL;
+			$out .= '  ' . $s->bold()->apply('Commands') . \PHP_EOL;
+			$out .= \PHP_EOL;
+
+			$max_cmd_len = 0;
+
+			foreach ($this->commands as $cmd) {
+				$len = \mb_strlen($cmd->getName());
+
+				if ($len > $max_cmd_len) {
+					$max_cmd_len = $len;
+				}
+			}
+
+			foreach ($this->commands as $cmd) {
+				$gap  = \str_repeat(' ', $max_cmd_len - \mb_strlen($cmd->getName()) + 4);
+				$desc = $cmd->getDescription();
+				$out .= '    ' . $s->cyan()->apply($cmd->getName()) . $gap . $desc . \PHP_EOL;
+			}
 		}
 
-		$this->showVersion();
-		$this->writeLn($h, false);
+		$this->writeLn($out, false);
 	}
 
 	/**
@@ -336,7 +418,7 @@ class Kli
 	 */
 	public function showVersion(): void
 	{
-		$this->writeLn($this->getVersion(true));
+		$this->writeLn('  ' . $this->style()->bold()->apply($this->getVersion(true)));
 	}
 
 	/**
@@ -466,15 +548,13 @@ class Kli
 	 */
 	public function error(string $msg, bool $wrap = true): static
 	{
-		$msg = '✖ ' . $msg;
-
 		if ($wrap) {
 			$msg = KliUtils::wrap($msg);
 		}
 
-		return $this->writeLn($this->style()
-			->red()
-			->apply($msg), false);
+		$icon = $this->style()->red()->bold()->apply('✖');
+
+		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
 	}
 
 	/**
@@ -507,15 +587,13 @@ class Kli
 	 */
 	public function success(string $msg, bool $wrap = true): static
 	{
-		$msg = '✔ ' . $msg;
-
 		if ($wrap) {
 			$msg = KliUtils::wrap($msg);
 		}
 
-		return $this->writeLn($this->style()
-			->green()
-			->apply($msg), false);
+		$icon = $this->style()->green()->apply('✔');
+
+		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
 	}
 
 	/**
@@ -528,15 +606,13 @@ class Kli
 	 */
 	public function info(string $msg, bool $wrap = true): static
 	{
-		$msg = 'ℹ ' . $msg;
-
 		if ($wrap) {
 			$msg = KliUtils::wrap($msg);
 		}
 
-		return $this->writeLn($this->style()
-			->cyan()
-			->apply($msg), false);
+		$icon = $this->style()->cyan()->apply('ℹ');
+
+		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
 	}
 
 	/**
@@ -578,5 +654,41 @@ class Kli
 	{
 		/** @psalm-suppress ForbiddenCode */
 		return \shell_exec('stty -echo; head -n1; stty echo');
+	}
+
+	/**
+	 * Renders a single option as a formatted help line.
+	 *
+	 * @param KliOption $option      the option to render
+	 * @param int       $indent_size leading spaces
+	 *
+	 * @return string
+	 */
+	private function renderOptionHelp(KliOption $option, int $indent_size): string
+	{
+		$indent = \str_repeat(' ', $indent_size);
+		$flag   = $option->getFlag();
+
+		// Left column: "-f  --name"  or  "    --name" (plain, no ANSI, for correct str_pad)
+		$left  = $flag ? '-' . $flag . '  ' : '    ';
+		$left .= '--' . $option->getName();
+
+		$parts = [$option->getDescription()];
+		$type  = $option->getType();
+
+		if ($type->hasDefault()) {
+			$default     = $type->getDefault();
+			$default_str = \is_bool($default) ? ($default ? 'true' : 'false') : (string) $default;
+
+			if ('' !== $default_str) {
+				$parts[] = $this->style()->dim()->apply('default: ' . $default_str);
+			}
+		}
+
+		if ($option->isRequired()) {
+			$parts[] = $this->style()->yellow()->apply('required');
+		}
+
+		return $indent . \str_pad($left, 22) . \implode('   ', $parts) . \PHP_EOL;
 	}
 }
