@@ -118,7 +118,10 @@ class KliCommand
 	}
 
 	/**
-	 * Adds action(s) to this command.
+	 * Adds an action to this command.
+	 *
+	 * Throws KliRuntimeException when an action with the same name is already
+	 * registered on this command.
 	 *
 	 * @param KliAction $action action object
 	 *

@@ -18,6 +18,14 @@ use Kli\Table\Interfaces\KliTableCellFormatterInterface;
 
 /**
  * Class KliTableFormatter.
+ *
+ * Built-in KliTableCellFormatterInterface implementations for common value
+ * types. Use the static factory methods to create an instance, then assign it
+ * to a column via KliTableHeader::setCellFormatter().
+ *
+ * - bool()   -- renders true as "Yes" and false as "No"
+ * - number() -- formats a numeric value with number_format()
+ * - date()   -- formats a Unix timestamp with date()
  */
 class KliTableFormatter implements KliTableCellFormatterInterface
 {
@@ -32,9 +40,9 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	/**
 	 * KliTableFormatter constructor.
 	 *
-	 * @param string        $type
-	 * @param null|KliStyle $style
-	 * @param array         $params
+	 * @param string        $type   internal format type: 'bool', 'number', or 'date'
+	 * @param null|KliStyle $style  optional cell style returned by getStyle()
+	 * @param array         $params type-specific configuration (decimals, format, etc.)
 	 */
 	protected function __construct(string $type, ?KliStyle $style = null, array $params = [])
 	{

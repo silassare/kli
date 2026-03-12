@@ -15,6 +15,15 @@ namespace Kli;
 
 /**
  * Class KliStyle.
+ *
+ * Fluent builder for ANSI terminal styling. Chain one foreground color method,
+ * one background color method, and one style method, then call apply(string)
+ * to wrap the string in the appropriate ANSI escape sequences.
+ *
+ * ANSI codes are emitted only when STDOUT is a TTY. Override with the static
+ * flags: $forceAnsi (always emit) or $disableAnsi (never emit, takes
+ * precedence over $forceAnsi). Per-attribute reset codes are used so multiple
+ * independent styles can coexist on the same output line.
  */
 class KliStyle
 {
@@ -94,9 +103,13 @@ class KliStyle
 	private array $box_options;
 
 	/**
-	 * Apply style to the given string.
+	 * Wraps $str in ANSI escape sequences for the configured color and style.
 	 *
-	 * @param string $str
+	 * Emits codes only when STDOUT is a TTY or $forceAnsi is true.
+	 * Suppressed entirely when $disableAnsi is true regardless of TTY.
+	 * Returns $str unchanged when no codes apply or ANSI is disabled.
+	 *
+	 * @param string $str the string to style
 	 *
 	 * @return string
 	 */

@@ -53,12 +53,16 @@ abstract class KliType implements KliTypeInterface
 	}
 
 	/**
-	 * Sets/Gets custom error message.
+	 * Reads or overrides a named error message template.
 	 *
-	 * @param string      $key     the error key
-	 * @param null|string $message the error message
+	 * When $message is non-empty, stores it under $key and future calls will
+	 * return that text. Always returns the current template for $key, falling
+	 * back to $key itself when no template has been stored.
 	 *
-	 * @return string
+	 * @param string      $key     error message key defined in $error_messages
+	 * @param null|string $message replacement template (null to read only)
+	 *
+	 * @return string the current message template for $key
 	 */
 	protected function msg(string $key, ?string $message = null): string
 	{

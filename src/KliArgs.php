@@ -37,9 +37,9 @@ class KliArgs
 	}
 
 	/**
-	 * Gets a named arg value.
+	 * Gets a named option value by option name, alias, or single-char flag.
 	 *
-	 * @param string $name name or alias
+	 * @param string $name the option name, alias, or flag character
 	 *
 	 * @return null|mixed
 	 */

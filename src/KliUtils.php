@@ -220,10 +220,11 @@ class KliUtils
 	}
 
 	/**
-	 * Shorten text.
+	 * Truncates $text to at most $max_length characters (multibyte-safe).
+	 * Appends "..." when truncation occurs.
 	 *
-	 * @param string $text
-	 * @param int    $max_length
+	 * @param string $text       the text to shorten
+	 * @param int    $max_length the maximum number of characters to keep
 	 *
 	 * @return string
 	 */

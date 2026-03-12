@@ -19,6 +19,24 @@ use Kli\Table\KliTable;
 
 /**
  * Class Kli.
+ *
+ * Entry point and orchestrator for the CLI application. Holds the command
+ * registry, dispatches argv to the appropriate KliAction handler, manages
+ * the interactive REPL loop, and exposes I/O helpers (writeLn, error, info,
+ * success, table, style).
+ *
+ * Typical usage:
+ *
+ * ```php
+ * $kli = Kli::new('my-tool');
+ * $cmd = $kli->command('greet');
+ * $act = $cmd->action('say');
+ * $act->option('name', 'n')->string()->def('World');
+ * $act->handler(function (KliArgs $args) use ($kli): void {
+ *     $kli->success('Hello, ' . $args->get('name') . '!');
+ * });
+ * $kli->execute($argv);
+ * ```
  */
 class Kli
 {

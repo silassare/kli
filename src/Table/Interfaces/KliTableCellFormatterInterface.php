@@ -18,6 +18,11 @@ use Kli\Table\KliTableHeader;
 
 /**
  * Interface KliTableCellFormatterInterface.
+ *
+ * Formats and optionally styles a single table cell. Assign an implementation
+ * to a KliTableHeader via KliTableHeader::setCellFormatter(). The full row
+ * array is provided to both methods, enabling conditional formatting based on
+ * values in other columns.
  */
 interface KliTableCellFormatterInterface
 {

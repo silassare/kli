@@ -18,6 +18,11 @@ use Kli\Table\Interfaces\KliTableCellFormatterInterface;
 
 /**
  * Class KliTableHeader.
+ *
+ * Describes a single column in a KliTable: the display label shown in the
+ * header row, the row-array key used to retrieve cell data, text alignment
+ * (left / right / center), an optional fixed column width, and an optional
+ * KliTableCellFormatterInterface for value formatting and per-cell styling.
  */
 class KliTableHeader
 {
@@ -34,6 +39,9 @@ class KliTableHeader
 
 	/**
 	 * KliTableHeader constructor.
+	 *
+	 * @param string $label the column heading text displayed in the header row
+	 * @param string $key   the key used to look up a cell value in each row array
 	 */
 	public function __construct(string $label, string $key)
 	{

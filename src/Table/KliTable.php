@@ -17,11 +17,22 @@ use Kli\KliStyle;
 
 /**
  * Class KliTable.
+ *
+ * Renders a Unicode box-drawing table to a string. Define columns with
+ * addHeader(), populate data with addRow() / addRows(), then cast to string
+ * (via __toString()) or call render() directly. Column widths auto-size from
+ * content and header labels unless fixed with KliTableHeader::setWidth().
+ * Border characters can be overridden per-key with setBorderChars() (merges
+ * into the defaults). ANSI colour can be applied to borders via borderStyle()
+ * and to individual cells via KliTableCellFormatterInterface.
  */
 class KliTable
 {
+	/** Minimum content width (excluding padding) for any cell, in characters. */
 	public const MIN_CELL_WIDTH   = 5;
+	/** Horizontal space reserved for padding on each side of cell content. */
 	public const MIN_CELL_PADDING = 2;
+	/** Character appended to cell content that exceeds the available width. */
 	public const TRUNCATE_CHAR    = '…';
 
 	/**
@@ -236,13 +247,16 @@ class KliTable
 	}
 
 	/**
-	 * Renders a single cell.
+	 * Renders a single cell value to a fixed-width padded string.
 	 *
-	 * @param mixed          $value
-	 * @param KliTableHeader $header
-	 * @param int            $width
-	 * @param bool           $is_header
-	 * @param array          $row
+	 * Truncates content that exceeds the available width (width minus padding)
+	 * using TRUNCATE_CHAR. Applies alignment padding and optional ANSI style.
+	 *
+	 * @param string         $value     pre-formatted cell content
+	 * @param KliTableHeader $header    column definition (alignment, formatter, style)
+	 * @param int            $width     total column width including padding
+	 * @param bool           $is_header true when rendering the header row
+	 * @param array          $row       the full data row (used for conditional styling)
 	 *
 	 * @return string
 	 */

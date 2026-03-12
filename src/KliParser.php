@@ -18,6 +18,12 @@ use Kli\Types\KliTypeBool;
 
 /**
  * Class KliParser.
+ *
+ * Parses a raw argv token list for a specific KliAction. Resolves flags and
+ * aliases to canonical option names, collects anonymous positional arguments,
+ * assigns offset-mapped values, validates every option through its KliType,
+ * and interactively prompts the user when a required option is missing and
+ * prompt mode is enabled on that option.
  */
 final class KliParser
 {
@@ -211,15 +217,17 @@ final class KliParser
 	}
 
 	/**
-	 * Validate a list of parsed options for a given action.
+	 * Validates all parsed options for a given action.
 	 *
-	 * prompt user to define value: when an option is missing
-	 * and prompt is enabled for that option
+	 * For each option defined on the action, validates the supplied value through
+	 * its KliType. When a required option is absent and prompt is enabled,
+	 * interactively prompts the user. Falls back to the type default when present.
 	 *
-	 * @param KliAction $action          action object
-	 * @param array     &$parsed_options parsed options
+	 * @param KliAction $action          the action whose options are validated
+	 * @param array     &$parsed_options parsed option map, updated in place with validated values
+	 * @param array     $names_as_passed map of canonical option name -> token as the user typed it
 	 *
-	 * @throws KliInputException
+	 * @throws KliInputException when a required option has no value and no prompt/default
 	 */
 	private function validateOptions(KliAction $action, array &$parsed_options, array $names_as_passed): void
 	{
