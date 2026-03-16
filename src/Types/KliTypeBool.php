@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli\Types;
 
 use Kli\Exceptions\KliInputException;
+use Override;
 
 /**
  * Class KliTypeBool.
@@ -56,6 +57,7 @@ class KliTypeBool extends KliType
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function validate(string $opt_name, mixed $value): bool
 	{
 		$is_str = \is_string($value);

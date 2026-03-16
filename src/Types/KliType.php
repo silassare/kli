@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli\Types;
 
 use Kli\Types\Interfaces\KliTypeInterface;
+use Override;
 
 /**
  * Class KliType.
@@ -27,6 +28,7 @@ abstract class KliType implements KliTypeInterface
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function def(mixed $value): static
 	{
 		// the default should comply with all rules or not ?
@@ -39,6 +41,7 @@ abstract class KliType implements KliTypeInterface
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function hasDefault(): bool
 	{
 		return $this->has_default;
@@ -47,6 +50,7 @@ abstract class KliType implements KliTypeInterface
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function getDefault(): mixed
 	{
 		return $this->default;

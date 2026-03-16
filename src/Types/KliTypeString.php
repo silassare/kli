@@ -15,6 +15,7 @@ namespace Kli\Types;
 
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
+use Override;
 
 /**
  * Class KliTypeString.
@@ -148,6 +149,7 @@ class KliTypeString extends KliType
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function validate(string $opt_name, mixed $value): string
 	{
 		if (!\is_string($value)) {

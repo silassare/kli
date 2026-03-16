@@ -15,6 +15,7 @@ namespace Kli\Types;
 
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
+use Override;
 
 /**
  * Class KliTypePath.
@@ -202,6 +203,7 @@ class KliTypePath extends KliType
 	 *
 	 * @return string|string[]
 	 */
+	#[Override]
 	public function validate(string $opt_name, mixed $value): array|string
 	{
 		$paths = $this->resolvePath($value);

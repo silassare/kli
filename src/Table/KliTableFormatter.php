@@ -15,6 +15,7 @@ namespace Kli\Table;
 
 use Kli\KliStyle;
 use Kli\Table\Interfaces\KliTableCellFormatterInterface;
+use Override;
 
 /**
  * Class KliTableFormatter.
@@ -54,6 +55,7 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function format($value, KliTableHeader $header, array $row): string
 	{
 		return match ($this->type) {
@@ -72,6 +74,7 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	/**
 	 * {@inheritDoc}
 	 */
+	#[Override]
 	public function getStyle($value, KliTableHeader $header, array $row): ?KliStyle
 	{
 		return $this->style;

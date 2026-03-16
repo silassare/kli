@@ -15,6 +15,7 @@ namespace Kli\Types;
 
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
+use Override;
 
 /**
  * Class KliTypeNumber.
@@ -116,6 +117,7 @@ class KliTypeNumber extends KliType
 	 *
 	 * @return float|int
 	 */
+	#[Override]
 	public function validate(string $opt_name, mixed $value): float|int
 	{
 		if (!\is_numeric($value)) {
