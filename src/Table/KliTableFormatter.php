@@ -85,11 +85,11 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	 *
 	 * @param null|KliStyle $style
 	 *
-	 * @return KliTableFormatter
+	 * @return static
 	 */
-	public static function bool(?KliStyle $style = null): self
+	public static function bool(?KliStyle $style = null): static
 	{
-		return new self('bool', $style);
+		return new static('bool', $style);
 	}
 
 	/**
@@ -100,15 +100,15 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	 * @param string        $thousands_sep
 	 * @param null|KliStyle $style
 	 *
-	 * @return KliTableFormatter
+	 * @return static
 	 */
 	public static function number(
 		int $decimals = 0,
 		string $decimal_point = '.',
 		string $thousands_sep = ',',
 		?KliStyle $style = null
-	): self {
-		return new self('number', $style, [
+	): static {
+		return new static('number', $style, [
 			'decimals'      => $decimals,
 			'decimal_point' => $decimal_point,
 			'thousands_sep' => $thousands_sep,
@@ -121,10 +121,10 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 	 * @param string        $format
 	 * @param null|KliStyle $style
 	 *
-	 * @return KliTableFormatter
+	 * @return static
 	 */
-	public static function date(string $format = 'Y-m-d H:i:s', ?KliStyle $style = null): self
+	public static function date(string $format = 'Y-m-d H:i:s', ?KliStyle $style = null): static
 	{
-		return new self('date', $style, ['format' => $format]);
+		return new static('date', $style, ['format' => $format]);
 	}
 }
