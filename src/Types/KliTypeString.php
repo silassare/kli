@@ -37,7 +37,7 @@ class KliTypeString extends KliType
 	private string $reg = '';
 
 	/**
-	 * @var null|callable
+	 * @var null|callable(string): bool
 	 */
 	private $validator_fn;
 
@@ -132,8 +132,8 @@ class KliTypeString extends KliType
 	/**
 	 * Sets a validator.
 	 *
-	 * @param callable    $validator the validator function
-	 * @param null|string $message   the error message
+	 * @param callable(string): bool $validator the validator function
+	 * @param null|string            $message   the error message
 	 *
 	 * @return static
 	 */
