@@ -2131,19 +2131,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/oliup-io/oliup-cs-php.git",
-                "reference": "11165f144ad3ae0840b705f17cd3284a8b032e72"
+                "reference": "6ff4feb6aa0420b0cbf13e688b88772c65466019"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oliup-io/oliup-cs-php/zipball/11165f144ad3ae0840b705f17cd3284a8b032e72",
-                "reference": "11165f144ad3ae0840b705f17cd3284a8b032e72",
+                "url": "https://api.github.com/repos/oliup-io/oliup-cs-php/zipball/6ff4feb6aa0420b0cbf13e688b88772c65466019",
+                "reference": "6ff4feb6aa0420b0cbf13e688b88772c65466019",
                 "shasum": ""
             },
             "require": {
-                "friendsofphp/php-cs-fixer": ">=3.94",
-                "php": ">=7.2.0",
-                "phpcompatibility/php-compatibility": ">=9.3",
-                "squizlabs/php_codesniffer": ">=3.13"
+                "friendsofphp/php-cs-fixer": "^3.94",
+                "php": ">=8.1",
+                "phpcompatibility/php-compatibility": "^10.0@alpha",
+                "squizlabs/php_codesniffer": "^4.0"
             },
             "require-dev": {
                 "roave/security-advisories": "dev-latest"
@@ -2153,6 +2153,11 @@
                 "bin/oliup-cs"
             ],
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OLIUP\\CS\\": "src"
@@ -2177,10 +2182,10 @@
                 "static analysis"
             ],
             "support": {
-                "source": "https://github.com/oliup-io/oliup-cs-php/tree/v1.0.3",
+                "source": "https://github.com/oliup-io/oliup-cs-php/tree/main",
                 "issues": "https://github.com/oliup-io/oliup-cs-php/issues"
             },
-            "time": "2026-03-08T08:39:49+00:00"
+            "time": "2026-03-17T18:28:54+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -4001,12 +4006,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "9d2f66a6887edf398a0521016e9daded99937763"
+                "reference": "7dc4159ecc83b1fbc5387558960cc1b2010c8272"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/9d2f66a6887edf398a0521016e9daded99937763",
-                "reference": "9d2f66a6887edf398a0521016e9daded99937763",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7dc4159ecc83b1fbc5387558960cc1b2010c8272",
+                "reference": "7dc4159ecc83b1fbc5387558960cc1b2010c8272",
                 "shasum": ""
             },
             "conflict": {
@@ -4123,7 +4128,7 @@
                 "ckeditor/ckeditor": "<4.25",
                 "clickstorm/cs-seo": ">=6,<6.8|>=7,<7.5|>=8,<8.4|>=9,<9.3",
                 "co-stack/fal_sftp": "<0.2.6",
-                "cockpit-hq/cockpit": "<2.11.4",
+                "cockpit-hq/cockpit": "<2.13.5",
                 "code16/sharp": "<9.11.1",
                 "codeception/codeception": "<3.1.3|>=4,<4.1.22",
                 "codeigniter/framework": "<3.1.10",
@@ -5027,7 +5032,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-16T22:12:26+00:00"
+            "time": "2026-03-17T17:25:24+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -7659,16 +7664,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "6.15.1",
+            "version": "6.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "28dc127af1b5aecd52314f6f645bafc10d0e11f9"
+                "reference": "7cf3e8b988edd75e0766963b0b9e671b220f5785"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/28dc127af1b5aecd52314f6f645bafc10d0e11f9",
-                "reference": "28dc127af1b5aecd52314f6f645bafc10d0e11f9",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/7cf3e8b988edd75e0766963b0b9e671b220f5785",
+                "reference": "7cf3e8b988edd75e0766963b0b9e671b220f5785",
                 "shasum": ""
             },
             "require": {
@@ -7773,7 +7778,7 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2026-02-07T19:27:16+00:00"
+            "time": "2026-03-17T11:15:56+00:00"
         },
         {
             "name": "webmozart/assert",
