@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Kli;
 
+use Kli\Exceptions\KliAbortException;
 use Kli\Exceptions\KliException;
 use Kli\Exceptions\KliInputException;
 use Kli\Table\KliTable;
@@ -40,7 +41,7 @@ use Kli\Table\KliTable;
  */
 class Kli
 {
-	private bool $enable_interactive;
+	private bool $allow_interactive_mode;
 
 	private bool $is_interactive = false;
 
@@ -56,18 +57,18 @@ class Kli
 	/**
 	 * Kli constructor.
 	 *
-	 * @param string      $title              the cli title to be used in interactive mode
-	 * @param bool        $enable_interactive to enable interactive cli
-	 * @param null|string $log_file           path to log file
+	 * @param string      $title                  the cli title to be used in interactive mode
+	 * @param bool        $allow_interactive_mode to allow interactive cli
+	 * @param null|string $log_file               path to log file
 	 */
-	public function __construct(string $title = '', bool $enable_interactive = false, ?string $log_file = null)
+	public function __construct(string $title = '', bool $allow_interactive_mode = false, ?string $log_file = null)
 	{
 		if (empty($title)) {
 			$title = \basename($this->getCliEntryPoint());
 		}
 
-		$this->enable_interactive = $enable_interactive;
-		$this->log_file           = $log_file;
+		$this->allow_interactive_mode = $allow_interactive_mode;
+		$this->log_file               = $log_file;
 		$this->setTitle($title);
 	}
 
@@ -84,8 +85,8 @@ class Kli
 			$c = \count($_argv);
 
 			if ($c <= 1) { // $ cli
-				if ($this->enable_interactive) {
-					$this->interactiveMode();
+				if ($this->allow_interactive_mode) {
+					$this->switchToInteractiveMode();
 				} else {
 					$this->showHelp();
 				}
@@ -134,9 +135,13 @@ class Kli
 			if (!$this->is_interactive) {
 				$this->writeLn();
 			}
+		} catch (KliAbortException) {
+			// error/warn/success with a non-null $exit threw this in interactive
+			// mode instead of calling exit(); the REPL loop simply continues.
 		} catch (KliInputException $e) {
-			$this->error($e->getMessage())
-				->writeLn();
+			// error() with default exit=1 will terminate in script mode;
+			// in interactive mode it throws KliAbortException, caught above.
+			$this->error($e->getMessage());
 		}
 	}
 
@@ -195,11 +200,22 @@ class Kli
 	}
 
 	/**
-	 * Enable interactive mode.
+	 * Returns true when the REPL interactive loop is active.
+	 *
+	 * Use this to decide whether to exit after an error or to simply
+	 * print and continue (i.e. suppress the $exit parameter).
+	 */
+	public function isInteractiveMode(): bool
+	{
+		return $this->is_interactive;
+	}
+
+	/**
+	 * Switches to interactive mode.
 	 *
 	 * @throws KliException
 	 */
-	public function interactiveMode(): void
+	public function switchToInteractiveMode(): void
 	{
 		if (!$this->is_interactive) {
 			$this->is_interactive = true;
@@ -557,14 +573,119 @@ class Kli
 	}
 
 	/**
-	 * Print error message.
+	 * Print info message.
 	 *
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
 	 *
 	 * @return static
 	 */
-	public function error(string $msg, bool $wrap = true): static
+	public function info(string $msg, bool $wrap = true): static
+	{
+		if ($wrap) {
+			$msg = KliUtils::wrap($msg);
+		}
+
+		$icon = $this->style()->cyan()->apply('ℹ');
+
+		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
+	}
+
+	/**
+	 * Print warning message.
+	 *
+	 * When $exit is non-null and we are NOT in interactive mode, the process
+	 * exits with that code after printing. In interactive mode $exit is always
+	 * ignored.
+	 *
+	 * @param string   $msg  the message
+	 * @param bool     $wrap to wrap string or not
+	 * @param null|int $exit exit code to use in script mode (default: null, no stop);
+	 *                       pass a code to stop after printing.
+	 *                       In interactive mode a non-null value throws
+	 *                       KliAbortException instead of calling exit().
+	 *
+	 * @return static
+	 *
+	 * @throws KliAbortException in interactive mode when $exit is non-null
+	 */
+	public function warn(string $msg, bool $wrap = true, ?int $exit = null): static
+	{
+		if ($wrap) {
+			$msg = KliUtils::wrap($msg);
+		}
+
+		$icon = $this->style()->yellow()->apply('⚠');
+
+		$this->writeLn('  ' . $icon . '  ' . $msg, false);
+
+		if (null !== $exit) {
+			if ($this->is_interactive) {
+				throw new KliAbortException();
+			}
+			$this->terminate($exit);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Print success message.
+	 *
+	 * When $exit is non-null and we are NOT in interactive mode, the process
+	 * exits with that code after printing. In interactive mode $exit is always
+	 * ignored.
+	 *
+	 * @param string   $msg  the message
+	 * @param bool     $wrap to wrap string or not
+	 * @param null|int $exit exit code to use in script mode (default: null, no stop);
+	 *                       pass 0 to stop cleanly after the success message.
+	 *                       In interactive mode a non-null value throws
+	 *                       KliAbortException instead of calling exit().
+	 *
+	 * @return static
+	 *
+	 * @throws KliAbortException in interactive mode when $exit is non-null
+	 */
+	public function success(string $msg, bool $wrap = true, ?int $exit = null): static
+	{
+		if ($wrap) {
+			$msg = KliUtils::wrap($msg);
+		}
+
+		$icon = $this->style()->green()->apply('✔');
+
+		$this->writeLn('  ' . $icon . '  ' . $msg, false);
+
+		if (null !== $exit) {
+			if ($this->is_interactive) {
+				throw new KliAbortException();
+			}
+			$this->terminate($exit);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Print error message.
+	 *
+	 * When $exit is non-null and we are NOT in interactive mode, the process
+	 * exits with that code after printing. In interactive mode $exit is always
+	 * ignored — errors should never kill the REPL session.
+	 *
+	 * @param string   $msg  the message
+	 * @param bool     $wrap to wrap string or not
+	 * @param null|int $exit exit code to use in script mode (default: 1);
+	 *                       pass null to print without stopping.
+	 *                       In interactive mode a non-null value throws
+	 *                       KliAbortException instead of calling exit().
+	 *
+	 * @return static
+	 *
+	 * @throws KliAbortException in interactive mode when $exit is non-null
+	 */
+	public function error(string $msg, bool $wrap = true, ?int $exit = 1): static
 	{
 		if ($wrap) {
 			$msg = KliUtils::wrap($msg);
@@ -572,7 +693,30 @@ class Kli
 
 		$icon = $this->style()->red()->bold()->apply('✖');
 
-		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
+		$this->writeLn('  ' . $icon . '  ' . $msg, false);
+
+		if (null !== $exit) {
+			if ($this->is_interactive) {
+				throw new KliAbortException();
+			}
+			$this->terminate($exit);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Terminate the process with the given exit code.
+	 *
+	 * Unlike the $exit parameter on output methods, this always exits, even
+	 * inside interactive mode. Use it when you explicitly need to stop the
+	 * whole process regardless of context.
+	 *
+	 * @param int $code POSIX exit code (0 = success, non-zero = failure)
+	 */
+	public function terminate(int $code = 0): never
+	{
+		exit($code);
 	}
 
 	/**
@@ -596,58 +740,20 @@ class Kli
 	}
 
 	/**
-	 * Print success message.
-	 *
-	 * @param string $msg  the message
-	 * @param bool   $wrap to wrap string or not
-	 *
-	 * @return static
-	 */
-	public function success(string $msg, bool $wrap = true): static
-	{
-		if ($wrap) {
-			$msg = KliUtils::wrap($msg);
-		}
-
-		$icon = $this->style()->green()->apply('✔');
-
-		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
-	}
-
-	/**
-	 * Print info message.
-	 *
-	 * @param string $msg  the message
-	 * @param bool   $wrap to wrap string or not
-	 *
-	 * @return static
-	 */
-	public function info(string $msg, bool $wrap = true): static
-	{
-		if ($wrap) {
-			$msg = KliUtils::wrap($msg);
-		}
-
-		$icon = $this->style()->cyan()->apply('ℹ');
-
-		return $this->writeLn('  ' . $icon . '  ' . $msg, false);
-	}
-
-	/**
 	 * Create a new instance of Kli.
 	 *
-	 * @param string      $name               the cli title
-	 * @param bool        $enable_interactive to enable interactive cli
-	 * @param null|string $log_file           path to log file
+	 * @param string      $name                   the cli title
+	 * @param bool        $allow_interactive_mode to allow interactive cli
+	 * @param null|string $log_file               path to log file
 	 *
 	 * @return static
 	 */
 	public static function new(
 		string $name,
-		bool $enable_interactive = false,
+		bool $allow_interactive_mode = false,
 		?string $log_file = null
 	): static {
-		return new static($name, $enable_interactive, $log_file);
+		return new static($name, $allow_interactive_mode, $log_file);
 	}
 
 	/**

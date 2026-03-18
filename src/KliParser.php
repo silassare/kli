@@ -195,7 +195,7 @@ final class KliParser
 				break;
 			} catch (KliInputException $e) {
 				$in = null;
-				$this->cli->error($e->getMessage());
+				$this->cli->error($e->getMessage(), exit: null);
 			}
 		}
 
