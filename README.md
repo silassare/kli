@@ -288,11 +288,11 @@ validation error until a valid value is provided.
 
 ## Interactive REPL Mode
 
-Pass `enable_interactive: true` to `Kli::new()`. When the tool is invoked with
+Pass `allow_interactive_mode: true` to `Kli::new()`. When the tool is invoked with
 no arguments it enters an interactive loop where the user can type commands:
 
 ```php
-$kli = Kli::new('my-tool', enable_interactive: true);
+$kli = Kli::new('my-tool', allow_interactive_mode: true);
 // ... register commands/actions ...
 $kli->execute($argv);
 ```
@@ -413,13 +413,35 @@ All helpers return `static` for chaining. `$wrap = true` runs the message
 through `wordwrap()` at 80 characters.
 
 ```php
-$kli->error('Something went wrong');    //   ✖  ...  (red bold icon)
-$kli->success('All done');               //   ✔  ...  (green icon)
-$kli->info('Hint: use --help');          //   ℹ  ...  (cyan icon)
-$kli->writeLn('raw output');             // new line then string
+$kli->info('Hint: use --help');                //   ℹ  ...  (cyan icon)
+$kli->warn('Deprecated flag used');            //   ⚠  ...  (yellow icon)
+$kli->success('All done');                     //   ✔  ...  (green icon)
+$kli->error('Something went wrong');           //   ✖  ...  (red bold icon)
+$kli->writeLn('raw output');                   // new line then string
 $kli->write('inline output');
-$kli->log('message', wrap: true);        // append to log file (if configured)
-$kli->bell(1);                           // terminal bell character
+$kli->log('message', wrap: true);              // append to log file (if configured)
+$kli->bell(1);                                 // terminal bell character
+```
+
+### Exit codes on output methods
+
+`error()`, `warn()`, and `success()` accept an optional `?int $exit` parameter
+that terminates the process after printing:
+
+| Method      | Default `$exit` | Behaviour when `$exit` is non-null                                     |
+| ----------- | --------------- | ---------------------------------------------------------------------- |
+| `error()`   | `1`             | Terminates with the given code **by default**; pass `null` to skip.    |
+| `warn()`    | `null`          | Does **not** terminate by default; pass a code to stop after printing. |
+| `success()` | `null`          | Does **not** terminate by default; pass `0` to stop cleanly.           |
+
+In **interactive REPL mode** a non-null `$exit` throws `KliAbortException`
+instead of calling `exit()`, so the REPL loop continues rather than dying.
+
+To terminate unconditionally regardless of mode, call `terminate()` directly:
+
+```php
+$kli->error('Fatal: cannot continue', exit: null); // just print
+$kli->terminate(1);                                // always exits
 ```
 
 **Version string** — override `getVersion()` in your subclass to return the
@@ -448,6 +470,8 @@ Exception
 
 RuntimeException
  \- KliRuntimeException  developer/config error; never caught internally
+    \- KliAbortException  thrown by error()/warn()/success() in interactive
+                          mode when $exit is non-null; caught by execute()
 ```
 
 `KliInputException` is thrown by all `KliType::validate()` implementations and
@@ -455,6 +479,11 @@ by `KliParser`. It is caught inside `execute()` and shown via `error()`.
 
 `KliRuntimeException` is thrown at configuration time (bad names, duplicate
 flags, conflicting offsets, missing handler). It always propagates.
+
+`KliAbortException` is an internal signal thrown by `error()`, `warn()`, and
+`success()` when `$exit` is non-null and the CLI is in interactive mode.
+`execute()` catches it so the REPL loop continues. Application code should
+never need to catch it directly.
 
 ---
 
@@ -493,6 +522,12 @@ class MyApp extends Kli
 
     // Override input source (useful in tests)
     public function readLine(string $prompt, bool $is_password = false): string { ... }
+
+    // Override terminate() to intercept exit() calls (useful in tests)
+    public function terminate(int $code = 0): never
+    {
+        throw new MyAppExitException($code);
+    }
 }
 ```
 
@@ -518,7 +553,7 @@ prompts and REPL mode. Subclasses `Kli`, overrides `readLine()` with a
 pre-scripted queue of responses, and records every prompt shown:
 
 ```php
-$kli = new ScriptedKli('test', script: ['Alice', 'quit'], enable_interactive: true);
+$kli = new ScriptedKli('test', script: ['Alice', 'quit'], allow_interactive_mode: true);
 $kli->executeString('greet say');
 $this->assertSame(['Enter name: ', 'test> '], $kli->promptLog);
 ```

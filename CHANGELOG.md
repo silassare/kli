@@ -1,3 +1,16 @@
+### v1.1.0 (unreleased)
+
+    - `warn()` added with optional `?int $exit = null` parameter
+    - `error()` updated: default `$exit = 1` (terminates unless `exit: null` is passed)
+    - `success()` updated: optional `?int $exit = null` parameter
+    - `terminate(int $code = 0): never` added for unconditional process exit
+    - `isInteractiveMode(): bool` added
+    - `switchToInteractiveMode()` renamed from `interactiveMode()`
+    - `allow_interactive_mode` constructor parameter renamed from `enable_interactive`
+    - `KliAbortException` added: thrown instead of exit() when output helpers are called
+      with a non-null $exit in interactive mode; caught by execute() to keep REPL alive
+    - static factory methods in `KliTableFormatter` now return `static` instead of `self`
+
 ### v1.0.4 (2020-08-23)
 
     - `KliColor` class added for text styling

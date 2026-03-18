@@ -83,10 +83,13 @@ Exception
 
 RuntimeException
  \- KliRuntimeException   (developer/config errors -- invalid names, duplicate flags, etc.)
+    \- KliAbortException  (thrown by error()/warn()/success() when $exit is non-null in
+                           interactive mode; caught by execute() so the REPL continues)
 ```
 
 `KliInputException` is thrown by all `KliType::validate()` implementations and by `KliParser`.
 `KliRuntimeException` is thrown at configuration time and is never caught internally.
+`KliAbortException` is an internal signal; application code should never catch it directly.
 
 ## Naming Constraints (enforced by regex)
 
@@ -152,23 +155,34 @@ Two snapshot variants exist for output with ANSI:
 
 ## Interactive Mode
 
-When `enable_interactive: true` is passed to `Kli::new()`, invoking the tool
+When `allow_interactive_mode: true` is passed to `Kli::new()`, invoking the tool
 with no arguments starts a REPL loop. The user types commands exactly as they
 would on the command line. Type `quit` or `exit` to stop.
+
+Call `switchToInteractiveMode()` to enter interactive mode programmatically from
+within a handler. Use `isInteractiveMode()` to query the current state.
 
 Override `readLine()` in a subclass to replace the input source. Override
 `welcome()` to print a custom banner (called once on entry and on `--help`).
 
+### Output helpers in interactive mode
+
+When `error()`, `warn()`, or `success()` are called with a non-null `$exit`
+while the CLI is in interactive mode, they throw `KliAbortException` instead
+of calling `exit()`. `execute()` catches this so the REPL loop survives. To
+exit unconditionally from any context, call `terminate()` directly.
+
 ### ScriptedKli (test helper)
 
 Located in `tests/ScriptedKli.php`. Subclasses `Kli`, overrides `readLine()`
-with a pre-scripted string queue, and records every prompt in `$promptLog`:
+with a pre-scripted string queue, overrides `terminate()` to throw
+`KliTerminateCalledException`, and records every prompt in `$promptLog`:
 
 ```php
 $kli = new ScriptedKli(
     name: 'test',
     script: ['Alice', 'quit'],
-    enable_interactive: true
+    allow_interactive_mode: true
 );
 // $kli->promptLog contains all prompts shown, in order
 ```
@@ -184,10 +198,15 @@ Styled output methods produce:
   <icon>  <message>
 ```
 
-- `error()`: red+bold `✖` icon
-- `success()`: green `✔` icon
 - `info()`: cyan `ℹ` icon
+- `warn()`: yellow `⚠` icon — optional `?int $exit = null`; non-null exits after printing
+- `success()`: green `✔` icon — optional `?int $exit = null`; non-null exits after printing
+- `error()`: red+bold `✖` icon — default `?int $exit = 1`; exits unless `exit: null` is passed
+- `terminate(int $code = 0): never` — always calls `exit($code)`, even in interactive mode
 - `showVersion()`: bold `<basename> v<version>`
+
+In interactive mode, a non-null `$exit` on `error()`/`warn()`/`success()` throws
+`KliAbortException` instead of calling `exit()`. Call `terminate()` to force an exit.
 
 `showHelp()` has three structured layouts:
 
@@ -202,7 +221,7 @@ Styled output methods produce:
 - [src/KliOption.php](../src/KliOption.php) — option config, type-returning builder
 - [src/KliStyle.php](../src/KliStyle.php) — ANSI styling with forceAnsi() / disableAnsi() static methods
 - [src/Types/](../src/Types/) — `KliTypeString`, `KliTypeBool`, `KliTypeNumber`, `KliTypePath`
-- [src/Exceptions/](../src/Exceptions/) — `KliException`, `KliInputException`, `KliRuntimeException`
+- [src/Exceptions/](../src/Exceptions/) — `KliException`, `KliInputException`, `KliRuntimeException`, `KliAbortException`
 - [src/Table/](../src/Table/) — `KliTable`, `KliTableHeader`, `KliTableFormatter`
 - [tests/KliTest.php](../tests/KliTest.php) — idiomatic builder usage examples
 - [tests/KliIntegrationTest.php](../tests/KliIntegrationTest.php) — full integration and interactive tests
