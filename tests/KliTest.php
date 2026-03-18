@@ -59,13 +59,20 @@ final class KliTest extends TestCase
 	 */
 	public function testUnknownCommand(): void
 	{
-		$kli = self::kliInstance();
-
+		$kli  = self::kliInstance();
 		$icon = $kli->style()->red()->bold()->apply('✖');
 
-		$this->expectOutputString(\PHP_EOL . '  ' . $icon . '  unknown command: hey' . \PHP_EOL);
+		\ob_start();
 
-		$kli->execute(['kli', 'hey', 'talk']);
+		try {
+			$kli->execute(['kli', 'hey', 'talk']);
+		} catch (KliTerminateCalledException) {
+			// terminate(1) was called after the error was printed
+		}
+
+		$output = (string) \ob_get_clean();
+
+		self::assertSame(\PHP_EOL . '  ' . $icon . '  unknown command: hey', $output);
 	}
 
 	/**
@@ -73,13 +80,20 @@ final class KliTest extends TestCase
 	 */
 	public function testUnknownAction(): void
 	{
-		$kli = self::kliInstance();
-
+		$kli  = self::kliInstance();
 		$icon = $kli->style()->red()->bold()->apply('✖');
 
-		$this->expectOutputString(\PHP_EOL . '  ' . $icon . '  hello: unknown action "talk"' . \PHP_EOL);
+		\ob_start();
 
-		$kli->execute(['kli', 'hello', 'talk']);
+		try {
+			$kli->execute(['kli', 'hello', 'talk']);
+		} catch (KliTerminateCalledException) {
+			// terminate(1) was called after the error was printed
+		}
+
+		$output = (string) \ob_get_clean();
+
+		self::assertSame(\PHP_EOL . '  ' . $icon . '  hello: unknown action "talk"', $output);
 	}
 
 	/**
@@ -193,15 +207,21 @@ final class KliTest extends TestCase
 	 */
 	public function testInvalidInputShowsError(): void
 	{
-		$kli = Kli::new('test');
+		$kli = new ScriptedKli('test', []);
 		$cmd = $kli->command('go');
 		$cmd->handler(static function (): void {});
 		$act = $cmd->action('run');
 		$act->option('count', 'c')->number()->min(1.0);
 
 		\ob_start();
-		$kli->execute(['test', 'go', 'run', '--count=0']);
-		$output = \ob_get_clean();
+
+		try {
+			$kli->execute(['test', 'go', 'run', '--count=0']);
+		} catch (KliTerminateCalledException) {
+			// terminate(1) was called after the error was printed
+		}
+
+		$output = (string) \ob_get_clean();
 
 		// KliInputException is caught and shown via error()
 		self::assertStringContainsString('0', $output);
@@ -227,9 +247,218 @@ final class KliTest extends TestCase
 		self::assertStringContainsString('say', $result);
 	}
 
-	private static function kliInstance(): Kli
+	// -----------------------------------------------------------------------
+	// warn()
+	// -----------------------------------------------------------------------
+
+	public function testWarnOutputsIconAndMessage(): void
 	{
-		$kli = Kli::new('kli');
+		$kli = new ScriptedKli('test', []);
+
+		KliStyle::disableAnsi(true);
+
+		try {
+			\ob_start();
+			$kli->warn('something dangerous', false);
+			$output = (string) \ob_get_clean();
+		} finally {
+			KliStyle::disableAnsi(false);
+		}
+
+		self::assertStringContainsString('⚠', $output);
+		self::assertStringContainsString('something dangerous', $output);
+	}
+
+	public function testWarnWithNullExitReturnsInstance(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+		$result = $kli->warn('heads up', false, null);
+		\ob_end_clean();
+
+		self::assertSame($kli, $result);
+	}
+
+	public function testWarnWithExitTerminates(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+
+		try {
+			$kli->warn('danger', false, 3);
+			self::fail('KliTerminateCalledException was not thrown');
+		} catch (KliTerminateCalledException $e) {
+			self::assertSame(3, $e->exitCode);
+		} finally {
+			\ob_end_clean();
+		}
+	}
+
+	// -----------------------------------------------------------------------
+	// error() -- exit parameter
+	// -----------------------------------------------------------------------
+
+	public function testErrorWithNullExitReturnsInstance(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+		$result = $kli->error('oops', false, null);
+		\ob_end_clean();
+
+		self::assertSame($kli, $result);
+	}
+
+	public function testErrorDefaultExitTerminatesWithCode1(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+
+		try {
+			$kli->error('oops');
+			self::fail('KliTerminateCalledException was not thrown');
+		} catch (KliTerminateCalledException $e) {
+			self::assertSame(1, $e->exitCode);
+		} finally {
+			\ob_end_clean();
+		}
+	}
+
+	public function testErrorWithCustomExitCode(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+
+		try {
+			$kli->error('oops', false, 2);
+			self::fail('KliTerminateCalledException was not thrown');
+		} catch (KliTerminateCalledException $e) {
+			self::assertSame(2, $e->exitCode);
+		} finally {
+			\ob_end_clean();
+		}
+	}
+
+	// -----------------------------------------------------------------------
+	// success() -- exit parameter
+	// -----------------------------------------------------------------------
+
+	public function testSuccessWithNullExitReturnsInstance(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+		$result = $kli->success('done', false);
+		\ob_end_clean();
+
+		self::assertSame($kli, $result);
+	}
+
+	public function testSuccessWithExitTerminates(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		\ob_start();
+
+		try {
+			$kli->success('done', false, 0);
+			self::fail('KliTerminateCalledException was not thrown');
+		} catch (KliTerminateCalledException $e) {
+			self::assertSame(0, $e->exitCode);
+		} finally {
+			\ob_end_clean();
+		}
+	}
+
+	// -----------------------------------------------------------------------
+	// terminate()
+	// -----------------------------------------------------------------------
+
+	public function testTerminateWithCode(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		try {
+			$kli->terminate(42);
+			self::fail('KliTerminateCalledException was not thrown');
+		} catch (KliTerminateCalledException $e) {
+			self::assertSame(42, $e->exitCode);
+		}
+	}
+
+	public function testTerminateDefaultCodeIsZero(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		try {
+			$kli->terminate();
+			self::fail('KliTerminateCalledException was not thrown');
+		} catch (KliTerminateCalledException $e) {
+			self::assertSame(0, $e->exitCode);
+		}
+	}
+
+	// -----------------------------------------------------------------------
+	// isInteractiveMode()
+	// -----------------------------------------------------------------------
+
+	public function testIsInteractiveModeDefaultFalse(): void
+	{
+		$kli = new ScriptedKli('test', []);
+
+		self::assertFalse($kli->isInteractiveMode());
+	}
+
+	public function testIsInteractiveModeIsTrueDuringRepl(): void
+	{
+		$capturedMode = null;
+		$kli          = new ScriptedKli('test', ['do run', 'quit'], true);
+		$cmd          = $kli->command('do');
+		$act          = $cmd->action('run');
+		$act->handler(static function () use ($kli, &$capturedMode): void {
+			$capturedMode = $kli->isInteractiveMode();
+		});
+
+		\ob_start();
+		$kli->switchToInteractiveMode();
+		\ob_get_clean();
+
+		self::assertTrue($capturedMode);
+	}
+
+	// -----------------------------------------------------------------------
+	// Interactive mode: error() throws KliAbortException, REPL continues
+	// -----------------------------------------------------------------------
+
+	public function testInteractiveReplContinuesAfterError(): void
+	{
+		// 'nope action' -> unknown command -> error() -> KliAbortException
+		// (caught by execute() internally); REPL loop continues.
+		// 'do run' executes successfully; 'quit' ends the REPL.
+		$ran = [];
+		$kli = new ScriptedKli('test', ['nope action', 'do run', 'quit'], true);
+		$cmd = $kli->command('do');
+		$act = $cmd->action('run');
+		$act->handler(static function () use (&$ran): void {
+			$ran[] = 'run';
+		});
+
+		\ob_start();
+		$kli->switchToInteractiveMode();
+		\ob_get_clean();
+
+		self::assertSame(['run'], $ran);
+		// 3 prompts: 'nope action', 'do run', 'quit'
+		self::assertCount(3, $kli->promptLog);
+	}
+
+	private static function kliInstance(): ScriptedKli
+	{
+		$kli = new ScriptedKli('kli', []);
 
 		$hello = $kli->command('hello')
 			->description('Say hello to someone.')

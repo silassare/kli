@@ -31,14 +31,14 @@ final class ScriptedKli extends Kli
 	private array $script;
 
 	/**
-	 * @param string       $name               CLI title
-	 * @param list<string> $script             Responses returned by readLine(), in order.
-	 *                                         Once exhausted, '' is returned.
-	 * @param bool         $enable_interactive pass true when testing interactiveMode()
+	 * @param string       $name                   CLI title
+	 * @param list<string> $script                 Responses returned by readLine(), in order.
+	 *                                             Once exhausted, '' is returned.
+	 * @param bool         $allow_interactive_mode pass true when testing switchToInteractiveMode()
 	 */
-	public function __construct(string $name, array $script, bool $enable_interactive = false)
+	public function __construct(string $name, array $script, bool $allow_interactive_mode = false)
 	{
-		parent::__construct($name, $enable_interactive);
+		parent::__construct($name, $allow_interactive_mode);
 		$this->script = $script;
 	}
 
@@ -50,5 +50,17 @@ final class ScriptedKli extends Kli
 		$this->promptLog[] = $prompt;
 
 		return \array_shift($this->script) ?? '';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Throws KliTerminateCalledException instead of calling exit() so that
+	 * tests can assert the requested exit code without killing the PHPUnit
+	 * process.
+	 */
+	public function terminate(int $code = 0): never
+	{
+		throw new KliTerminateCalledException($code);
 	}
 }

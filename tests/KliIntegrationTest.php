@@ -40,7 +40,7 @@ final class KliIntegrationTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->kli      = Kli::new('klitest');
+		$this->kli      = new ScriptedKli('klitest', []);
 		$this->captured = [];
 		$this->buildCli();
 	}
@@ -331,7 +331,7 @@ final class KliIntegrationTest extends TestCase
 
 	public function testStringMinLengthFailsWhenTooShort(): void
 	{
-		$kli = Kli::new('t');
+		$kli = new ScriptedKli('t', []);
 		$cmd = $kli->command('do');
 		$act = $cmd->action('it');
 		$act->option('val', 'v')->string()->min(5)->def('aaaaa');
@@ -362,7 +362,7 @@ final class KliIntegrationTest extends TestCase
 
 	public function testStringMaxLengthFailsWhenTooLong(): void
 	{
-		$kli = Kli::new('t');
+		$kli = new ScriptedKli('t', []);
 		$cmd = $kli->command('do');
 		$act = $cmd->action('it');
 		$act->option('val')->string()->max(3)->def('hi');
@@ -375,7 +375,7 @@ final class KliIntegrationTest extends TestCase
 
 	public function testStringCustomValidatorPassesAndFails(): void
 	{
-		$kli      = Kli::new('t');
+		$kli      = new ScriptedKli('t', []);
 		$result   = [];
 		$cmd      = $kli->command('do');
 		$act      = $cmd->action('it');
@@ -403,7 +403,7 @@ final class KliIntegrationTest extends TestCase
 
 	public function testNumberIntegerModeRejectsFloat(): void
 	{
-		$kli = Kli::new('t');
+		$kli = new ScriptedKli('t', []);
 		$cmd = $kli->command('do');
 		$act = $cmd->action('it');
 		$act->option('num')->number()->integer()->def(1);
@@ -458,7 +458,7 @@ final class KliIntegrationTest extends TestCase
 
 	public function testPathDirOnlyRejectsFile(): void
 	{
-		$kli = Kli::new('t');
+		$kli = new ScriptedKli('t', []);
 		$cmd = $kli->command('do');
 		$act = $cmd->action('it');
 		$act->option('dir')->path()->dir()->def('');
@@ -739,7 +739,7 @@ final class KliIntegrationTest extends TestCase
 	// Interactive mode tests (via ScriptedKli)
 	// -----------------------------------------------------------------------
 
-	public function testInteractiveModeExecutesCommandAndQuits(): void
+	public function testSwitchToInteractiveModeExecutesCommandAndQuits(): void
 	{
 		$result = [];
 		$kli    = new ScriptedKli('test', ['greet say --name=Diana', 'quit'], true);
@@ -751,13 +751,13 @@ final class KliIntegrationTest extends TestCase
 		});
 
 		\ob_start();
-		$kli->interactiveMode();
+		$kli->switchToInteractiveMode();
 		\ob_get_clean();
 
 		self::assertSame(['Diana'], $result);
 	}
 
-	public function testInteractiveModeExitKeywordStops(): void
+	public function testSwitchToInteractiveModeExitKeywordStops(): void
 	{
 		$invocations = 0;
 		$kli         = new ScriptedKli('test', ['exit'], true);
@@ -768,13 +768,13 @@ final class KliIntegrationTest extends TestCase
 		});
 
 		\ob_start();
-		$kli->interactiveMode();
+		$kli->switchToInteractiveMode();
 		\ob_get_clean();
 
 		self::assertSame(0, $invocations);
 	}
 
-	public function testInteractiveModeIgnoresBlankInput(): void
+	public function testSwitchToInteractiveModeIgnoresBlankInput(): void
 	{
 		$invocations = 0;
 		// Two empty lines then quit
@@ -786,7 +786,7 @@ final class KliIntegrationTest extends TestCase
 		});
 
 		\ob_start();
-		$kli->interactiveMode();
+		$kli->switchToInteractiveMode();
 		\ob_get_clean();
 
 		self::assertSame(0, $invocations);
@@ -890,7 +890,12 @@ final class KliIntegrationTest extends TestCase
 	private function exec(string $cmd): string
 	{
 		\ob_start();
-		$this->kli->executeString($cmd);
+
+		try {
+			$this->kli->executeString($cmd);
+		} catch (KliTerminateCalledException) {
+			// terminate() was called; output was already buffered
+		}
 
 		return (string) \ob_get_clean();
 	}
@@ -898,7 +903,12 @@ final class KliIntegrationTest extends TestCase
 	private function execOn(Kli $kli, string $cmd): string
 	{
 		\ob_start();
-		$kli->executeString($cmd);
+
+		try {
+			$kli->executeString($cmd);
+		} catch (KliTerminateCalledException) {
+			// terminate() was called; output was already buffered
+		}
 
 		return (string) \ob_get_clean();
 	}
