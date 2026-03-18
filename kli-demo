@@ -132,9 +132,7 @@ $act->handler(function (KliArgs $args) use ($kli): void {
     match ($type) {
         'ok'   => $kli->success('Everything went smoothly — operation completed.'),
         'err'  => $kli->error('Something went wrong — please check your input.'),
-        'warn' => $kli->writeLn(
-            '  ' . $kli->style()->yellow()->apply('!') . '  Watch out — this might cause issues.'
-        ),
+        'warn' => $kli->warn('Watch out -- this might cause issues.', exit: null),
         default => $kli->info('Here is some useful information for you.'),
     };
 });
@@ -220,8 +218,9 @@ $act->handler(function (KliArgs $args) use ($kli): void {
     $kli->writeLn($kli->style()->bold()->apply('  Messages'));
     $kli->writeLn();
     $kli->info('This is an info message.');
+    $kli->warn('This is a warning message.', exit: null);
     $kli->success('This is a success message.');
-    $kli->error('This is an error message.');
+    $kli->error('This is an error message.', exit: null);
 });
 
 // ---------------------------------------------------------------------------
