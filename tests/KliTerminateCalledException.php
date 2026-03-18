@@ -23,8 +23,8 @@ use RuntimeException;
  */
 final class KliTerminateCalledException extends RuntimeException
 {
-    public function __construct(public readonly int $exitCode)
-    {
-        parent::__construct(\sprintf('terminate(%d) called', $exitCode));
-    }
+	public function __construct(public readonly int $exitCode)
+	{
+		parent::__construct(\sprintf('terminate(%d) called', $exitCode));
+	}
 }
