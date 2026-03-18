@@ -33,7 +33,7 @@ use Kli\Table\KliTableFormatter;
 // Build the CLI
 // ---------------------------------------------------------------------------
 
-$kli = Kli::new('kli-demo', enable_interactive: true);
+$kli = Kli::new('kli-demo', allow_interactive_mode: true);
 
 $kli->setTitle('kli-demo');
 
@@ -193,9 +193,22 @@ $act->handler(function (KliArgs $args) use ($kli): void {
     $kli->writeLn();
 
     $colors = [
-        'black', 'darkGray', 'red', 'lightRed', 'green', 'lightGreen',
-        'yellow', 'blue', 'lightBlue', 'magenta', 'lightMagenta',
-        'cyan', 'lightCyan', 'lightGray', 'white', 'normal',
+        'black',
+        'darkGray',
+        'red',
+        'lightRed',
+        'green',
+        'lightGreen',
+        'yellow',
+        'blue',
+        'lightBlue',
+        'magenta',
+        'lightMagenta',
+        'cyan',
+        'lightCyan',
+        'lightGray',
+        'white',
+        'normal',
     ];
 
     foreach ($colors as $c) {
