@@ -78,7 +78,7 @@ final class KliAction
 	/**
 	 * Sets the action handler.
 	 *
-	 * @param callable $handler
+	 * @param callable(KliArgs): void $handler
 	 *
 	 * @return static
 	 */
