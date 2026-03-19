@@ -10,6 +10,7 @@
     - `KliAbortException` added: thrown instead of exit() when output helpers are called
       with a non-null $exit in interactive mode; caught by execute() to keep REPL alive
     - static factory methods in `KliTableFormatter` now return `static` instead of `self`
+    - `Kli::log()` signature updated to `log(string $level, mixed $msg, array $context = [])`
     - developer workflow scripts replaced with `Makefile` targets (`make test`, `make lint`, `make cs`, `make fix`)
 
 ### v1.0.4 (2020-08-23)

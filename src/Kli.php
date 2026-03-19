@@ -554,19 +554,24 @@ class Kli
 	/**
 	 * Creates log file or append to existing.
 	 *
-	 * @param mixed $msg  the message to log
-	 * @param bool  $wrap to wrap string or not
+	 * @param string $level   the log level (e.g. 'info', 'error', etc.)
+	 * @param mixed  $msg     the message to log
+	 * @param array  $context additional context to include in the log
 	 *
 	 * @return static
 	 */
-	public function log(mixed $msg, bool $wrap = true): static
+	public function log(string $level, mixed $msg, array $context = []): static
 	{
-		if (\is_string($msg) && $this->log_file) {
-			if ($wrap) {
-				$msg = KliUtils::wrap($msg);
-			}
+		if ($this->log_file) {
+			// one line log format: [LEVEL] message {json_encoded_context}
 
-			\file_put_contents($this->log_file, $msg . \PHP_EOL, \FILE_APPEND);
+			$msg = \str_replace("\n", ' ', (string) $msg); // ensure message is single-line
+
+			$str = '[' . \strtoupper($level) . '] ' . $msg;
+			$str .= !empty($context) ? ' ' . \json_encode($context) : '';
+			$str .= \PHP_EOL;
+
+			\file_put_contents($this->log_file, $str, \FILE_APPEND);
 		}
 
 		return $this;

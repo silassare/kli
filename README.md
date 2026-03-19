@@ -419,7 +419,8 @@ $kli->success('All done');                     //   ✔  ...  (green icon)
 $kli->error('Something went wrong');           //   ✖  ...  (red bold icon)
 $kli->writeLn('raw output');                   // new line then string
 $kli->write('inline output');
-$kli->log('message', wrap: true);              // append to log file (if configured)
+$kli->log('info', 'message');                  // append to log file (if configured)
+$kli->log('error', 'oops', ['key' => 'val']); // with context
 $kli->bell(1);                                 // terminal bell character
 ```
 
