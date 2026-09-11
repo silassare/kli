@@ -759,8 +759,7 @@ final class KliIntegrationTest extends TestCase
 		$cmd = $kli->command('greet');
 		$act = $cmd->action('say');
 		$act->option('name')->required()->prompt(true, 'Enter name')->string();
-		$act->handler(static function (): void {
-		});
+		$act->handler(static function (): void {});
 
 		$out = $this->execOn($kli, 'greet say');
 
