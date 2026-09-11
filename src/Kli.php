@@ -45,6 +45,8 @@ class Kli
 
 	private bool $is_interactive = false;
 
+	private bool $end_of_input = false;
+
 	private ?string $log_file;
 
 	/**
@@ -139,9 +141,9 @@ class Kli
 			// error/warn/success with a non-null $exit threw this in interactive
 			// mode instead of calling exit(); the REPL loop simply continues.
 		} catch (KliInputException $e) {
-			// error() with default exit=1 will terminate in script mode;
-			// in interactive mode it throws KliAbortException, caught above.
-			$this->error($e->getMessage());
+			// exit=1 terminates in script mode; in interactive mode only print, as a
+			// KliAbortException thrown here would skip the catch above and stop the REPL.
+			$this->error($e->getMessage(), exit: $this->is_interactive ? null : 1);
 		}
 	}
 
@@ -211,6 +213,20 @@ class Kli
 	}
 
 	/**
+	 * Checks if the user can be prompted for input.
+	 *
+	 * True in interactive mode or when STDIN is a terminal. When false, a missing
+	 * required option falls back to its default instead of being prompted for.
+	 * Override it along with readLine() when replacing the input source.
+	 *
+	 * @return bool
+	 */
+	public function canPrompt(): bool
+	{
+		return $this->is_interactive || \stream_isatty(\STDIN);
+	}
+
+	/**
 	 * Switches to interactive mode.
 	 *
 	 * @throws KliException
@@ -232,6 +248,9 @@ class Kli
 						// construct command: exactly as if it was fully typed
 						$this->executeString($in);
 					}
+				} elseif ($this->isEndOfInput()) {
+					// Ctrl-D or a closed pipe: there is nothing left to read
+					$this->quit();
 				}
 
 				$this->writeLn();
@@ -271,26 +290,44 @@ class Kli
 	 * @param string $prompt      the prompt string
 	 * @param bool   $is_password should we hide user input
 	 *
-	 * @return string user input
+	 * @return string user input, '' at end of input (see isEndOfInput())
 	 */
 	public function readLine(string $prompt, bool $is_password = false): string
 	{
 		if ($is_password) {
 			$this->writeLn($prompt);
 			$line = $this->readPass();
-			if (null === $line || false === $line) {
-				$line = '';
-			}
 		} elseif (\function_exists('readline_add_history')) {
 			$this->writeLn();
 			$line = \readline($prompt);
-			\readline_add_history($line);
+
+			// false means end of input: there is no line to add to the history
+			if (false !== $line) {
+				\readline_add_history($line);
+			}
 		} else {
 			$this->writeLn($prompt);
 			$line = \fgets(\STDIN);
 		}
 
-		return \trim($line);
+		// readline() and fgets() return false, readPass() null or false, at end of input
+		$this->end_of_input = !\is_string($line);
+
+		return \is_string($line) ? \trim($line) : '';
+	}
+
+	/**
+	 * Checks if the last readLine() call reached the end of input.
+	 *
+	 * readLine() returns '' both for an empty line and at the end of input
+	 * (Ctrl-D, closed pipe); this tells them apart. Override it along with
+	 * readLine() when replacing the input source.
+	 *
+	 * @return bool
+	 */
+	public function isEndOfInput(): bool
+	{
+		return $this->end_of_input;
 	}
 
 	/**

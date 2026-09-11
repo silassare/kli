@@ -282,7 +282,14 @@ $act->option('name', 'n')
 ```
 
 If the user enters an invalid value the prompt is shown again with the
-validation error until a valid value is provided.
+validation error until a valid value is provided. An empty answer selects the
+option default, which is used as is. At the end of input (Ctrl-D or a closed
+pipe) with no default, the prompt stops and the action fails as described below.
+
+The user is only prompted when STDIN is a terminal or the tool runs in
+interactive mode (see `Kli::canPrompt()`). Otherwise (pipes, cron, CI) the
+option falls back to its default, or the action fails with
+`"<action>" require option: --<name>`.
 
 ---
 
@@ -307,7 +314,9 @@ my-tool> greet say --name=Alice
 my-tool> exit
 ```
 
-Override `readLine()` in a subclass to customise input (useful in tests — see
+The loop also stops at the end of input (Ctrl-D or a closed pipe).
+
+Override `readLine()`, `canPrompt()` and `isEndOfInput()` in a subclass to customise input (useful in tests — see
 `ScriptedKli` in `tests/ScriptedKli.php`). Override `welcome()` to print a
 custom banner.
 
@@ -524,6 +533,12 @@ class MyApp extends Kli
     // Override input source (useful in tests)
     public function readLine(string $prompt, bool $is_password = false): string { ... }
 
+    // Tell whether readLine() can prompt the user (default: interactive mode or STDIN is a TTY)
+    public function canPrompt(): bool { ... }
+
+    // Tell whether the last readLine() call reached the end of input
+    public function isEndOfInput(): bool { ... }
+
     // Override terminate() to intercept exit() calls (useful in tests)
     public function terminate(int $code = 0): never
     {
@@ -551,7 +566,8 @@ Two snapshot variants are produced for output that includes ANSI codes:
 
 **`ScriptedKli`** (`tests/ScriptedKli.php`) — test helper for interactive
 prompts and REPL mode. Subclasses `Kli`, overrides `readLine()` with a
-pre-scripted queue of responses, and records every prompt shown:
+pre-scripted queue of responses (end of input once exhausted), and records every prompt shown. Pass
+`can_prompt: false` to act as if STDIN is not a terminal:
 
 ```php
 $kli = new ScriptedKli('test', script: ['Alice', 'quit'], allow_interactive_mode: true);

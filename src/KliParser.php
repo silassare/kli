@@ -22,8 +22,8 @@ use Kli\Types\KliTypeBool;
  * Parses a raw argv token list for a specific KliAction. Resolves flags and
  * aliases to canonical option names, collects anonymous positional arguments,
  * assigns offset-mapped values, validates every option through its KliType,
- * and interactively prompts the user when a required option is missing and
- * prompt mode is enabled on that option.
+ * and interactively prompts the user when a required option is missing,
+ * prompt mode is enabled on that option and the cli can prompt.
  */
 final class KliParser
 {
@@ -159,7 +159,8 @@ final class KliParser
 	 * @param KliOption  $option  option object
 	 * @param null|mixed $default default value
 	 *
-	 * @return mixed
+	 * @return mixed the validated value, the default on an empty answer, or null
+	 *               at the end of input when there is no default
 	 */
 	public function interactivePrompt(KliOption $option, mixed $default = null): mixed
 	{
@@ -180,26 +181,25 @@ final class KliParser
 			$prompt = \sprintf('%s: ', $prompt);
 		}
 
-		$in = null;
-
-		while (null === $in) {
+		while (true) {
 			$in = $this->cli->readLine($prompt, $option->promptForPassword());
 
-			if ('' === $in) {
-				$in = $default;
+			// an empty answer selects the default, returned as is like in the non-prompt path
+			if ('' === $in && null !== $default) {
+				return $default;
+			}
+
+			// nothing left to read: stop prompting, the caller reports the missing option
+			if ('' === $in && $this->cli->isEndOfInput()) {
+				return null;
 			}
 
 			try {
-				$in = $type->validate($option->getName(), $in);
-
-				break;
+				return $type->validate($option->getName(), '' === $in ? null : $in);
 			} catch (KliInputException $e) {
-				$in = null;
 				$this->cli->error($e->getMessage(), exit: null);
 			}
 		}
-
-		return $in;
 	}
 
 	/**
@@ -220,8 +220,9 @@ final class KliParser
 	 * Validates all parsed options for a given action.
 	 *
 	 * For each option defined on the action, validates the supplied value through
-	 * its KliType. When a required option is absent and prompt is enabled,
-	 * interactively prompts the user. Falls back to the type default when present.
+	 * its KliType. When a required option is absent, prompt is enabled and the
+	 * cli can prompt (see Kli::canPrompt()), interactively prompts the user.
+	 * Otherwise falls back to the type default when present.
 	 *
 	 * @param KliAction $action          the action whose options are validated
 	 * @param array     &$parsed_options parsed option map, updated in place with validated values
@@ -242,7 +243,7 @@ final class KliParser
 				$value = $type->validate($names_as_passed[$opt_name] ?? $opt_name, $parsed_options[$opt_name]);
 			} elseif ($option->isRequired()) {
 				/* first tentative */
-				if ($option->promptEnabled()) {
+				if ($option->promptEnabled() && $this->cli->canPrompt()) {
 					$value = $this->interactivePrompt($option, $type->getDefault());
 				} /* second tentative */ elseif ($type->hasDefault()) {
 					$value = $type->getDefault();

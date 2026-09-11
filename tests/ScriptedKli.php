@@ -30,16 +30,37 @@ final class ScriptedKli extends Kli
 	/** @var list<string> */
 	private array $script;
 
+	private bool $can_prompt;
+
+	private bool $end_of_input = false;
+
 	/**
 	 * @param string       $name                   CLI title
 	 * @param list<string> $script                 Responses returned by readLine(), in order.
-	 *                                             Once exhausted, '' is returned.
+	 *                                             Once exhausted, '' is returned as end of input.
 	 * @param bool         $allow_interactive_mode pass true when testing switchToInteractiveMode()
+	 * @param bool         $can_prompt             pass false to act as if STDIN is not a terminal
 	 */
-	public function __construct(string $name, array $script, bool $allow_interactive_mode = false)
-	{
+	public function __construct(
+		string $name,
+		array $script,
+		bool $allow_interactive_mode = false,
+		bool $can_prompt = true
+	) {
 		parent::__construct($name, $allow_interactive_mode);
-		$this->script = $script;
+		$this->script     = $script;
+		$this->can_prompt = $can_prompt;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * The scripted input stands in for STDIN, and $can_prompt for whether it is
+	 * a terminal.
+	 */
+	public function canPrompt(): bool
+	{
+		return $this->can_prompt || $this->isInteractiveMode();
 	}
 
 	/**
@@ -49,7 +70,20 @@ final class ScriptedKli extends Kli
 	{
 		$this->promptLog[] = $prompt;
 
-		return \array_shift($this->script) ?? '';
+		$line               = \array_shift($this->script);
+		$this->end_of_input = null === $line;
+
+		return $line ?? '';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * True once the script is exhausted.
+	 */
+	public function isEndOfInput(): bool
+	{
+		return $this->end_of_input;
 	}
 
 	/**

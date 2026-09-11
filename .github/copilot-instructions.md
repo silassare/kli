@@ -159,13 +159,25 @@ Two snapshot variants exist for output with ANSI:
 
 When `allow_interactive_mode: true` is passed to `Kli::new()`, invoking the tool
 with no arguments starts a REPL loop. The user types commands exactly as they
-would on the command line. Type `quit` or `exit` to stop.
+would on the command line. Type `quit` or `exit` to stop; the loop also stops
+at the end of input (Ctrl-D or a closed pipe).
 
 Call `switchToInteractiveMode()` to enter interactive mode programmatically from
 within a handler. Use `isInteractiveMode()` to query the current state.
 
-Override `readLine()` in a subclass to replace the input source. Override
-`welcome()` to print a custom banner (called once on entry and on `--help`).
+Override `readLine()`, `canPrompt()` and `isEndOfInput()` in a subclass to
+replace the input source. Override `welcome()` to print a custom banner (called
+once on entry and on `--help`).
+
+`readLine()` returns `''` both for an empty line and at the end of input;
+`isEndOfInput()` tells them apart.
+
+A missing required option with `prompt()` enabled is only prompted for when
+`canPrompt()` is true (interactive mode or `stream_isatty(STDIN)`); otherwise
+the parser uses the type default or throws `"<action>" require option: --<name>`.
+An empty answer to a prompt returns the default as is, without validation. At
+the end of input with no default, `interactivePrompt()` returns null and the
+parser throws the same missing-option error.
 
 ### Output helpers in interactive mode
 
@@ -177,8 +189,12 @@ exit unconditionally from any context, call `terminate()` directly.
 ### ScriptedKli (test helper)
 
 Located in `tests/ScriptedKli.php`. Subclasses `Kli`, overrides `readLine()`
-with a pre-scripted string queue, overrides `terminate()` to throw
-`KliTerminateCalledException`, and records every prompt in `$promptLog`:
+with a pre-scripted string queue (end of input once exhausted), overrides
+`terminate()` to throw
+`KliTerminateCalledException`, and records every prompt in `$promptLog`.
+`canPrompt()` returns the `can_prompt` constructor argument (default `true`) or
+true in interactive mode; pass `can_prompt: false` to act as if STDIN is not a
+terminal:
 
 ```php
 $kli = new ScriptedKli(

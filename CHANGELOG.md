@@ -12,6 +12,15 @@
     - static factory methods in `KliTableFormatter` now return `static` instead of `self`
     - `Kli::log()` signature updated to `log(string $level, mixed $msg, array $context = [])`
     - developer workflow scripts replaced with `Makefile` targets (`make test`, `make lint`, `make cs`, `make fix`)
+    - `Kli::canPrompt(): bool` added: a missing required option is only prompted for when STDIN is a
+      terminal or in interactive mode; otherwise its default is used or the missing option is reported
+    - `Kli::readLine()` returns '' at end of input instead of throwing a `TypeError` (readline and fgets paths)
+    - `Kli::isEndOfInput(): bool` added; interactive mode stops at the end of input (Ctrl-D or a closed pipe)
+    - an empty answer to an option prompt returns the default as is instead of validating it
+    - an option prompt stops at the end of input when there is no default: the missing option is
+      reported instead of prompting forever
+    - an input error in interactive mode is printed and the REPL goes on, instead of a
+      `KliAbortException` escaping `execute()` and stopping the REPL
 
 ### v1.0.4 (2020-08-23)
 

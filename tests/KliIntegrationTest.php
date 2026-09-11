@@ -735,6 +735,158 @@ final class KliIntegrationTest extends TestCase
 		self::assertStringContainsString('World', $kli->promptLog[0]);
 	}
 
+	public function testInteractivePromptReturnsNonStringDefaultAsIs(): void
+	{
+		// empty -> the int default, which KliTypeString::validate() would reject
+		$kli    = new ScriptedKli('test', ['', 'fallback']);
+		$result = [];
+		$cmd    = $kli->command('greet');
+		$act    = $cmd->action('say');
+		$act->option('name')->required()->prompt(true, 'Enter name')->string()->def(0);
+		$act->handler(static function (KliArgs $args) use (&$result): void {
+			$result['name'] = $args->get('name');
+		});
+
+		$this->execOn($kli, 'greet say');
+
+		self::assertSame(0, $result['name']);
+		self::assertCount(1, $kli->promptLog);
+	}
+
+	public function testPromptSkippedWhenInputIsNotATerminal(): void
+	{
+		$kli = new ScriptedKli('test', ['Alice'], can_prompt: false);
+		$cmd = $kli->command('greet');
+		$act = $cmd->action('say');
+		$act->option('name')->required()->prompt(true, 'Enter name')->string();
+		$act->handler(static function (): void {
+		});
+
+		$out = $this->execOn($kli, 'greet say');
+
+		self::assertSame([], $kli->promptLog);
+		self::assertStringContainsString('"say" require option: --name', $out);
+	}
+
+	public function testPromptSkippedUsesDefaultWhenInputIsNotATerminal(): void
+	{
+		$kli    = new ScriptedKli('test', ['Alice'], can_prompt: false);
+		$result = [];
+		$cmd    = $kli->command('greet');
+		$act    = $cmd->action('say');
+		$act->option('name')->required()->prompt(true, 'Enter name')->string()->def('World');
+		$act->handler(static function (KliArgs $args) use (&$result): void {
+			$result['name'] = $args->get('name');
+		});
+
+		$this->execOn($kli, 'greet say');
+
+		self::assertSame([], $kli->promptLog);
+		self::assertSame('World', $result['name']);
+	}
+
+	public function testPromptInInteractiveModeWhenInputIsNotATerminal(): void
+	{
+		$kli    = new ScriptedKli('test', ['greet say', 'Alice', 'quit'], true, false);
+		$result = [];
+		$cmd    = $kli->command('greet');
+		$act    = $cmd->action('say');
+		$act->option('name')->required()->prompt(true, 'Enter name')->string();
+		$act->handler(static function (KliArgs $args) use (&$result): void {
+			$result['name'] = $args->get('name');
+		});
+
+		\ob_start();
+		$kli->switchToInteractiveMode();
+		\ob_get_clean();
+
+		self::assertSame('Alice', $result['name']);
+	}
+
+	public function testPromptStopsAtEndOfInputWithoutDefault(): void
+	{
+		// empty script: the prompt reads the end of input right away, like a closed pipe
+		$kli         = new ScriptedKli('test', []);
+		$invocations = 0;
+		$cmd         = $kli->command('greet');
+		$act         = $cmd->action('say');
+		$act->option('name')->required()->prompt(true, 'Enter name')->string();
+		$act->handler(static function () use (&$invocations): void {
+			++$invocations;
+		});
+
+		$out = $this->execOn($kli, 'greet say');
+
+		self::assertSame(0, $invocations);
+		self::assertStringContainsString('"say" require option: --name', $out);
+		self::assertCount(1, $kli->promptLog);
+	}
+
+	public function testPromptStopsAtEndOfInputInInteractiveMode(): void
+	{
+		// the script runs out at the prompt, like a closed pipe
+		$kli         = new ScriptedKli('test', ['greet say'], true);
+		$invocations = 0;
+		$cmd         = $kli->command('greet');
+		$act         = $cmd->action('say');
+		$act->option('name')->required()->prompt(true, 'Enter name')->string();
+		$act->handler(static function () use (&$invocations): void {
+			++$invocations;
+		});
+
+		\ob_start();
+		$kli->switchToInteractiveMode();
+		$out = (string) \ob_get_clean();
+
+		self::assertSame(0, $invocations);
+		self::assertStringContainsString('"say" require option: --name', $out);
+		// REPL prompt, option prompt once, then the REPL prompt that quits
+		self::assertCount(3, $kli->promptLog);
+		self::assertFalse($kli->isInteractiveMode());
+	}
+
+	public function testInteractiveModeContinuesAfterInputError(): void
+	{
+		$result = [];
+		$kli    = new ScriptedKli('test', ['greet say --name', 'greet say --name=Bob', 'quit'], true);
+		$cmd    = $kli->command('greet');
+		$act    = $cmd->action('say');
+		$act->option('name', 'n')->string()->def('World');
+		$act->handler(static function (KliArgs $args) use (&$result): void {
+			$result[] = $args->get('name');
+		});
+
+		\ob_start();
+		$kli->switchToInteractiveMode();
+		$out = (string) \ob_get_clean();
+
+		// "--name" alone is true, not a string: the error is shown and the REPL goes on
+		self::assertStringContainsString('option "--name" require a string as value.', $out);
+		self::assertSame(['Bob'], $result);
+		self::assertCount(3, $kli->promptLog);
+	}
+
+	// -----------------------------------------------------------------------
+	// readLine()
+	// -----------------------------------------------------------------------
+
+	public function testReadLineSignalsEndOfInput(): void
+	{
+		if (!\function_exists('readline_add_history')) {
+			self::markTestSkipped('the readline extension is not loaded');
+		}
+
+		self::assertStringEndsWith('["abc",false,"",true]', $this->readLinesFromPipe([]));
+	}
+
+	public function testReadLineSignalsEndOfInputWithoutReadline(): void
+	{
+		// fgets() is used when readline_add_history() is not available
+		$out = $this->readLinesFromPipe(['-d', 'disable_functions=readline_add_history']);
+
+		self::assertStringEndsWith('["abc",false,"",true]', $out);
+	}
+
 	// -----------------------------------------------------------------------
 	// Interactive mode tests (via ScriptedKli)
 	// -----------------------------------------------------------------------
@@ -790,6 +942,27 @@ final class KliIntegrationTest extends TestCase
 		\ob_get_clean();
 
 		self::assertSame(0, $invocations);
+	}
+
+	public function testSwitchToInteractiveModeQuitsAtEndOfInput(): void
+	{
+		// no "quit": the script runs out, like a closed pipe or Ctrl-D
+		$result = [];
+		$kli    = new ScriptedKli('test', ['greet say --name=Diana'], true);
+		$cmd    = $kli->command('greet');
+		$act    = $cmd->action('say');
+		$act->option('name', 'n')->string()->def('World');
+		$act->handler(static function (KliArgs $args) use (&$result): void {
+			$result[] = $args->get('name');
+		});
+
+		\ob_start();
+		$kli->switchToInteractiveMode();
+		\ob_get_clean();
+
+		self::assertSame(['Diana'], $result);
+		self::assertFalse($kli->isInteractiveMode());
+		self::assertCount(2, $kli->promptLog);
 	}
 
 	// -----------------------------------------------------------------------
@@ -911,5 +1084,39 @@ final class KliIntegrationTest extends TestCase
 		}
 
 		return (string) \ob_get_clean();
+	}
+
+	/**
+	 * Calls Kli::readLine() twice in a child php process whose STDIN holds a
+	 * single line. The output ends with the JSON encoded
+	 * [line, isEndOfInput(), line, isEndOfInput()].
+	 *
+	 * @param list<string> $php_options extra options for the php binary
+	 */
+	private function readLinesFromPipe(array $php_options): string
+	{
+		$code = 'require ' . \var_export(\dirname(__DIR__) . '/vendor/autoload.php', true) . ';'
+			. '$kli = new Kli\Kli("test");'
+			. '$first = [$kli->readLine("> "), $kli->isEndOfInput()];'
+			. 'echo json_encode([...$first, $kli->readLine("> "), $kli->isEndOfInput()]);';
+		$proc = \proc_open(
+			[\PHP_BINARY, ...$php_options, '-r', $code],
+			[['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']],
+			$pipes
+		);
+
+		self::assertIsResource($proc);
+
+		\fwrite($pipes[0], "abc\n");
+		// close STDIN: the second read reaches the end of input
+		\fclose($pipes[0]);
+		$out = (string) \stream_get_contents($pipes[1]);
+		$err = (string) \stream_get_contents($pipes[2]);
+		\fclose($pipes[1]);
+		\fclose($pipes[2]);
+
+		self::assertSame(0, \proc_close($proc), $out . $err);
+
+		return $out;
 	}
 }
