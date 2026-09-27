@@ -236,4 +236,63 @@ class KliUtils
 
 		return $text;
 	}
+
+	/**
+	 * Removes the ANSI escape sequences (colors, styles, cursor moves) of a text.
+	 *
+	 * @param string $text the text
+	 *
+	 * @return string
+	 */
+	public static function stripAnsi(string $text): string
+	{
+		return (string) \preg_replace('~\e\[[0-9;?]*[A-Za-z]~', '', $text);
+	}
+
+	/**
+	 * The number of terminal columns a single line of text takes: ANSI sequences take none, and an
+	 * East Asian wide character or an emoji takes two (`mb_strwidth()`).
+	 *
+	 * @param string $text the text, without line breaks
+	 *
+	 * @return int
+	 */
+	public static function displayWidth(string $text): int
+	{
+		return \mb_strwidth(self::stripAnsi($text), 'UTF-8');
+	}
+
+	/**
+	 * The width of the terminal, in columns: the `COLUMNS` environment variable when set, else what
+	 * `stty` answers when the output is a terminal; null when neither tells.
+	 *
+	 * @return null|int
+	 */
+	public static function terminalWidth(): ?int
+	{
+		$columns = \getenv('COLUMNS');
+
+		if (\is_string($columns) && \ctype_digit($columns) && (int) $columns > 0) {
+			return (int) $columns;
+		}
+
+		if (
+			\DIRECTORY_SEPARATOR === '\\'
+			|| !\function_exists('shell_exec')
+			|| !\defined('STDOUT')
+			|| !\stream_isatty(\STDOUT)
+		) {
+			return null;
+		}
+
+		// `stty size` answers "rows columns" for the terminal it reads from, as Kli::readPass() uses stty.
+		/** @psalm-suppress ForbiddenCode */
+		$size = \shell_exec('stty size 2>/dev/null < /dev/tty');
+
+		if (\is_string($size) && \preg_match('~^\d+ (\d+)$~', \trim($size), $m) && (int) $m[1] > 0) {
+			return (int) $m[1];
+		}
+
+		return null;
+	}
 }

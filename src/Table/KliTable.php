@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli\Table;
 
 use Kli\KliStyle;
+use Kli\KliUtils;
 
 /**
  * Class KliTable.
@@ -25,6 +26,14 @@ use Kli\KliStyle;
  * Border characters can be overridden per-key with setBorderChars() (merges
  * into the defaults). ANSI colour can be applied to borders via borderStyle()
  * and to individual cells via KliTableCellFormatterInterface.
+ *
+ * Widths are terminal columns (KliUtils::displayWidth()): ANSI sequences take
+ * none, a wide character or an emoji two, and a tab is written as TAB_SPACES
+ * spaces. A cell may hold several lines, and its row grows to hold them. A
+ * table wider than its maximum width (setMaxWidth(), the terminal's by
+ * default) shrinks its widest columns and wraps their text; a column with a
+ * fixed width truncates instead. Print the rendered table without wrapping it
+ * again (Kli::writeLn($table, false)).
  */
 class KliTable
 {
@@ -36,6 +45,9 @@ class KliTable
 
 	/** Character appended to cell content that exceeds the available width. */
 	public const TRUNCATE_CHAR    = '…';
+
+	/** Spaces a tab is written as, since a terminal would draw it up to its next stop. */
+	public const TAB_SPACES       = 4;
 
 	/**
 	 * @var array<string,string>
@@ -66,6 +78,12 @@ class KliTable
 	private array $rows = [];
 
 	private KliStyle $border_style;
+
+	/** The widest the table may be, borders included; null for no limit. */
+	private ?int $max_width = null;
+
+	/** Whether setMaxWidth() was called: until then, the terminal's width is the limit. */
+	private bool $max_width_set = false;
 
 	/**
 	 * KliTable constructor.
@@ -107,6 +125,24 @@ class KliTable
 	public function borderStyle(): KliStyle
 	{
 		return $this->border_style;
+	}
+
+	/**
+	 * Sets the widest the table may be, in terminal columns, borders included.
+	 *
+	 * Null removes the limit. Until this is called, the limit is the terminal's
+	 * width (KliUtils::terminalWidth()), when it is known.
+	 *
+	 * @param null|int $width
+	 *
+	 * @return static
+	 */
+	public function setMaxWidth(?int $width): static
+	{
+		$this->max_width     = null === $width ? null : \max(1, $width);
+		$this->max_width_set = true;
+
+		return $this;
 	}
 
 	/**
@@ -165,96 +201,98 @@ class KliTable
 	 */
 	public function render(): string
 	{
-		$header_count = \count($this->headers);
-		$top_line     = $this->getBorderChar('top-left');
-		$bottom_line  = $this->getBorderChar('bottom-left');
-		$mid_line     = $this->getBorderChar('left-mid');
-		$header_cells = [];
+		$labels = [];
+		$texts  = [];
+		$widths = [];
 
-		$formatted_rows = [];
-		$max_widths     = [];
-		foreach ($this->rows as $row) {
-			$formatted_row = [];
-			foreach ($this->headers as $header) {
-				$key   = $header->getKey();
-				$value = $row[$key] ?? '';
-
-				$formatter           = $header->getCellFormatter();
-				$formatted_row[$key] = $formatter ? $formatter->format($value, $header, $row) : (string) $value;
-				$len                 = \mb_strlen($formatted_row[$key]);
-				if (!isset($max_widths[$key]) || $max_widths[$key] < $len) {
-					$max_widths[$key] = $len;
-				}
-			}
-			$formatted_rows[] = $formatted_row;
+		foreach ($this->headers as $i => $header) {
+			$labels[$i] = self::linesOf($header->getLabel());
+			$widths[$i] = self::widthOf($labels[$i]);
 		}
 
-		foreach ($this->headers as $header) {
-			--$header_count;
-			$key   = $header->getKey();
-			$width = $header->getWidth();
+		foreach ($this->rows as $r => $row) {
+			foreach ($this->headers as $i => $header) {
+				$value     = $row[$header->getKey()] ?? '';
+				$formatter = $header->getCellFormatter();
 
-			if ($width) {
-				$width = \max($width, self::MIN_CELL_WIDTH) + self::MIN_CELL_PADDING;
-			} else {
-				$width = \max($max_widths[$key], \mb_strlen($header->getLabel())) + self::MIN_CELL_PADDING;
+				$texts[$r][$i] = $formatter ? $formatter->format($value, $header, $row) : (string) $value;
+				$widths[$i]    = \max($widths[$i], self::widthOf(self::linesOf($texts[$r][$i])));
 			}
-
-			$max_widths[$key] = $width;
-
-			$top_line .= \str_repeat($this->getBorderChar('top'), $width);
-			$mid_line .= \str_repeat($this->getBorderChar('mid'), $width);
-			$bottom_line .= \str_repeat($this->getBorderChar('bottom'), $width);
-
-			if ($header_count) {
-				$top_line .= $this->getBorderChar('top-mid');
-				$mid_line .= $this->getBorderChar('mid-mid');
-				$bottom_line .= $this->getBorderChar('bottom-mid');
-			} else {
-				$top_line .= $this->getBorderChar('top-right');
-				$mid_line .= $this->getBorderChar('right-mid');
-				$bottom_line .= $this->getBorderChar('bottom-right');
-			}
-			$header_cells[] = $this->renderCell($header->getLabel(), $header, $width, true);
 		}
 
-		$top_line    = $this->border_style->apply($top_line);
-		$mid_line    = $this->border_style->apply($mid_line);
-		$bottom_line = $this->border_style->apply($bottom_line);
+		foreach ($this->headers as $i => $header) {
+			$fixed = $header->getWidth();
 
-		$output[] = $top_line;
-		$output[] = $this->getStyledBorderChar('left')
-			. \implode($this->getStyledBorderChar('middle'), $header_cells)
-			. $this->getStyledBorderChar('right');
+			if (null !== $fixed) {
+				$widths[$i] = \max($fixed, self::MIN_CELL_WIDTH);
+			}
+		}
 
-		foreach ($formatted_rows as $index => $formatted_row) {
+		$widths = $this->fit($widths);
+
+		$top    = [];
+		$mid    = [];
+		$bottom = [];
+
+		foreach ($widths as $width) {
+			$top[]    = \str_repeat($this->getBorderChar('top'), $width + self::MIN_CELL_PADDING);
+			$mid[]    = \str_repeat($this->getBorderChar('mid'), $width + self::MIN_CELL_PADDING);
+			$bottom[] = \str_repeat($this->getBorderChar('bottom'), $width + self::MIN_CELL_PADDING);
+		}
+
+		$mid_line = $this->border_style->apply(
+			$this->getBorderChar('left-mid') . \implode($this->getBorderChar('mid-mid'), $mid)
+			. $this->getBorderChar('right-mid')
+		);
+
+		$output   = [];
+		$output[] = $this->border_style->apply(
+			$this->getBorderChar('top-left') . \implode($this->getBorderChar('top-mid'), $top)
+			. $this->getBorderChar('top-right')
+		);
+
+		$cells = [];
+
+		foreach ($this->headers as $i => $header) {
+			$cells[$i] = [
+				'lines' => $this->fitLines($labels[$i], $widths[$i], null !== $header->getWidth()),
+				'style' => $header->getStyle(),
+			];
+		}
+
+		\array_push($output, ...$this->renderLines($cells, $widths));
+
+		foreach ($this->rows as $r => $row) {
 			$output[] = $mid_line;
 			$cells    = [];
-			foreach ($this->headers as $header) {
-				$key   = $header->getKey();
-				$value = $formatted_row[$key];
-				$width = $max_widths[$key];
 
-				$cells[] = $this->renderCell($value, $header, $width, false, $this->rows[$index]);
+			foreach ($this->headers as $i => $header) {
+				$text      = $texts[$r][$i];
+				$cells[$i] = [
+					'lines' => $this->fitLines(self::linesOf($text), $widths[$i], null !== $header->getWidth()),
+					'style' => $header->getCellFormatter()?->getStyle($text, $header, $row),
+				];
 			}
 
-			$output[] = $this->getStyledBorderChar('left')
-				. \implode($this->getStyledBorderChar('middle'), $cells)
-				. $this->getStyledBorderChar('right');
+			\array_push($output, ...$this->renderLines($cells, $widths));
 		}
 
-		$output[] = $bottom_line;
+		$output[] = $this->border_style->apply(
+			$this->getBorderChar('bottom-left') . \implode($this->getBorderChar('bottom-mid'), $bottom)
+			. $this->getBorderChar('bottom-right')
+		);
 
 		return \implode(\PHP_EOL, $output);
 	}
 
 	/**
-	 * Renders a single cell value to a fixed-width padded string.
+	 * Renders a single line of a cell to a fixed-width padded string.
 	 *
-	 * Truncates content that exceeds the available width (width minus padding)
-	 * using TRUNCATE_CHAR. Applies alignment padding and optional ANSI style.
+	 * Truncates content wider than the available width (width minus padding)
+	 * using TRUNCATE_CHAR, then pads it for its alignment: one space on each
+	 * side at least, and the rest on the side the alignment leaves free.
 	 *
-	 * @param string         $value     pre-formatted cell content
+	 * @param string         $value     pre-formatted cell content, on one line
 	 * @param KliTableHeader $header    column definition (alignment, formatter, style)
 	 * @param int            $width     total column width including padding
 	 * @param bool           $is_header true when rendering the header row
@@ -269,34 +307,221 @@ class KliTable
 		bool $is_header,
 		array $row = []
 	): string {
-		$align = $header->getAlign();
+		$style = $is_header ? $header->getStyle() : $header->getCellFormatter()?->getStyle($value, $header, $row);
+		$lines = $this->fitLines(self::linesOf($value), $width - self::MIN_CELL_PADDING, true);
 
-		if ($is_header) {
-			$style = $header->getStyle();
-		} else {
-			$formatter = $header->getCellFormatter();
-			$style     = $formatter?->getStyle($value, $header, $row);
+		return $this->pad($lines[0] ?? '', $header->getAlign(), $width - self::MIN_CELL_PADDING, $style);
+	}
+
+	/**
+	 * The lines of a text: its line breaks split it, and its tabs become spaces.
+	 *
+	 * @return list<string>
+	 */
+	private static function linesOf(string $text): array
+	{
+		$text = \str_replace("\t", \str_repeat(' ', self::TAB_SPACES), $text);
+
+		return \explode("\n", \str_replace(["\r\n", "\r"], "\n", $text));
+	}
+
+	/**
+	 * The width of the widest line, in terminal columns.
+	 *
+	 * @param list<string> $lines
+	 */
+	private static function widthOf(array $lines): int
+	{
+		$width = 0;
+
+		foreach ($lines as $line) {
+			$width = \max($width, KliUtils::displayWidth($line));
 		}
 
-		$value = \mb_strimwidth($value, 0, $width - self::MIN_CELL_PADDING, self::TRUNCATE_CHAR);
+		return $width;
+	}
 
-		$padding      = $width - \mb_strlen($value);
-		$padding_left = $padding_right = 0;
+	/**
+	 * Shrinks the widest columns, one column at a time, until the table fits its
+	 * maximum width; a column with a fixed width, or already at MIN_CELL_WIDTH,
+	 * is not shrunk. A table that cannot fit is left as wide as it gets.
+	 *
+	 * @param array<int, int> $widths content width of each column
+	 *
+	 * @return array<int, int>
+	 */
+	private function fit(array $widths): array
+	{
+		$max = $this->max_width_set ? $this->max_width : KliUtils::terminalWidth();
+
+		if (null === $max) {
+			return $widths;
+		}
+
+		// Borders: one before each column and one after the last, then each column's padding.
+		$total = \count($widths) + 1 + \array_sum($widths) + \count($widths) * self::MIN_CELL_PADDING;
+
+		while ($total > $max) {
+			$widest = null;
+
+			foreach ($this->headers as $i => $header) {
+				if (
+					null === $header->getWidth()
+					&& $widths[$i] > self::MIN_CELL_WIDTH
+					&& (null === $widest || $widths[$i] > $widths[$widest])
+				) {
+					$widest = $i;
+				}
+			}
+
+			if (null === $widest) {
+				break;
+			}
+
+			--$widths[$widest];
+			--$total;
+		}
+
+		return $widths;
+	}
+
+	/**
+	 * The lines of a cell fitted to its width: wrapped, or truncated with
+	 * TRUNCATE_CHAR when the column has a fixed width. A line that has to be
+	 * cut loses its ANSI sequences, which cannot be cut safely.
+	 *
+	 * @param list<string> $lines
+	 *
+	 * @return list<string>
+	 */
+	private function fitLines(array $lines, int $width, bool $truncate): array
+	{
+		$out = [];
+
+		foreach ($lines as $line) {
+			if (KliUtils::displayWidth($line) <= $width) {
+				$out[] = $line;
+
+				continue;
+			}
+
+			$line = KliUtils::stripAnsi($line);
+
+			if ($truncate) {
+				$out[] = \mb_strimwidth($line, 0, $width, self::TRUNCATE_CHAR, 'UTF-8');
+			} else {
+				\array_push($out, ...self::wrap($line, $width));
+			}
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Wraps a line at spaces to a width in terminal columns; a word wider than
+	 * the width is cut.
+	 *
+	 * @return list<string>
+	 */
+	private static function wrap(string $line, int $width): array
+	{
+		$out     = [];
+		$current = '';
+
+		foreach (\explode(' ', $line) as $word) {
+			$candidate = '' === $current ? $word : $current . ' ' . $word;
+
+			if (\mb_strwidth($candidate, 'UTF-8') <= $width) {
+				$current = $candidate;
+
+				continue;
+			}
+
+			if ('' !== $current) {
+				$out[] = $current;
+			}
+
+			$current = $word;
+
+			while (\mb_strwidth($current, 'UTF-8') > $width) {
+				$piece = \mb_strimwidth($current, 0, $width, '', 'UTF-8');
+
+				// A character wider than the column still takes a line of its own.
+				if ('' === $piece) {
+					$piece = \mb_substr($current, 0, 1, 'UTF-8');
+				}
+
+				$out[]   = $piece;
+				$current = \mb_substr($current, \mb_strlen($piece, 'UTF-8'), null, 'UTF-8');
+			}
+		}
+
+		$out[] = $current;
+
+		return $out;
+	}
+
+	/**
+	 * Renders the lines of one row: as many as its tallest cell has.
+	 *
+	 * @param array<int, array{lines: list<string>, style: null|KliStyle}> $cells
+	 * @param array<int, int>                                              $widths
+	 *
+	 * @return list<string>
+	 */
+	private function renderLines(array $cells, array $widths): array
+	{
+		$height = 1;
+
+		foreach ($cells as $cell) {
+			$height = \max($height, \count($cell['lines']));
+		}
+
+		$out = [];
+
+		for ($l = 0; $l < $height; ++$l) {
+			$parts = [];
+
+			foreach ($this->headers as $i => $header) {
+				$parts[] = $this->pad(
+					$cells[$i]['lines'][$l] ?? '',
+					$header->getAlign(),
+					$widths[$i],
+					$cells[$i]['style']
+				);
+			}
+
+			$out[] = $this->getStyledBorderChar('left')
+				. \implode($this->getStyledBorderChar('middle'), $parts)
+				. $this->getStyledBorderChar('right');
+		}
+
+		return $out;
+	}
+
+	/**
+	 * A line padded to its column: one space on each side, the rest on the
+	 * side its alignment leaves free.
+	 */
+	private function pad(string $line, string $align, int $width, ?KliStyle $style): string
+	{
+		$free  = \max(0, $width - KliUtils::displayWidth($line));
+		$left  = 0;
+		$right = $free;
 
 		if ('center' === $align) {
-			$padding_left  = (int) ($padding / 2);
-			$padding_right = $padding - $padding_left;
+			$left  = (int) ($free / 2);
+			$right = $free - $left;
 		} elseif ('right' === $align) {
-			$padding_left = $padding;
-		} else {
-			$padding_right = $padding;
+			$left  = $free;
+			$right = 0;
 		}
 
-		if ($style) {
-			$value = $style->apply($value);
+		if ($style && '' !== $line) {
+			$line = $style->apply($line);
 		}
 
-		return \str_repeat(' ', $padding_left) . $value . \str_repeat(' ', $padding_right);
+		return ' ' . \str_repeat(' ', $left) . $line . \str_repeat(' ', $right) . ' ';
 	}
 
 	/**

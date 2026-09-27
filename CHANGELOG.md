@@ -1,5 +1,14 @@
 ### v1.1.0 (unreleased)
 
+    - `KliTable` measures in terminal columns (`KliUtils::displayWidth()`): a wide character or an emoji
+      takes two, an ANSI sequence in a value none, and a tab is written as `KliTable::TAB_SPACES` spaces;
+      a row used to be misaligned by each of them
+    - `KliTable` cells may hold several lines: the row grows to hold them (a line break used to cut the row)
+    - `KliTable` pads each cell with one space on each side (both spaces used to go on one side, so text
+      touched a border)
+    - `KliTable::setMaxWidth(?int)` added: a table wider than its maximum (the terminal's width by default)
+      shrinks its widest columns and wraps their text; a column with a fixed width truncates, as before
+    - `KliUtils::stripAnsi()`, `KliUtils::displayWidth()` and `KliUtils::terminalWidth()` added
     - `warn()` added with optional `?int $exit = null` parameter
     - `error()` updated: default `$exit = 1` (terminates unless `exit: null` is passed)
     - `success()` updated: optional `?int $exit = null` parameter
