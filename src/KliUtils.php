@@ -128,17 +128,29 @@ class KliUtils
 	/**
 	 * Wrap text.
 	 *
-	 * @param string $text          the text string to wrap
-	 * @param int    $width         the width
-	 * @param bool   $cut_long_word to cut long words
+	 * Wraps each line at spaces so that it takes at most $width terminal columns
+	 * (displayWidth(): ANSI sequences take none, a wide character two). A word
+	 * wider than the width stays whole on its own line, or is cut when
+	 * $cut_long_word is true (a cut word loses its ANSI sequences). Line breaks
+	 * are kept, "\r\n" and "\r" written "\n".
+	 *
+	 * @param string   $text          the text string to wrap
+	 * @param null|int $width         the width in columns: the terminal's (terminalWidth()) when
+	 *                                null, else 80
+	 * @param bool     $cut_long_word to cut long words
 	 *
 	 * @return string
 	 */
-	public static function wrap(string $text, int $width = 80, bool $cut_long_word = false): string
+	public static function wrap(string $text, ?int $width = null, bool $cut_long_word = false): string
 	{
-		$width = \max(1, $width);
+		$width = \max(1, $width ?? self::terminalWidth() ?? 80);
+		$out   = [];
 
-		return \wordwrap(\preg_replace("~\r\n?~", "\n", $text), $width, "\n", $cut_long_word);
+		foreach (\explode("\n", (string) \preg_replace("~\r\n?~", "\n", $text)) as $line) {
+			\array_push($out, ...self::wrapLine($line, $width, $cut_long_word));
+		}
+
+		return \implode("\n", $out);
 	}
 
 	/**
@@ -294,5 +306,62 @@ class KliUtils
 		}
 
 		return null;
+	}
+
+	/**
+	 * The lines one line of text wraps into, at spaces, each at most $width columns wide but for a
+	 * word wider than the width that is not cut.
+	 *
+	 * @return list<string>
+	 */
+	private static function wrapLine(string $line, int $width, bool $cut_long_word): array
+	{
+		$out     = [];
+		$current = null;
+
+		foreach (\explode(' ', $line) as $word) {
+			$candidate = null === $current ? $word : $current . ' ' . $word;
+
+			if (self::displayWidth($candidate) <= $width) {
+				$current = $candidate;
+
+				continue;
+			}
+
+			if (null !== $current) {
+				$out[] = $current;
+			}
+
+			$current = $word;
+
+			if (!$cut_long_word || self::displayWidth($word) <= $width) {
+				continue;
+			}
+
+			$current = self::stripAnsi($word);
+
+			while (\mb_strwidth($current, 'UTF-8') > $width) {
+				$piece = \mb_strimwidth($current, 0, $width, '', 'UTF-8');
+
+				// A character wider than the width still takes a line of its own.
+				if ('' === $piece) {
+					$piece = \mb_substr($current, 0, 1, 'UTF-8');
+				}
+
+				$out[]   = $piece;
+				$current = \mb_substr($current, \mb_strlen($piece, 'UTF-8'), null, 'UTF-8');
+			}
+
+			// Nothing left of the cut word: the next word starts a line.
+			if ('' === $current) {
+				$current = null;
+			}
+		}
+
+		if (null !== $current || [] === $out) {
+			$out[] = $current ?? '';
+		}
+
+		return $out;
 	}
 }

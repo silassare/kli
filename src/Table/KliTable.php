@@ -410,53 +410,9 @@ class KliTable
 			if ($truncate) {
 				$out[] = \mb_strimwidth($line, 0, $width, self::TRUNCATE_CHAR, 'UTF-8');
 			} else {
-				\array_push($out, ...self::wrap($line, $width));
+				\array_push($out, ...\explode("\n", KliUtils::wrap($line, $width, true)));
 			}
 		}
-
-		return $out;
-	}
-
-	/**
-	 * Wraps a line at spaces to a width in terminal columns; a word wider than
-	 * the width is cut.
-	 *
-	 * @return list<string>
-	 */
-	private static function wrap(string $line, int $width): array
-	{
-		$out     = [];
-		$current = '';
-
-		foreach (\explode(' ', $line) as $word) {
-			$candidate = '' === $current ? $word : $current . ' ' . $word;
-
-			if (\mb_strwidth($candidate, 'UTF-8') <= $width) {
-				$current = $candidate;
-
-				continue;
-			}
-
-			if ('' !== $current) {
-				$out[] = $current;
-			}
-
-			$current = $word;
-
-			while (\mb_strwidth($current, 'UTF-8') > $width) {
-				$piece = \mb_strimwidth($current, 0, $width, '', 'UTF-8');
-
-				// A character wider than the column still takes a line of its own.
-				if ('' === $piece) {
-					$piece = \mb_substr($current, 0, 1, 'UTF-8');
-				}
-
-				$out[]   = $piece;
-				$current = \mb_substr($current, \mb_strlen($piece, 'UTF-8'), null, 'UTF-8');
-			}
-		}
-
-		$out[] = $current;
 
 		return $out;
 	}

@@ -10,6 +10,8 @@
 
     <php>
         <ini name="error_reporting" value="-1"/>
+        <!-- Kli wraps output to the terminal's width: the expected outputs are written for 80 columns. -->
+        <env name="COLUMNS" value="80" force="true"/>
     </php>
 
     <testsuites>

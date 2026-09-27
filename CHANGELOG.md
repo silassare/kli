@@ -9,6 +9,9 @@
     - `KliTable::setMaxWidth(?int)` added: a table wider than its maximum (the terminal's width by default)
       shrinks its widest columns and wraps their text; a column with a fixed width truncates, as before
     - `KliUtils::stripAnsi()`, `KliUtils::displayWidth()` and `KliUtils::terminalWidth()` added
+    - `KliUtils::wrap()` (and so `writeLn()`, `info()`, `warn()`, `error()`, `success()`, `indent()`) wraps
+      at terminal columns, ANSI sequences left out, instead of bytes; its width defaults to the terminal's
+      (`?int $width = null`), else 80. Accented text used to wrap early and wide text late
     - `warn()` added with optional `?int $exit = null` parameter
     - `error()` updated: default `$exit = 1` (terminates unless `exit: null` is passed)
     - `success()` updated: optional `?int $exit = null` parameter

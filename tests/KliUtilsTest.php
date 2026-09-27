@@ -247,4 +247,42 @@ final class KliUtilsTest extends TestCase
 			\putenv(false === $previous ? 'COLUMNS' : 'COLUMNS=' . $previous);
 		}
 	}
+
+	public function testWrapCountsColumnsNotBytes(): void
+	{
+		// 10 columns, 16 bytes: wordwrap() used to break it at 12 bytes
+		self::assertSame('éééé éééé é', KliUtils::wrap('éééé éééé é', 12));
+		self::assertSame("日本 日本\n日本", KliUtils::wrap('日本 日本 日本', 10));
+	}
+
+	public function testWrapLeavesAnsiSequencesOutOfTheWidth(): void
+	{
+		$red = "\033[31mred\033[0m";
+
+		self::assertSame("{$red} {$red}\n{$red}", KliUtils::wrap("{$red} {$red} {$red}", 7));
+	}
+
+	public function testWrapKeepsOrCutsALongWord(): void
+	{
+		self::assertSame("a\nabcdefgh\nb", KliUtils::wrap('a abcdefgh b', 4));
+		self::assertSame("a\nabcd\nefgh\nb", KliUtils::wrap('a abcdefgh b', 4, true));
+		self::assertSame("日\n本", KliUtils::wrap('日本', 1, true));
+	}
+
+	public function testWrapNormalizesLineBreaks(): void
+	{
+		self::assertSame("one\ntwo\nthree", KliUtils::wrap("one\r\ntwo\rthree", 10));
+	}
+
+	public function testWrapUsesTheTerminalWidthByDefault(): void
+	{
+		$previous = \getenv('COLUMNS');
+
+		try {
+			\putenv('COLUMNS=9');
+			self::assertSame("aaaa bbbb\ncccc", KliUtils::wrap('aaaa bbbb cccc'));
+		} finally {
+			\putenv(false === $previous ? 'COLUMNS' : 'COLUMNS=' . $previous);
+		}
+	}
 }
