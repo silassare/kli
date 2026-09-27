@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli\Tests;
 
 use Kli\KliStyle;
+use Kli\KliUtils;
 use Kli\Table\Interfaces\KliTableCellFormatterInterface;
 use Kli\Table\KliTable;
 use Kli\Table\KliTableFormatter;
@@ -40,33 +41,140 @@ final class KliTableTest extends TestCase
 	}
 
 	/**
-	 * BUG: KliTable::render() uses strlen() (byte count) to compute max cell width
-	 * and header label width, but KliTable::renderCell() uses mb_strlen() (char count)
-	 * when calculating padding. For multibyte characters the byte count is larger than
-	 * the char count, so the column becomes wider than it needs to be and every cell
-	 * in that column gets one extra trailing space per additional byte beyond the char.
-	 *
-	 * Example: 'é' is 1 char but 2 bytes.
-	 *   strlen('é')    = 2  -> column width = max(2, label) + MIN_CELL_PADDING
-	 *   mb_strlen('é') = 1  -> padding in renderCell = (column_width) - 1  (over-padded)
-	 *
-	 * Fix: replace the two strlen() calls in render() with mb_strlen().
+	 * A column is as wide as its widest text in terminal columns, not in bytes:
+	 * 'é' is 1 column but 2 bytes in UTF-8.
 	 */
 	public function testTableColumnWidthCountsCharsNotBytes(): void
 	{
-		$table = new KliTable();
-		$table->addHeader('X', 'x'); // label 'X': 1 char, 1 byte
-		$table->addRow(['x' => 'é']); // value 'é': 1 char, 2 bytes in UTF-8
+		$table = (new KliTable())->setMaxWidth(null);
+		$table->addHeader('X', 'x');
+		$table->addRow(['x' => 'é']);
 
-		$rendered = $table->render();
-		$lines    = \explode(\PHP_EOL, $rendered);
+		$lines = \explode(\PHP_EOL, $table->render());
+
 		// Line layout: top border [0], header row [1], mid border [2], data row [3], bottom [4]
-		$data_row = $lines[3];
+		self::assertSame('║ é ║', $lines[3]);
+	}
 
-		// Column must be max(1 char, 1 char) + 2 padding = 3 chars wide.
-		// With left-align (default) the cell is 'é  ' (é + 2 trailing spaces).
-		// With the strlen bug the column would be 4 chars wide: 'é   ' (3 trailing spaces).
-		self::assertStringContainsString('║é  ║', $data_row);
+	public function testEveryLineOfATableIsAsWideAsItsBorders(): void
+	{
+		$table = (new KliTable())->setMaxWidth(null);
+		$table->addHeader('Check', 'name');
+		$table->addHeader('Status', 'status')->alignCenter();
+		$table->addHeader('Detail', 'detail')->alignRight();
+		$table->addRows([
+			['name' => 'wide', 'status' => 'OK', 'detail' => '日本語テキスト'],
+			['name' => 'emoji', 'status' => 'OK', 'detail' => 'ok ✅ done'],
+			['name' => 'accents', 'status' => 'OK', 'detail' => 'Émile é à'],
+			['name' => 'ansi', 'status' => "\033[31mFAIL\033[0m", 'detail' => 'a colored value'],
+			['name' => 'tab', 'status' => 'OK', 'detail' => "a\tb"],
+		]);
+
+		$lines = \explode(\PHP_EOL, $table->render());
+
+		self::assertSame([38], \array_values(\array_unique(\array_map(KliUtils::displayWidth(...), $lines))));
+		self::assertSame('║ ansi    │  ' . "\033[31mFAIL\033[0m" . '  │ a colored value ║', $lines[9]);
+		self::assertSame('║ tab     │   OK   │          a    b ║', $lines[11]);
+	}
+
+	public function testACellOnSeveralLinesMakesItsRowTaller(): void
+	{
+		$table = (new KliTable())->setMaxWidth(null);
+		$table->addHeader('Check', 'name');
+		$table->addHeader("Detail\n(why)", 'detail');
+		$table->addRow(['name' => 'cache', 'detail' => "first line\r\nsecond, longer line\rthird"]);
+
+		self::assertSame(
+			[
+				'╔═══════╤═════════════════════╗',
+				'║ Check │ Detail              ║',
+				'║       │ (why)               ║',
+				'╟───────┼─────────────────────╢',
+				'║ cache │ first line          ║',
+				'║       │ second, longer line ║',
+				'║       │ third               ║',
+				'╚═══════╧═════════════════════╝',
+			],
+			\explode(\PHP_EOL, $table->render())
+		);
+	}
+
+	public function testATableWiderThanItsMaximumWrapsItsWidestColumns(): void
+	{
+		$table = (new KliTable())->setMaxWidth(40);
+		$table->addHeader('Check', 'name');
+		$table->addHeader('Id', 'id')->alignRight()->setWidth(5);
+		$table->addHeader('Detail', 'detail');
+		$table->addRows([
+			[
+				'name'   => 'ext-intl',
+				'id'     => 'abcdefgh',
+				'detail' => 'The intl extension is not loaded: categories never match.',
+			],
+			['name' => 'url', 'id' => 1, 'detail' => 'see https://example.com/a/long/path'],
+			['name' => 'wide', 'id' => 2, 'detail' => '日本語テキスト日本語テキスト'],
+			['name' => 'ansi', 'id' => 3, 'detail' => "\033[32mgreen text that has to be wrapped here\033[0m"],
+		]);
+
+		self::assertSame(
+			[
+				'╔══════════╤═══════╤═══════════════════╗',
+				'║ Check    │    Id │ Detail            ║',
+				'╟──────────┼───────┼───────────────────╢',
+				'║ ext-intl │ abcd… │ The intl          ║',
+				'║          │       │ extension is not  ║',
+				'║          │       │ loaded:           ║',
+				'║          │       │ categories never  ║',
+				'║          │       │ match.            ║',
+				'╟──────────┼───────┼───────────────────╢',
+				'║ url      │     1 │ see               ║',
+				'║          │       │ https://example.c ║',
+				'║          │       │ om/a/long/path    ║',
+				'╟──────────┼───────┼───────────────────╢',
+				'║ wide     │     2 │ 日本語テキスト日  ║',
+				'║          │       │ 本語テキスト      ║',
+				'╟──────────┼───────┼───────────────────╢',
+				'║ ansi     │     3 │ green text that   ║',
+				'║          │       │ has to be wrapped ║',
+				'║          │       │ here              ║',
+				'╚══════════╧═══════╧═══════════════════╝',
+			],
+			\explode(\PHP_EOL, $table->render())
+		);
+	}
+
+	public function testATableThatCannotFitIsAsNarrowAsItGets(): void
+	{
+		$table = (new KliTable())->setMaxWidth(10);
+		$table->addHeader('Name', 'name');
+		$table->addHeader('Id', 'id')->setWidth(8);
+		$table->addRow(['name' => 'a long name', 'id' => 1]);
+
+		$lines = \explode(\PHP_EOL, $table->render());
+
+		// Each column keeps MIN_CELL_WIDTH, and a fixed one its width: 1 + 7 + 1 + 10 + 1.
+		self::assertSame(20, KliUtils::displayWidth($lines[0]));
+		self::assertSame('║ a     │ 1        ║', $lines[3]);
+		self::assertSame('║ long  │          ║', $lines[4]);
+		self::assertSame('║ name  │          ║', $lines[5]);
+	}
+
+	public function testTheTerminalWidthIsTheDefaultMaximum(): void
+	{
+		$previous = \getenv('COLUMNS');
+
+		\putenv('COLUMNS=20');
+
+		try {
+			$table = new KliTable();
+			$table->addHeader('Detail', 'detail');
+			$table->addRow(['detail' => 'a text longer than twenty columns']);
+
+			self::assertSame(20, \max(\array_map(KliUtils::displayWidth(...), \explode(\PHP_EOL, $table->render()))));
+			self::assertSame(20, KliUtils::terminalWidth());
+		} finally {
+			\putenv(false === $previous ? 'COLUMNS' : 'COLUMNS=' . $previous);
+		}
 	}
 
 	/**
@@ -76,7 +184,8 @@ final class KliTableTest extends TestCase
 	 */
 	private function buildTable(): array
 	{
-		$table = new KliTable();
+		// No width limit: the snapshots must not depend on the terminal the tests run in.
+		$table = (new KliTable())->setMaxWidth(null);
 
 		$table->addHeader('ID', 'id')
 			->alignCenter();

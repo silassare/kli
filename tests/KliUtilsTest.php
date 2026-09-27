@@ -215,4 +215,36 @@ final class KliUtilsTest extends TestCase
 
 		self::assertSame(['a', "h\xC3\xA9"], $result); // 'hé' must not be truncated
 	}
+
+	public function testStripAnsiRemovesEscapeSequences(): void
+	{
+		$styled = "\033[31mred\033[0m \033[1;4mbold\033[22m";
+
+		self::assertSame('red bold', KliUtils::stripAnsi($styled));
+		self::assertSame('plain [31m', KliUtils::stripAnsi('plain [31m'));
+	}
+
+	public function testDisplayWidthCountsTerminalColumns(): void
+	{
+		self::assertSame(5, KliUtils::displayWidth('Émile'));
+		self::assertSame(4, KliUtils::displayWidth('日本'));
+		self::assertSame(5, KliUtils::displayWidth('ok ✅'));
+		self::assertSame(4, KliUtils::displayWidth("\033[31mFAIL\033[0m"));
+	}
+
+	public function testTerminalWidthReadsColumns(): void
+	{
+		$previous = \getenv('COLUMNS');
+
+		try {
+			\putenv('COLUMNS=132');
+			self::assertSame(132, KliUtils::terminalWidth());
+
+			// not a width: the terminal is asked, or nothing is known
+			\putenv('COLUMNS=wide');
+			self::assertNotSame(0, KliUtils::terminalWidth());
+		} finally {
+			\putenv(false === $previous ? 'COLUMNS' : 'COLUMNS=' . $previous);
+		}
+	}
 }
