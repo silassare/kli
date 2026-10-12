@@ -580,10 +580,12 @@ $this->assertSame(['Enter name: ', 'test> '], $kli->promptLog);
 ## Developer Workflows
 
 ```sh
-make test   # PHPUnit with --testdox --do-not-cache-result
-make lint   # psalm static analysis
-make cs     # check code style (phpcs)
-make fix    # run psalm then oliup-cs style auto-fix
+make check       # cs + lint: the gate for every change
+make check-full  # the same two with their caches ignored
+make test        # PHPUnit with --testdox --do-not-cache-result (FILE=, FILTER= narrow it)
+make lint        # psalm static analysis
+make cs          # check code style (phpcs)
+make fix         # run psalm then oliup-cs style auto-fix
 ```
 
 - PHPUnit config: `phpunit.xml.dist` — `failOnWarning` and `failOnRisky` are `true`

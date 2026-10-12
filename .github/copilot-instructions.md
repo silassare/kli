@@ -39,11 +39,25 @@ Kli (orchestrator)
 ## Developer Workflows
 
 ```sh
-make test   # PHPUnit with --testdox --do-not-cache-result
-make lint   # psalm static analysis
-make cs     # check code style (phpcs)
-make fix    # run psalm then oliup-cs style auto-fix
+make check       # cs + lint: the gate for every change
+make check-full  # the same two with their caches ignored
+make test        # PHPUnit with --testdox --do-not-cache-result (FILE=, FILTER= narrow it)
+make lint        # psalm static analysis
+make cs          # check code style (phpcs)
+make fix         # run psalm then oliup-cs style auto-fix
 ```
+
+**Three tiers of re-running**, the cadence of every repository of the suite, with the same words
+everywhere (the `Makefile`'s own comments say what each one skips):
+
+- `make check` -- **every change**: code style and static analysis, both cached (phpcs also forks
+  over this machine's cores). `make check-full` is the same two with the caches ignored.
+- `make test FILE=... FILTER=...` -- **a feature is done**: one file or one case. The whole suite
+  runs in seconds here, so this buys focus rather than time.
+- `make test` -- **end of a cycle, and before anything is handed over**.
+
+The tiers are about re-running, never about writing: a feature's test is written with the feature.
+A failure in a narrowed run is repeated with the full target before it is believed or reported.
 
 PHPUnit config: `phpunit.xml.dist` — `failOnWarning` and `failOnRisky` are both `true`.
 Psalm config: `psalm.xml` — error level 4, analyzes `src/` only.
