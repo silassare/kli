@@ -27,7 +27,7 @@ IMPORTANT:
 
 ## Overview
 
-`kli` is a PHP >=8.1 fluent-builder CLI framework. Namespace root: `Kli`. Every source file begins with `declare(strict_types=1)`. The hierarchy is:
+`kli` is a PHP >=8.3 fluent-builder CLI framework. Namespace root: `Kli`. Every source file begins with `declare(strict_types=1)`. The hierarchy is:
 
 ```
 Kli (orchestrator)
