@@ -20,7 +20,7 @@ use Kli\Exceptions\KliRuntimeException;
  */
 final class KliAction
 {
-	public const NAME_REG = '~^[a-zA-Z0-9]([a-zA-Z0-9-_:]+)$~';
+	public const string NAME_REG = '~^[a-zA-Z0-9]([a-zA-Z0-9-_:]+)$~';
 
 	private string $name;
 

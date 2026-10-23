@@ -462,7 +462,7 @@ final class KliTest extends TestCase
 
 		$hello = $kli->command('hello')
 			->description('Say hello to someone.')
-			->handler(static function (KliAction $action, KliArgs $args) use ($kli) {
+			->handler(static function (KliAction $action, KliArgs $args) use ($kli): void {
 				if ('say' === $action->getName()) {
 					$name = $args->get('name');
 					$age  = $args->get('age');

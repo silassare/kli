@@ -38,16 +38,16 @@ use Kli\KliUtils;
 class KliTable
 {
 	/** Minimum content width (excluding padding) for any cell, in characters. */
-	public const MIN_CELL_WIDTH   = 5;
+	public const int MIN_CELL_WIDTH   = 5;
 
 	/** Horizontal space reserved for padding on each side of cell content. */
-	public const MIN_CELL_PADDING = 2;
+	public const int MIN_CELL_PADDING = 2;
 
 	/** Character appended to cell content that exceeds the available width. */
-	public const TRUNCATE_CHAR    = '…';
+	public const string TRUNCATE_CHAR    = '…';
 
 	/** Spaces a tab is written as, since a terminal would draw it up to its next stop. */
-	public const TAB_SPACES       = 4;
+	public const int TAB_SPACES       = 4;
 
 	/**
 	 * @var array<string,string>

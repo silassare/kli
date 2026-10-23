@@ -27,7 +27,7 @@ namespace Kli;
  */
 class KliStyle
 {
-	public const FOREGROUND_COLORS = [
+	public const array FOREGROUND_COLORS = [
 		'black'         => '30',
 		'dark_gray'     => '90',
 		'blue'          => '34',
@@ -46,7 +46,7 @@ class KliStyle
 		'normal'        => '39',
 	];
 
-	public const BACKGROUND_COLORS = [
+	public const array BACKGROUND_COLORS = [
 		'black'      => '40',
 		'red'        => '41',
 		'green'      => '42',
@@ -57,7 +57,7 @@ class KliStyle
 		'light_gray' => '47',
 	];
 
-	public const STYLES = [
+	public const array STYLES = [
 		'bold'      => '1',
 		'dim'       => '2',
 		'underline' => '4',
@@ -66,7 +66,7 @@ class KliStyle
 		'hidden'    => '8',
 	];
 
-	public const STYLES_RESET = [
+	public const array STYLES_RESET = [
 		'bold'      => '22',
 		'dim'       => '22',
 		'underline' => '24',

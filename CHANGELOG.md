@@ -1,5 +1,17 @@
 ### v1.1.0 (unreleased)
 
+    - An option's flag and name are padded in terminal columns in `--help`
+      (`KliUtils::displayWidth()`, as every other width here is), where `str_pad()` counted bytes:
+      a name with an accent or a wide character used to push the description out of line
+    - Every class constant a value types beyond doubt is typed (`private const int`,
+      `public const string`, ...), which PHP 8.3 allows
+
+    - **PHP 8.3 is the minimum** (`"php": ">=8.3"`), the version OZone requires, so that every package
+      of the suite answers for one floor. 8.1 and 8.2 are end of life, and their security fixes are
+      source backports and not releases, so no release of them can satisfy the advisory database
+      `roave/security-advisories` carries: the dependencies of a run on one cannot be resolved at all.
+      `config.platform.php` and the PHPCompatibility target (`testVersion`) say 8.3 with it.
+
     - `KliTable` measures in terminal columns (`KliUtils::displayWidth()`): a wide character or an emoji
       takes two, an ANSI sequence in a value none, and a tab is written as `KliTable::TAB_SPACES` spaces;
       a row used to be misaligned by each of them

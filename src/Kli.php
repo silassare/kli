@@ -41,6 +41,11 @@ use Kli\Table\KliTable;
  */
 class Kli
 {
+	/**
+	 * The terminal columns an option's flag and name are padded to in `--help`.
+	 */
+	private const int OPTION_COLUMN_WIDTH = 22;
+
 	private bool $allow_interactive_mode;
 
 	private bool $is_interactive = false;
@@ -835,7 +840,7 @@ class Kli
 		$indent = \str_repeat(' ', $indent_size);
 		$flag   = $option->getFlag();
 
-		// Left column: "-f  --name"  or  "    --name" (plain, no ANSI, for correct str_pad)
+		// Left column: "-f  --name" or "    --name", with no ANSI in it: it is padded to a width.
 		$left  = $flag ? '-' . $flag . '  ' : '    ';
 		$left .= '--' . $option->getName();
 
@@ -855,6 +860,10 @@ class Kli
 			$parts[] = $this->style()->yellow()->apply('required');
 		}
 
-		return $indent . \str_pad($left, 22) . \implode('   ', $parts) . \PHP_EOL;
+		// Padded in terminal columns, as every width here is (`KliUtils::displayWidth()`): a name
+		// with a wide character or an accent is as wide as it looks, where `str_pad()` counts bytes.
+		$pad = \max(0, self::OPTION_COLUMN_WIDTH - KliUtils::displayWidth($left));
+
+		return $indent . $left . \str_repeat(' ', $pad) . \implode('   ', $parts) . \PHP_EOL;
 	}
 }
