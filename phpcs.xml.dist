@@ -11,6 +11,8 @@
 	<!-- Path to our coding standard folder -->
 	<rule ref="vendor/oliup/oliup-cs-php/src"/>
 
-	<!-- You should use at least PHP 8.3 -->
-	<config name="testVersion" value="8.3-"/>
+	<!-- You should use at least PHP 8.5 -->
+	<config name="testVersion" value="8.5-"/>
+	<!-- Warnings (mostly line length) are reported but do not fail `make cs`. -->
+	<config name="ignore_warnings_on_exit" value="1"/>
 </ruleset>

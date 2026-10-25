@@ -4,3 +4,6 @@
 vendor
 ignore
 .phpcs.cache
+
+# phpunit
+.phpunit.cache

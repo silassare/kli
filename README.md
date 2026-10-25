@@ -1,6 +1,6 @@
 # Kli
 
-PHP >=8.3 fluent-builder CLI framework. Add a typed, interactive command-line
+PHP >=8.5 fluent-builder CLI framework. Add a typed, interactive command-line
 interface to any PHP application in minutes.
 
 ## Table of Contents
