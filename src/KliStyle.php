@@ -124,17 +124,17 @@ class KliStyle
 		$reset = [];
 
 		if (!self::$disableAnsi && (self::$forceAnsi || \stream_isatty(\STDOUT))) {
-			if (isset(self::FOREGROUND_COLORS[$color])) {
+			if (null !== $color && isset(self::FOREGROUND_COLORS[$color])) {
 				$set[]   = self::FOREGROUND_COLORS[$color];
 				$reset[] = self::$foreground_reset;
 			}
 
-			if (isset(self::BACKGROUND_COLORS[$bg])) {
+			if (null !== $bg && isset(self::BACKGROUND_COLORS[$bg])) {
 				$set[]   = self::BACKGROUND_COLORS[$bg];
 				$reset[] = self::$background_reset;
 			}
 
-			if (isset(self::STYLES[$style])) {
+			if (null !== $style && isset(self::STYLES[$style])) {
 				$set[]   = self::STYLES[$style];
 				$reset[] = self::STYLES_RESET[$style];
 			}

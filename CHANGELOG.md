@@ -5,12 +5,12 @@
       a name with an accent or a wide character used to push the description out of line
     - Every class constant a value types beyond doubt is typed (`private const int`,
       `public const string`, ...), which PHP 8.3 allows
-
-    - **PHP 8.3 is the minimum** (`"php": ">=8.3"`), the version OZone requires, so that every package
-      of the suite answers for one floor. 8.1 and 8.2 are end of life, and their security fixes are
-      source backports and not releases, so no release of them can satisfy the advisory database
-      `roave/security-advisories` carries: the dependencies of a run on one cannot be resolved at all.
-      `config.platform.php` and the PHPCompatibility target (`testVersion`) say 8.3 with it.
+    - `KliStyle::apply()` no longer emits a deprecation on PHP 8.5: it looked each of the colour, the
+      background and the style up in its table before one was chosen, and PHP 8.5 deprecates a null
+      array offset in every form, `isset()` among them. The styling it produced is unchanged
+    - The test suite fails on a PHP deprecation (`failOnDeprecation`), so the next one is caught where
+      it is raised rather than on a user's terminal; psalm reports a possibly-null array offset as an
+      error for the same reason
 
     - `KliTable` measures in terminal columns (`KliUtils::displayWidth()`): a wide character or an emoji
       takes two, an ANSI sequence in a value none, and a tab is written as `KliTable::TAB_SPACES` spaces;
