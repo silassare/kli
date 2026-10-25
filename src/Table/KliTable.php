@@ -105,10 +105,6 @@ class KliTable
 
 	/**
 	 * Sets the table border chars.
-	 *
-	 * @param array $chars
-	 *
-	 * @return static
 	 */
 	public function setBorderChars(array $chars): static
 	{
@@ -119,8 +115,6 @@ class KliTable
 
 	/**
 	 * Gets the table border style.
-	 *
-	 * @return KliStyle
 	 */
 	public function borderStyle(): KliStyle
 	{
@@ -132,10 +126,6 @@ class KliTable
 	 *
 	 * Null removes the limit. Until this is called, the limit is the terminal's
 	 * width (KliUtils::terminalWidth()), when it is known.
-	 *
-	 * @param null|int $width
-	 *
-	 * @return static
 	 */
 	public function setMaxWidth(?int $width): static
 	{
@@ -147,11 +137,6 @@ class KliTable
 
 	/**
 	 * Adds a new header to the table.
-	 *
-	 * @param string $label
-	 * @param string $key
-	 *
-	 * @return KliTableHeader
 	 */
 	public function addHeader(string $label, string $key): KliTableHeader
 	{
@@ -164,10 +149,6 @@ class KliTable
 
 	/**
 	 * Adds a new row to the table.
-	 *
-	 * @param array $row
-	 *
-	 * @return static
 	 */
 	public function addRow(array $row): static
 	{
@@ -178,10 +159,6 @@ class KliTable
 
 	/**
 	 * Adds new rows to the table.
-	 *
-	 * @param array $rows
-	 *
-	 * @return static
 	 */
 	public function addRows(array $rows): static
 	{
@@ -196,8 +173,6 @@ class KliTable
 
 	/**
 	 * Renders the table.
-	 *
-	 * @return string
 	 */
 	public function render(): string
 	{
@@ -297,8 +272,6 @@ class KliTable
 	 * @param int            $width     total column width including padding
 	 * @param bool           $is_header true when rendering the header row
 	 * @param array          $row       the full data row (used for conditional styling)
-	 *
-	 * @return string
 	 */
 	public function renderCell(
 		string $value,
@@ -482,10 +455,6 @@ class KliTable
 
 	/**
 	 * Get border char.
-	 *
-	 * @param string $side
-	 *
-	 * @return string
 	 */
 	private function getBorderChar(string $side): string
 	{
@@ -494,10 +463,6 @@ class KliTable
 
 	/**
 	 * Get styled border char.
-	 *
-	 * @param string $side
-	 *
-	 * @return string
 	 */
 	private function getStyledBorderChar(string $side): string
 	{

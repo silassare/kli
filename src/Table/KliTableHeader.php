@@ -32,9 +32,6 @@ class KliTableHeader
 	private ?KliStyle $style = null;
 	private ?int $width      = null;
 
-	/**
-	 * @var null|KliTableCellFormatterInterface
-	 */
 	private ?KliTableCellFormatterInterface $cell_formatter = null;
 
 	/**
@@ -51,8 +48,6 @@ class KliTableHeader
 
 	/**
 	 * Gets the header label.
-	 *
-	 * @return string
 	 */
 	public function getLabel(): string
 	{
@@ -61,8 +56,6 @@ class KliTableHeader
 
 	/**
 	 * Gets the header key.
-	 *
-	 * @return string
 	 */
 	public function getKey(): string
 	{
@@ -71,10 +64,6 @@ class KliTableHeader
 
 	/**
 	 * Sets the header width.
-	 *
-	 * @param null|int $width
-	 *
-	 * @return static
 	 */
 	public function setWidth(?int $width): static
 	{
@@ -85,8 +74,6 @@ class KliTableHeader
 
 	/**
 	 * Gets the header width.
-	 *
-	 * @return null|int
 	 */
 	public function getWidth(): ?int
 	{
@@ -95,8 +82,6 @@ class KliTableHeader
 
 	/**
 	 * Gets the header alignment.
-	 *
-	 * @return string
 	 */
 	public function getAlign(): string
 	{
@@ -105,8 +90,6 @@ class KliTableHeader
 
 	/**
 	 * Aligns the header to the left.
-	 *
-	 * @return static
 	 */
 	public function alignLeft(): static
 	{
@@ -117,8 +100,6 @@ class KliTableHeader
 
 	/**
 	 * Aligns the header to the right.
-	 *
-	 * @return static
 	 */
 	public function alignRight(): static
 	{
@@ -129,8 +110,6 @@ class KliTableHeader
 
 	/**
 	 * Aligns the header to the center.
-	 *
-	 * @return static
 	 */
 	public function alignCenter(): static
 	{
@@ -141,8 +120,6 @@ class KliTableHeader
 
 	/**
 	 * Gets the header style.
-	 *
-	 * @return null|KliStyle
 	 */
 	public function getStyle(): ?KliStyle
 	{
@@ -151,10 +128,6 @@ class KliTableHeader
 
 	/**
 	 * Sets the cell formatter.
-	 *
-	 * @param KliTableCellFormatterInterface $formatter
-	 *
-	 * @return static
 	 */
 	public function setCellFormatter(KliTableCellFormatterInterface $formatter): static
 	{
@@ -165,8 +138,6 @@ class KliTableHeader
 
 	/**
 	 * Returns the cell formatter.
-	 *
-	 * @return null|KliTableCellFormatterInterface
 	 */
 	public function getCellFormatter(): ?KliTableCellFormatterInterface
 	{

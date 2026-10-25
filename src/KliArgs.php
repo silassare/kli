@@ -24,10 +24,6 @@ class KliArgs
 
 	/**
 	 * KliArgs constructor.
-	 *
-	 * @param KliAction $action
-	 * @param array     $named
-	 * @param array     $anonymous
 	 */
 	public function __construct(KliAction $action, array $named, array $anonymous)
 	{
@@ -54,8 +50,6 @@ class KliArgs
 	/**
 	 * Returns argument passed after the first '--'.
 	 *
-	 * @param int $index
-	 *
 	 * @return null|mixed
 	 */
 	public function getAnonymousAt(int $index): mixed
@@ -65,8 +59,6 @@ class KliArgs
 
 	/**
 	 * Gets all named args.
-	 *
-	 * @return array
 	 */
 	public function getNamedArgs(): array
 	{
@@ -75,8 +67,6 @@ class KliArgs
 
 	/**
 	 * Gets all args passed after the first '--'.
-	 *
-	 * @return array
 	 */
 	public function getAnonymousArgs(): array
 	{

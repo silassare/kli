@@ -96,8 +96,6 @@ final class KliOption
 	 *
 	 * @param null|int $min the minimum length of the option value
 	 * @param null|int $max the maximum length of the option value
-	 *
-	 * @return KliTypeString
 	 */
 	public function string(?int $min = null, ?int $max = null): KliTypeString
 	{
@@ -113,8 +111,6 @@ final class KliOption
 	 *
 	 * @param bool        $strict  if true, the option value must be a boolean
 	 * @param null|string $message the error message to display if the option value is not a boolean
-	 *
-	 * @return KliTypeBool
 	 */
 	public function bool(bool $strict = false, ?string $message = null): KliTypeBool
 	{
@@ -127,11 +123,6 @@ final class KliOption
 
 	/**
 	 * Sets option type as number.
-	 *
-	 * @param null|float $min
-	 * @param null|float $max
-	 *
-	 * @return KliTypeNumber
 	 */
 	public function number(?float $min = null, ?float $max = null): KliTypeNumber
 	{
@@ -147,8 +138,6 @@ final class KliOption
 	 *
 	 * @param null|int $min min path count
 	 * @param null|int $max max path count
-	 *
-	 * @return KliTypePath
 	 */
 	public function path(?int $min = null, ?int $max = null): KliTypePath
 	{
@@ -163,8 +152,6 @@ final class KliOption
 	 * Adds option alias.
 	 *
 	 * @param string $alias option alias to add
-	 *
-	 * @return static
 	 */
 	public function alias(string $alias): static
 	{
@@ -183,8 +170,6 @@ final class KliOption
 	 * Sets option flag.
 	 *
 	 * @param string $flag option flag
-	 *
-	 * @return static
 	 */
 	public function flag(string $flag): static
 	{
@@ -205,8 +190,6 @@ final class KliOption
 	 *
 	 * @param int            $at the offset to start from
 	 * @param null|float|int $to the end offset to use
-	 *
-	 * @return static
 	 */
 	public function offsets(int $at, float|int|null $to = null): static
 	{
@@ -236,8 +219,6 @@ final class KliOption
 	 * Lock the option.
 	 *
 	 * Options are locked and should not be modified when added to an action.
-	 *
-	 * @return static
 	 */
 	public function lock(): static
 	{
@@ -250,8 +231,6 @@ final class KliOption
 	 * Define this option description.
 	 *
 	 * @param string $description option description
-	 *
-	 * @return static
 	 */
 	public function description(string $description): static
 	{
@@ -262,10 +241,6 @@ final class KliOption
 
 	/**
 	 * Sets this option value type.
-	 *
-	 * @param KliTypeInterface $type
-	 *
-	 * @return static
 	 */
 	public function type(KliTypeInterface $type): static
 	{
@@ -276,8 +251,6 @@ final class KliOption
 
 	/**
 	 * Mark this option as required.
-	 *
-	 * @return static
 	 */
 	public function required(): static
 	{
@@ -292,8 +265,6 @@ final class KliOption
 	 * @param bool        $prompt              prompt enable/disable
 	 * @param null|string $prompt_msg          prompt message
 	 * @param bool        $prompt_for_password prompt is for password
-	 *
-	 * @return static
 	 */
 	public function prompt(bool $prompt = true, ?string $prompt_msg = null, bool $prompt_for_password = false): static
 	{
@@ -309,8 +280,6 @@ final class KliOption
 
 	/**
 	 * Option name getter.
-	 *
-	 * @return string
 	 */
 	public function getName(): string
 	{
@@ -319,8 +288,6 @@ final class KliOption
 
 	/**
 	 * Option flag getter.
-	 *
-	 * @return null|string
 	 */
 	public function getFlag(): ?string
 	{
@@ -329,8 +296,6 @@ final class KliOption
 
 	/**
 	 * Does this option enable prompt.
-	 *
-	 * @return bool
 	 */
 	public function promptEnabled(): bool
 	{
@@ -339,8 +304,6 @@ final class KliOption
 
 	/**
 	 * Does this option prompt is for password.
-	 *
-	 * @return bool
 	 */
 	public function promptForPassword(): bool
 	{
@@ -349,8 +312,6 @@ final class KliOption
 
 	/**
 	 * Option prompt message getter.
-	 *
-	 * @return string
 	 */
 	public function getPrompt(): string
 	{
@@ -359,8 +320,6 @@ final class KliOption
 
 	/**
 	 * Option offsets value getter.
-	 *
-	 * @return null|array
 	 */
 	public function getOffsets(): ?array
 	{
@@ -369,8 +328,6 @@ final class KliOption
 
 	/**
 	 * Does this option is required or not.
-	 *
-	 * @return bool
 	 */
 	public function isRequired(): bool
 	{
@@ -379,8 +336,6 @@ final class KliOption
 
 	/**
 	 * Option type getter.
-	 *
-	 * @return KliTypeInterface
 	 */
 	public function getType(): KliTypeInterface
 	{
@@ -399,8 +354,6 @@ final class KliOption
 
 	/**
 	 * Option description getter.
-	 *
-	 * @return string
 	 */
 	public function getDescription(): string
 	{

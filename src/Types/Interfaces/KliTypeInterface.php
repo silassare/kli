@@ -22,24 +22,16 @@ interface KliTypeInterface
 {
 	/**
 	 * Explicitly set the default value.
-	 *
-	 * @param mixed $value
-	 *
-	 * @return static
 	 */
 	public function def(mixed $value): static;
 
 	/**
 	 * Checks if we have a default value.
-	 *
-	 * @return bool
 	 */
 	public function hasDefault(): bool;
 
 	/**
 	 * Gets the default value.
-	 *
-	 * @return mixed
 	 */
 	public function getDefault(): mixed;
 

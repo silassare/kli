@@ -63,9 +63,6 @@ final class ScriptedKli extends Kli
 		return $this->can_prompt || $this->isInteractiveMode();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function readLine(string $prompt, bool $is_password = false): string
 	{
 		$this->promptLog[] = $prompt;

@@ -88,8 +88,6 @@ class KliCommand
 	 * Set a handler for this command.
 	 *
 	 * @param callable(KliAction, KliArgs): void $handler
-	 *
-	 * @return static
 	 */
 	public function handler(callable $handler): static
 	{
@@ -100,11 +98,6 @@ class KliCommand
 
 	/**
 	 * Creates a new action.
-	 *
-	 * @param string $name
-	 * @param string $description
-	 *
-	 * @return KliAction
 	 */
 	public function action(string $name, string $description = ''): KliAction
 	{
@@ -124,8 +117,6 @@ class KliCommand
 	 * registered on this command.
 	 *
 	 * @param KliAction $action action object
-	 *
-	 * @return static
 	 */
 	public function addAction(KliAction $action): static
 	{
@@ -151,8 +142,6 @@ class KliCommand
 	 * Define this command description.
 	 *
 	 * @param string $description command description
-	 *
-	 * @return static
 	 */
 	public function description(string $description): static
 	{
@@ -165,8 +154,6 @@ class KliCommand
 	 * Does this command has a given action.
 	 *
 	 * @param string $name the action name
-	 *
-	 * @return bool
 	 */
 	public function hasAction(string $name): bool
 	{
@@ -177,8 +164,6 @@ class KliCommand
 	 * Gets action with a given name.
 	 *
 	 * @param string $name the action name
-	 *
-	 * @return KliAction
 	 */
 	public function getAction(string $name): KliAction
 	{
@@ -191,8 +176,6 @@ class KliCommand
 
 	/**
 	 * Command name getter.
-	 *
-	 * @return string
 	 */
 	public function getName(): string
 	{
@@ -211,8 +194,6 @@ class KliCommand
 
 	/**
 	 * Command cli getter.
-	 *
-	 * @return Kli
 	 */
 	public function getCli(): Kli
 	{
@@ -221,8 +202,6 @@ class KliCommand
 
 	/**
 	 * Command description getter.
-	 *
-	 * @return string
 	 */
 	public function getDescription(): string
 	{

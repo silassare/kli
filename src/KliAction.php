@@ -79,8 +79,6 @@ final class KliAction
 	 * Sets the action handler.
 	 *
 	 * @param callable(KliArgs): void $handler
-	 *
-	 * @return static
 	 */
 	public function handler(callable $handler): static
 	{
@@ -101,14 +99,6 @@ final class KliAction
 
 	/**
 	 * Adds a new option.
-	 *
-	 * @param string   $name
-	 * @param string   $flag
-	 * @param array    $aliases
-	 * @param null|int $offset_start
-	 * @param null|int $offset_end
-	 *
-	 * @return KliOption
 	 */
 	public function option(
 		string $name,
@@ -140,10 +130,6 @@ final class KliAction
 
 	/**
 	 * Adds option(s) to this action.
-	 *
-	 * @param KliOption ...$options
-	 *
-	 * @return static
 	 */
 	public function addOption(KliOption ...$options): static
 	{
@@ -218,8 +204,6 @@ final class KliAction
 
 	/**
 	 * Action name getter.
-	 *
-	 * @return string
 	 */
 	public function getName(): string
 	{
@@ -230,8 +214,6 @@ final class KliAction
 	 * Define this action description.
 	 *
 	 * @param string $description action description
-	 *
-	 * @return static
 	 */
 	public function description(string $description): static
 	{
@@ -244,8 +226,6 @@ final class KliAction
 	 * Does this action has a given option.
 	 *
 	 * @param string $name the option name
-	 *
-	 * @return bool
 	 */
 	public function hasOption(string $name): bool
 	{
@@ -256,8 +236,6 @@ final class KliAction
 	 * Gets option with a given name.
 	 *
 	 * @param string $name the option name or flag
-	 *
-	 * @return KliOption
 	 */
 	public function getOption(string $name): KliOption
 	{
@@ -285,8 +263,6 @@ final class KliAction
 
 	/**
 	 * Action description getter.
-	 *
-	 * @return string
 	 */
 	public function getDescription(): string
 	{

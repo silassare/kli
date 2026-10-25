@@ -63,8 +63,6 @@ class KliTypeString extends KliType
 	 *
 	 * @param int         $value   the minimum string length
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function min(int $value, ?string $message = null): static
 	{
@@ -88,8 +86,6 @@ class KliTypeString extends KliType
 	 *
 	 * @param int         $value   the maximum string length
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function max(int $value, ?string $message = null): static
 	{
@@ -113,8 +109,6 @@ class KliTypeString extends KliType
 	 *
 	 * @param string      $reg_expression the regular expression
 	 * @param null|string $message        the error message
-	 *
-	 * @return static
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): static
 	{
@@ -134,8 +128,6 @@ class KliTypeString extends KliType
 	 *
 	 * @param callable(string): bool $validator the validator function
 	 * @param null|string            $message   the error message
-	 *
-	 * @return static
 	 */
 	public function validator(callable $validator, ?string $message = null): static
 	{
@@ -146,9 +138,6 @@ class KliTypeString extends KliType
 		return $this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function validate(string $opt_name, mixed $value): string
 	{

@@ -32,9 +32,6 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 {
 	private string $type;
 
-	/**
-	 * @var null|KliStyle
-	 */
 	private ?KliStyle $style;
 	private array $params;
 
@@ -52,9 +49,6 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 		$this->params = $params;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function format($value, KliTableHeader $header, array $row): string
 	{
@@ -71,9 +65,6 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 		};
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function getStyle($value, KliTableHeader $header, array $row): ?KliStyle
 	{
@@ -82,10 +73,6 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 
 	/**
 	 * Creates a boolean formatter.
-	 *
-	 * @param null|KliStyle $style
-	 *
-	 * @return static
 	 */
 	public static function bool(?KliStyle $style = null): static
 	{
@@ -94,13 +81,6 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 
 	/**
 	 * Creates a number formatter.
-	 *
-	 * @param int           $decimals
-	 * @param string        $decimal_point
-	 * @param string        $thousands_sep
-	 * @param null|KliStyle $style
-	 *
-	 * @return static
 	 */
 	public static function number(
 		int $decimals = 0,
@@ -117,11 +97,6 @@ class KliTableFormatter implements KliTableCellFormatterInterface
 
 	/**
 	 * Creates a date formatter.
-	 *
-	 * @param string        $format
-	 * @param null|KliStyle $style
-	 *
-	 * @return static
 	 */
 	public static function date(string $format = 'Y-m-d H:i:s', ?KliStyle $style = null): static
 	{

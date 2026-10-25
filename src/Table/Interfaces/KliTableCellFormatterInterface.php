@@ -32,8 +32,6 @@ interface KliTableCellFormatterInterface
 	 * @param mixed          $value  the cell value
 	 * @param KliTableHeader $header the header
 	 * @param array          $row    the row
-	 *
-	 * @return string
 	 */
 	public function format(mixed $value, KliTableHeader $header, array $row): string;
 
@@ -43,8 +41,6 @@ interface KliTableCellFormatterInterface
 	 * @param mixed          $value  the cell value
 	 * @param KliTableHeader $header the header
 	 * @param array          $row    the row
-	 *
-	 * @return null|KliStyle
 	 */
 	public function getStyle(mixed $value, KliTableHeader $header, array $row): ?KliStyle;
 }

@@ -25,9 +25,6 @@ abstract class KliType implements KliTypeInterface
 	protected mixed $default        = null;
 	protected bool $has_default     = false;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function def(mixed $value): static
 	{
@@ -38,18 +35,12 @@ abstract class KliType implements KliTypeInterface
 		return $this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function hasDefault(): bool
 	{
 		return $this->has_default;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function getDefault(): mixed
 	{

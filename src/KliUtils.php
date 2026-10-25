@@ -24,8 +24,6 @@ class KliUtils
 	 * found here: https://someguyjeremy.com/2017/07/adventures-in-parsing-strings-to-argv-in-php.html
 	 *
 	 * @param string $command the command string
-	 *
-	 * @return array
 	 */
 	public static function stringToArgv(string $command): array
 	{
@@ -83,8 +81,6 @@ class KliUtils
 	 * Parse argv like array to command string.
 	 *
 	 * @param array $argv the argv like array
-	 *
-	 * @return string
 	 */
 	public static function argvToString(array $argv): string
 	{
@@ -114,8 +110,6 @@ class KliUtils
 	 * @param string $text        the text string to indent
 	 * @param int    $size        the indent size
 	 * @param string $indent_char char to use
-	 *
-	 * @return string
 	 */
 	public static function indent(string $text, int $size = 1, string $indent_char = ' '): string
 	{
@@ -138,8 +132,6 @@ class KliUtils
 	 * @param null|int $width         the width in columns: the terminal's (terminalWidth()) when
 	 *                                null, else 80
 	 * @param bool     $cut_long_word to cut long words
-	 *
-	 * @return string
 	 */
 	public static function wrap(string $text, ?int $width = null, bool $cut_long_word = false): string
 	{
@@ -177,8 +169,6 @@ class KliUtils
 	 *     bottom?: int,
 	 *     pad?: string
 	 * } $options paddings options
-	 *
-	 * @return string
 	 */
 	public static function paddings(string $text, array $options = []): string
 	{
@@ -237,8 +227,6 @@ class KliUtils
 	 *
 	 * @param string $text       the text to shorten
 	 * @param int    $max_length the maximum number of characters to keep
-	 *
-	 * @return string
 	 */
 	public static function shorten(string $text, int $max_length = 80): string
 	{
@@ -253,8 +241,6 @@ class KliUtils
 	 * Removes the ANSI escape sequences (colors, styles, cursor moves) of a text.
 	 *
 	 * @param string $text the text
-	 *
-	 * @return string
 	 */
 	public static function stripAnsi(string $text): string
 	{
@@ -266,8 +252,6 @@ class KliUtils
 	 * East Asian wide character or an emoji takes two (`mb_strwidth()`).
 	 *
 	 * @param string $text the text, without line breaks
-	 *
-	 * @return int
 	 */
 	public static function displayWidth(string $text): int
 	{
@@ -277,8 +261,6 @@ class KliUtils
 	/**
 	 * The width of the terminal, in columns: the `COLUMNS` environment variable when set, else what
 	 * `stty` answers when the output is a terminal; null when neither tells.
-	 *
-	 * @return null|int
 	 */
 	public static function terminalWidth(): ?int
 	{

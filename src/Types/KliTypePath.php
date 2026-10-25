@@ -70,8 +70,6 @@ class KliTypePath extends KliType
 	 *
 	 * @param int         $value   the minimum path count
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function min(int $value, ?string $message = null): static
 	{
@@ -95,8 +93,6 @@ class KliTypePath extends KliType
 	 *
 	 * @param int         $value   the maximum path count
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function max(int $value, ?string $message = null): static
 	{
@@ -120,8 +116,6 @@ class KliTypePath extends KliType
 	 *
 	 * @param string      $reg_expression the regular expression
 	 * @param null|string $message        the error message
-	 *
-	 * @return static
 	 */
 	public function pattern(string $reg_expression, ?string $message = null): static
 	{
@@ -138,8 +132,6 @@ class KliTypePath extends KliType
 
 	/**
 	 * Allow multiple path.
-	 *
-	 * @return static
 	 */
 	public function multiple(): static
 	{
@@ -152,8 +144,6 @@ class KliTypePath extends KliType
 	 * Accept file path only.
 	 *
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function file(?string $message = null): static
 	{
@@ -169,8 +159,6 @@ class KliTypePath extends KliType
 	 * Accept directory path only.
 	 *
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function dir(?string $message = null): static
 	{
@@ -186,8 +174,6 @@ class KliTypePath extends KliType
 	 * Accept writable path only.
 	 *
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function writable(?string $message = null): static
 	{
@@ -199,8 +185,6 @@ class KliTypePath extends KliType
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
 	 * @return string|string[]
 	 */
 	#[Override]

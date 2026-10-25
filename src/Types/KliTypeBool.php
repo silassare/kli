@@ -54,9 +54,6 @@ class KliTypeBool extends KliType
 		!empty($message) && $this->msg('msg_require_bool', $message);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	#[Override]
 	public function validate(string $opt_name, mixed $value): bool
 	{

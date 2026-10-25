@@ -59,8 +59,6 @@ class KliTypeNumber extends KliType
 	 *
 	 * @param float       $value   the minimum
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function min(float $value, ?string $message = null): static
 	{
@@ -80,8 +78,6 @@ class KliTypeNumber extends KliType
 	 *
 	 * @param float       $value   the maximum
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function max(float $value, ?string $message = null): static
 	{
@@ -100,8 +96,6 @@ class KliTypeNumber extends KliType
 	 * Sets number type as integer.
 	 *
 	 * @param null|string $message the error message
-	 *
-	 * @return static
 	 */
 	public function integer(?string $message = null): static
 	{
@@ -112,11 +106,6 @@ class KliTypeNumber extends KliType
 		return $this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @return float|int
-	 */
 	#[Override]
 	public function validate(string $opt_name, mixed $value): float|int
 	{

@@ -166,8 +166,6 @@ class Kli
 
 	/**
 	 * Gets the cli entry point.
-	 *
-	 * @return string
 	 */
 	public function getCliEntryPoint(): string
 	{
@@ -178,8 +176,6 @@ class Kli
 
 	/**
 	 * Gets the cli executable.
-	 *
-	 * @return string
 	 */
 	public function getExecutable(): string
 	{
@@ -198,8 +194,6 @@ class Kli
 	 * @param string $command the command
 	 * @param string $action  the action
 	 * @param array  $args    the arguments
-	 *
-	 * @return string
 	 */
 	public function buildCommand(string $command, string $action, array $args): string
 	{
@@ -223,8 +217,6 @@ class Kli
 	 * True in interactive mode or when STDIN is a terminal. When false, a missing
 	 * required option falls back to its default instead of being prompted for.
 	 * Override it along with readLine() when replacing the input source.
-	 *
-	 * @return bool
 	 */
 	public function canPrompt(): bool
 	{
@@ -279,8 +271,6 @@ class Kli
 	 *
 	 * @param string $str  the string to write
 	 * @param bool   $wrap to wrap string or not
-	 *
-	 * @return static
 	 */
 	public function writeLn(string $str = '', bool $wrap = true): static
 	{
@@ -327,8 +317,6 @@ class Kli
 	 * readLine() returns '' both for an empty line and at the end of input
 	 * (Ctrl-D, closed pipe); this tells them apart. Override it along with
 	 * readLine() when replacing the input source.
-	 *
-	 * @return bool
 	 */
 	public function isEndOfInput(): bool
 	{
@@ -337,8 +325,6 @@ class Kli
 
 	/**
 	 * Title getter.
-	 *
-	 * @return string
 	 */
 	public function getTitle(): string
 	{
@@ -349,8 +335,6 @@ class Kli
 	 * Title setter.
 	 *
 	 * @param string $title the cli title
-	 *
-	 * @return static
 	 */
 	public function setTitle(string $title): static
 	{
@@ -516,8 +500,6 @@ class Kli
 	 * Checks if this cli has a given command.
 	 *
 	 * @param string $command_name the command name
-	 *
-	 * @return bool
 	 */
 	public function hasCommand(string $command_name): bool
 	{
@@ -528,8 +510,6 @@ class Kli
 	 * Checks if string is a help flag.
 	 *
 	 * @param string $str the string to check
-	 *
-	 * @return bool
 	 */
 	public function isHelp(string $str): bool
 	{
@@ -540,8 +520,6 @@ class Kli
 	 * Checks if string is a version flag.
 	 *
 	 * @param string $str the string to check
-	 *
-	 * @return bool
 	 */
 	public function isVersion(string $str): bool
 	{
@@ -552,8 +530,6 @@ class Kli
 	 * Adds command to cli.
 	 *
 	 * @param KliCommand $command the command to add
-	 *
-	 * @return static
 	 */
 	public function addCommand(KliCommand $command): static
 	{
@@ -567,8 +543,6 @@ class Kli
 	 *
 	 * @param string $str  the string to write
 	 * @param bool   $wrap to wrap string or not
-	 *
-	 * @return static
 	 */
 	public function write(string $str, bool $wrap = false): static
 	{
@@ -581,8 +555,6 @@ class Kli
 	 * Plays a bell sound in console (if available).
 	 *
 	 * @param int $count Bell play count
-	 *
-	 * @return static
 	 */
 	public function bell(int $count = 1): static
 	{
@@ -599,8 +571,6 @@ class Kli
 	 * @param string $level   the log level (e.g. 'info', 'error', etc.)
 	 * @param mixed  $msg     the message to log
 	 * @param array  $context additional context to include in the log
-	 *
-	 * @return static
 	 */
 	public function log(string $level, mixed $msg, array $context = []): static
 	{
@@ -624,8 +594,6 @@ class Kli
 	 *
 	 * @param string $msg  the message
 	 * @param bool   $wrap to wrap string or not
-	 *
-	 * @return static
 	 */
 	public function info(string $msg, bool $wrap = true): static
 	{
@@ -651,8 +619,6 @@ class Kli
 	 *                       pass a code to stop after printing.
 	 *                       In interactive mode a non-null value throws
 	 *                       KliAbortException instead of calling exit().
-	 *
-	 * @return static
 	 *
 	 * @throws KliAbortException in interactive mode when $exit is non-null
 	 */
@@ -690,8 +656,6 @@ class Kli
 	 *                       In interactive mode a non-null value throws
 	 *                       KliAbortException instead of calling exit().
 	 *
-	 * @return static
-	 *
 	 * @throws KliAbortException in interactive mode when $exit is non-null
 	 */
 	public function success(string $msg, bool $wrap = true, ?int $exit = null): static
@@ -727,8 +691,6 @@ class Kli
 	 *                       pass null to print without stopping.
 	 *                       In interactive mode a non-null value throws
 	 *                       KliAbortException instead of calling exit().
-	 *
-	 * @return static
 	 *
 	 * @throws KliAbortException in interactive mode when $exit is non-null
 	 */
@@ -768,8 +730,6 @@ class Kli
 
 	/**
 	 * Gets color instance.
-	 *
-	 * @return KliStyle
 	 */
 	public function style(): KliStyle
 	{
@@ -778,8 +738,6 @@ class Kli
 
 	/**
 	 * Gets table instance.
-	 *
-	 * @return KliTable
 	 */
 	public function table(): KliTable
 	{
@@ -792,8 +750,6 @@ class Kli
 	 * @param string      $name                   the cli title
 	 * @param bool        $allow_interactive_mode to allow interactive cli
 	 * @param null|string $log_file               path to log file
-	 *
-	 * @return static
 	 */
 	public static function new(
 		string $name,
@@ -832,8 +788,6 @@ class Kli
 	 *
 	 * @param KliOption $option      the option to render
 	 * @param int       $indent_size leading spaces
-	 *
-	 * @return string
 	 */
 	private function renderOptionHelp(KliOption $option, int $indent_size): string
 	{

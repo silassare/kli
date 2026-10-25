@@ -45,8 +45,6 @@ final class KliParser
 	 * @param KliAction $action   action object
 	 * @param array     $opt_list option list
 	 *
-	 * @return KliArgs
-	 *
 	 * @throws KliInputException
 	 */
 	public function parse(KliAction $action, array $opt_list): KliArgs

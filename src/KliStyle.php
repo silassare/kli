@@ -110,8 +110,6 @@ class KliStyle
 	 * Returns $str unchanged when no codes apply or ANSI is disabled.
 	 *
 	 * @param string $str the string to style
-	 *
-	 * @return string
 	 */
 	public function apply(string $str): string
 	{
@@ -181,10 +179,6 @@ class KliStyle
 
 	/**
 	 * Draw a box around the text.
-	 *
-	 * @param array $options
-	 *
-	 * @return static
 	 */
 	public function box(array $options = [
 		'top'    => 1,
@@ -200,8 +194,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to black.
-	 *
-	 * @return static
 	 */
 	public function black(): static
 	{
@@ -212,8 +204,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to dark gray.
-	 *
-	 * @return static
 	 */
 	public function darkGray(): static
 	{
@@ -224,8 +214,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to blue.
-	 *
-	 * @return static
 	 */
 	public function blue(): static
 	{
@@ -236,8 +224,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to light blue.
-	 *
-	 * @return static
 	 */
 	public function lightBlue(): static
 	{
@@ -248,8 +234,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to green.
-	 *
-	 * @return static
 	 */
 	public function green(): static
 	{
@@ -260,8 +244,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to light green.
-	 *
-	 * @return static
 	 */
 	public function lightGreen(): static
 	{
@@ -272,8 +254,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to cyan.
-	 *
-	 * @return static
 	 */
 	public function cyan(): static
 	{
@@ -284,8 +264,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to light cyan.
-	 *
-	 * @return static
 	 */
 	public function lightCyan(): static
 	{
@@ -296,8 +274,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to red.
-	 *
-	 * @return static
 	 */
 	public function red(): static
 	{
@@ -308,8 +284,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to light red.
-	 *
-	 * @return static
 	 */
 	public function lightRed(): static
 	{
@@ -320,8 +294,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to magenta.
-	 *
-	 * @return static
 	 */
 	public function magenta(): static
 	{
@@ -332,8 +304,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to light magenta.
-	 *
-	 * @return static
 	 */
 	public function lightMagenta(): static
 	{
@@ -344,8 +314,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to brown.
-	 *
-	 * @return static
 	 */
 	public function yellow(): static
 	{
@@ -356,8 +324,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to light gray.
-	 *
-	 * @return static
 	 */
 	public function lightGray(): static
 	{
@@ -368,8 +334,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to white.
-	 *
-	 * @return static
 	 */
 	public function white(): static
 	{
@@ -380,8 +344,6 @@ class KliStyle
 
 	/**
 	 * Sets the foreground color to normal.
-	 *
-	 * @return static
 	 */
 	public function normal(): static
 	{
@@ -392,8 +354,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to black.
-	 *
-	 * @return static
 	 */
 	public function backgroundBlack(): static
 	{
@@ -404,8 +364,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to red.
-	 *
-	 * @return static
 	 */
 	public function backgroundRed(): static
 	{
@@ -416,8 +374,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to green.
-	 *
-	 * @return static
 	 */
 	public function backgroundGreen(): static
 	{
@@ -428,8 +384,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to yellow.
-	 *
-	 * @return static
 	 */
 	public function backgroundYellow(): static
 	{
@@ -440,8 +394,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to blue.
-	 *
-	 * @return static
 	 */
 	public function backgroundBlue(): static
 	{
@@ -452,8 +404,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to magenta.
-	 *
-	 * @return static
 	 */
 	public function backgroundMagenta(): static
 	{
@@ -464,8 +414,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to cyan.
-	 *
-	 * @return static
 	 */
 	public function backgroundCyan(): static
 	{
@@ -476,8 +424,6 @@ class KliStyle
 
 	/**
 	 * Sets the background color to light gray.
-	 *
-	 * @return static
 	 */
 	public function backgroundLightGray(): static
 	{
@@ -488,8 +434,6 @@ class KliStyle
 
 	/**
 	 * Sets bold style.
-	 *
-	 * @return static
 	 */
 	public function bold(): static
 	{
@@ -500,8 +444,6 @@ class KliStyle
 
 	/**
 	 * Sets dim style.
-	 *
-	 * @return static
 	 */
 	public function dim(): static
 	{
@@ -512,8 +454,6 @@ class KliStyle
 
 	/**
 	 * Sets underline style.
-	 *
-	 * @return static
 	 */
 	public function underline(): static
 	{
@@ -524,8 +464,6 @@ class KliStyle
 
 	/**
 	 * Sets blink style.
-	 *
-	 * @return static
 	 */
 	public function blink(): static
 	{
@@ -536,8 +474,6 @@ class KliStyle
 
 	/**
 	 * Sets invert style.
-	 *
-	 * @return static
 	 */
 	public function invert(): static
 	{
@@ -548,8 +484,6 @@ class KliStyle
 
 	/**
 	 * Sets hidden style.
-	 *
-	 * @return static
 	 */
 	public function hidden(): static
 	{

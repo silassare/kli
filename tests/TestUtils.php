@@ -20,10 +20,6 @@ namespace Kli\Tests;
  */
 final class TestUtils
 {
-	/**
-	 * @param string $snapshot_path
-	 * @param string $content
-	 */
 	public static function ensureSnapshotFile(string $snapshot_path, string $content): void
 	{
 		if (!\file_exists($snapshot_path)) {
@@ -40,10 +36,6 @@ final class TestUtils
 	/**
 	 * Strip ANSI escape codes from a string so that snapshot comparisons
 	 * remain stable regardless of whether stdout is a TTY.
-	 *
-	 * @param string $str
-	 *
-	 * @return string
 	 */
 	public static function stripAnsi(string $str): string
 	{
