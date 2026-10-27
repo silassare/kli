@@ -16,15 +16,15 @@ namespace Kli\Tests\Types;
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
 use Kli\Types\KliTypePath;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliTypePathTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliTypePathTest extends TestCase
 {
 	private string $dir;

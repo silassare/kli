@@ -19,15 +19,15 @@ use Kli\Table\Interfaces\KliTableCellFormatterInterface;
 use Kli\Table\KliTable;
 use Kli\Table\KliTableFormatter;
 use Kli\Table\KliTableHeader;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliTableTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliTableTest extends TestCase
 {
 	public function testTable(): void
@@ -46,7 +46,7 @@ final class KliTableTest extends TestCase
 	 */
 	public function testTableColumnWidthCountsCharsNotBytes(): void
 	{
-		$table = (new KliTable())->setMaxWidth(null);
+		$table = new KliTable()->setMaxWidth(null);
 		$table->addHeader('X', 'x');
 		$table->addRow(['x' => 'é']);
 
@@ -58,7 +58,7 @@ final class KliTableTest extends TestCase
 
 	public function testEveryLineOfATableIsAsWideAsItsBorders(): void
 	{
-		$table = (new KliTable())->setMaxWidth(null);
+		$table = new KliTable()->setMaxWidth(null);
 		$table->addHeader('Check', 'name');
 		$table->addHeader('Status', 'status')->alignCenter();
 		$table->addHeader('Detail', 'detail')->alignRight();
@@ -79,7 +79,7 @@ final class KliTableTest extends TestCase
 
 	public function testACellOnSeveralLinesMakesItsRowTaller(): void
 	{
-		$table = (new KliTable())->setMaxWidth(null);
+		$table = new KliTable()->setMaxWidth(null);
 		$table->addHeader('Check', 'name');
 		$table->addHeader("Detail\n(why)", 'detail');
 		$table->addRow(['name' => 'cache', 'detail' => "first line\r\nsecond, longer line\rthird"]);
@@ -101,7 +101,7 @@ final class KliTableTest extends TestCase
 
 	public function testATableWiderThanItsMaximumWrapsItsWidestColumns(): void
 	{
-		$table = (new KliTable())->setMaxWidth(40);
+		$table = new KliTable()->setMaxWidth(40);
 		$table->addHeader('Check', 'name');
 		$table->addHeader('Id', 'id')->alignRight()->setWidth(5);
 		$table->addHeader('Detail', 'detail');
@@ -145,7 +145,7 @@ final class KliTableTest extends TestCase
 
 	public function testATableThatCannotFitIsAsNarrowAsItGets(): void
 	{
-		$table = (new KliTable())->setMaxWidth(10);
+		$table = new KliTable()->setMaxWidth(10);
 		$table->addHeader('Name', 'name');
 		$table->addHeader('Id', 'id')->setWidth(8);
 		$table->addRow(['name' => 'a long name', 'id' => 1]);
@@ -185,7 +185,7 @@ final class KliTableTest extends TestCase
 	private function buildTable(): array
 	{
 		// No width limit: the snapshots must not depend on the terminal the tests run in.
-		$table = (new KliTable())->setMaxWidth(null);
+		$table = new KliTable()->setMaxWidth(null);
 
 		$table->addHeader('ID', 'id')
 			->alignCenter();
@@ -202,7 +202,7 @@ final class KliTableTest extends TestCase
 
 				public function getStyle($value, KliTableHeader $header, array $row): ?KliStyle
 				{
-					return $row['color'] ? (new KliStyle())->yellow() : null;
+					return $row['color'] ? new KliStyle()->yellow() : null;
 				}
 			});
 

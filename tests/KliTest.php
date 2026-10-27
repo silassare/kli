@@ -19,15 +19,15 @@ use Kli\Kli;
 use Kli\KliAction;
 use Kli\KliArgs;
 use Kli\KliStyle;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliTest extends TestCase
 {
 	/**

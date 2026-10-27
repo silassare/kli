@@ -26,7 +26,7 @@ PSALM_CACHE ?=
 
 ## Run the unit test suite (FILE=tests/FooTest.php runs one file, FILTER=testBar one case)
 test:
-	$(PHPUNIT) --testdox --do-not-cache-result $(if $(FILTER),--filter '$(FILTER)',) $(FILE)
+	$(PHPUNIT) --testdox --do-not-record-test-run-history $(if $(FILTER),--filter '$(FILTER)',) $(FILE)
 
 # = Code quality
 

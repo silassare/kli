@@ -16,15 +16,15 @@ namespace Kli\Tests\Types;
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
 use Kli\Types\KliTypeString;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliTypeStringTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliTypeStringTest extends TestCase
 {
 	public function testValidateReturnsString(): void

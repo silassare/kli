@@ -41,7 +41,7 @@ Kli (orchestrator)
 ```sh
 make check       # cs + lint: the gate for every change
 make check-full  # the same two with their caches ignored
-make test        # PHPUnit with --testdox --do-not-cache-result (FILE=, FILTER= narrow it)
+make test        # PHPUnit with --testdox --do-not-record-test-run-history (FILE=, FILTER= narrow it)
 make lint        # psalm static analysis
 make cs          # check code style (phpcs)
 make fix         # run psalm then oliup-cs style auto-fix

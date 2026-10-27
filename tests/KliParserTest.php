@@ -19,15 +19,15 @@ use Kli\Kli;
 use Kli\KliAction;
 use Kli\KliOption;
 use Kli\KliParser;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliParserTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliParserTest extends TestCase
 {
 	private Kli $kli;

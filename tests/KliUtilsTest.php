@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace Kli\Tests;
 
 use Kli\KliUtils;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliUtilsTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliUtilsTest extends TestCase
 {
 	// stringToArgv

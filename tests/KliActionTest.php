@@ -17,15 +17,15 @@ use Kli\Exceptions\KliRuntimeException;
 use Kli\KliAction;
 use Kli\KliArgs;
 use Kli\KliOption;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliActionTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliActionTest extends TestCase
 {
 	public function testValidName(): void

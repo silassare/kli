@@ -15,15 +15,15 @@ namespace Kli\Tests\Types;
 
 use Kli\Exceptions\KliInputException;
 use Kli\Types\KliTypeBool;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliTypeBoolTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliTypeBoolTest extends TestCase
 {
 	public function testValidateTrueLiterals(): void

@@ -19,15 +19,15 @@ use Kli\Types\KliTypeBool;
 use Kli\Types\KliTypeNumber;
 use Kli\Types\KliTypePath;
 use Kli\Types\KliTypeString;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliOptionTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliOptionTest extends TestCase
 {
 	public function testNameAutoAlias(): void

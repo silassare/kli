@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <psalm
+        xmlns:xi="http://www.w3.org/2001/XInclude"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         errorLevel="4"
         resolveFromConfigFile="true"
+        phpVersion="8.5"
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
@@ -14,12 +16,6 @@
         </ignoreFiles>
     </projectFiles>
 
-    <issueHandlers>
-        <!-- PHP 8.5 deprecates every form of null array offset, `isset()`, `??` and `empty()` included,
-             so a possibly-null offset is a deprecation waiting to be triggered, not a style question. -->
-        <PossiblyNullArrayOffset errorLevel="error"/>
-        <NullArrayOffset errorLevel="error"/>
-        <PossiblyUnusedMethod errorLevel="suppress"/>
-        <PossiblyUnusedReturnValue errorLevel="suppress"/>
-    </issueHandlers>
+	<!-- The levels every Oliup package analyses at. Nothing here is repeated below. -->
+	<xi:include href="vendor/oliup/oliup-cs-php/src/psalm/handlers.xml"/>
 </psalm>

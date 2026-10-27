@@ -16,15 +16,15 @@ namespace Kli\Tests\Types;
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
 use Kli\Types\KliTypeNumber;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliTypeNumberTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliTypeNumberTest extends TestCase
 {
 	public function testValidateInteger(): void

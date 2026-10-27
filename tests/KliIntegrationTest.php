@@ -18,6 +18,7 @@ use Kli\KliAction;
 use Kli\KliArgs;
 use Kli\KliOption;
 use Kli\KliStyle;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,9 +29,8 @@ use PHPUnit\Framework\TestCase;
  * dispatch, error output, and positional offsets.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliIntegrationTest extends TestCase
 {
 	private Kli $kli;

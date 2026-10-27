@@ -14,21 +14,21 @@ declare(strict_types=1);
 namespace Kli\Tests;
 
 use Kli\KliStyle;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class KliStyleTest.
  *
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class KliStyleTest extends TestCase
 {
 	public function testAnsiColors(): void
 	{
 		// Without any styles configured the output is unchanged in every mode.
-		self::assertSame(' ', (new KliStyle())->apply(' '));
+		self::assertSame(' ', new KliStyle()->apply(' '));
 
 		// Force ANSI output so these assertions run regardless of whether
 		// STDOUT happens to be a TTY.
