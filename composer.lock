@@ -2137,12 +2137,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/oliup-io/oliup-cs-php.git",
-                "reference": "f9d2c51a23eb2246d278e0ed4961748dc46aefbc"
+                "reference": "1bee45e36df125ef1da5aa2c96e3babef031112c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oliup-io/oliup-cs-php/zipball/f9d2c51a23eb2246d278e0ed4961748dc46aefbc",
-                "reference": "f9d2c51a23eb2246d278e0ed4961748dc46aefbc",
+                "url": "https://api.github.com/repos/oliup-io/oliup-cs-php/zipball/1bee45e36df125ef1da5aa2c96e3babef031112c",
+                "reference": "1bee45e36df125ef1da5aa2c96e3babef031112c",
                 "shasum": ""
             },
             "require": {
