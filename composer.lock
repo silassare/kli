@@ -2137,12 +2137,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/oliup-io/oliup-cs-php.git",
-                "reference": "de09ba535e482bcdde72da65cb38751b650cb936"
+                "reference": "f9d2c51a23eb2246d278e0ed4961748dc46aefbc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oliup-io/oliup-cs-php/zipball/de09ba535e482bcdde72da65cb38751b650cb936",
-                "reference": "de09ba535e482bcdde72da65cb38751b650cb936",
+                "url": "https://api.github.com/repos/oliup-io/oliup-cs-php/zipball/f9d2c51a23eb2246d278e0ed4961748dc46aefbc",
+                "reference": "f9d2c51a23eb2246d278e0ed4961748dc46aefbc",
                 "shasum": ""
             },
             "require": {
@@ -2196,7 +2196,7 @@
                 "issues": "https://github.com/oliup-io/oliup-cs-php/issues",
                 "source": "https://github.com/oliup-io/oliup-cs-php/tree/main"
             },
-            "time": "2026-10-27T13:56:38+00:00"
+            "time": "2026-10-27T15:29:25+00:00"
         },
         {
             "name": "phar-io/manifest",
