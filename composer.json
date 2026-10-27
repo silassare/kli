@@ -19,7 +19,7 @@
 	"require-dev": {
 		"oliup/oliup-cs-php": "dev-main",
 		"roave/security-advisories": "dev-latest",
-		"phpunit/phpunit": "^12.0",
+		"phpunit/phpunit": "^13.4",
 		"vimeo/psalm": "^6.0"
 	},
 	"homepage": "https://github.com/silassare/kli#readme",
