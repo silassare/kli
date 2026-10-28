@@ -1,5 +1,8 @@
 ### v1.1.0 (unreleased)
 
+    - The shared coding standard applies the PHP 8.5 migration, so the syntax follows the floor
+      instead of the year a file was written: `$x::class` over `get_class($x)`, `0o755` over `0755`,
+      an arrow function over a closure that only returns, a heredoc indented with its code
     - An option's flag and name are padded in terminal columns in `--help`
       (`KliUtils::displayWidth()`, as every other width here is), where `str_pad()` counted bytes:
       a name with an accent or a wide character used to push the description out of line

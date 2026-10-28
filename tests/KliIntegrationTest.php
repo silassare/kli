@@ -379,9 +379,7 @@ final class KliIntegrationTest extends TestCase
 		$result   = [];
 		$cmd      = $kli->command('do');
 		$act      = $cmd->action('it');
-		$act->option('val')->string()->validator(static function (string $v): bool {
-			return \str_starts_with($v, 'ok-');
-		})->def('ok-default');
+		$act->option('val')->string()->validator(static fn (string $v): bool => \str_starts_with($v, 'ok-'))->def('ok-default');
 		$act->handler(static function (KliArgs $args) use (&$result): void {
 			$result['val'] = $args->get('val');
 		});
