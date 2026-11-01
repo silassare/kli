@@ -18,6 +18,13 @@
 
 	<php>
 		<ini name="error_reporting" value="-1"/>
+		<!--
+		    A bound, so a runaway allocation fails a test by name instead of taking the machine
+		    with it: the CLI runs at `memory_limit = -1`, where PHP never raises, every byte of
+		    RAM and swap goes, and the run is killed from outside with no output to read. The
+		    whole suite peaks at 24 MB.
+		-->
+		<ini name="memory_limit" value="256M"/>
 		<!-- Kli wraps output to the terminal's width: the expected outputs are written for 80 columns. -->
 		<env name="COLUMNS" value="80" force="true"/>
 	</php>
