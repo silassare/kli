@@ -18,6 +18,7 @@ use Kli\KliAction;
 use Kli\KliArgs;
 use Kli\KliOption;
 use Kli\KliStyle;
+use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -38,6 +39,7 @@ final class KliIntegrationTest extends TestCase
 	/** @var array<string, mixed> */
 	private array $captured = [];
 
+	#[Override]
 	protected function setUp(): void
 	{
 		$this->kli      = new ScriptedKli('klitest', []);

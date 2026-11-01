@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Kli\Tests;
 
 use Kli\Kli;
+use Override;
 
 /**
  * A Kli subclass that feeds pre-scripted responses to readLine() so that
@@ -58,11 +59,13 @@ final class ScriptedKli extends Kli
 	 * The scripted input stands in for STDIN, and $can_prompt for whether it is
 	 * a terminal.
 	 */
+	#[Override]
 	public function canPrompt(): bool
 	{
 		return $this->can_prompt || $this->isInteractiveMode();
 	}
 
+	#[Override]
 	public function readLine(string $prompt, bool $is_password = false): string
 	{
 		$this->promptLog[] = $prompt;
@@ -78,6 +81,7 @@ final class ScriptedKli extends Kli
 	 *
 	 * True once the script is exhausted.
 	 */
+	#[Override]
 	public function isEndOfInput(): bool
 	{
 		return $this->end_of_input;
@@ -90,6 +94,7 @@ final class ScriptedKli extends Kli
 	 * tests can assert the requested exit code without killing the PHPUnit
 	 * process.
 	 */
+	#[Override]
 	public function terminate(int $code = 0): never
 	{
 		throw new KliTerminateCalledException($code);

@@ -183,7 +183,7 @@ final class KliActionTest extends TestCase
 		$action  = new KliAction('create');
 		$invoked = false;
 
-		$action->handler(static function (KliArgs $args) use (&$invoked): void {
+		$action->handler(static function () use (&$invoked): void {
 			$invoked = true;
 		});
 

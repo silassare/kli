@@ -19,6 +19,7 @@ use Kli\Kli;
 use Kli\KliAction;
 use Kli\KliOption;
 use Kli\KliParser;
+use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -34,6 +35,7 @@ final class KliParserTest extends TestCase
 
 	private KliParser $parser;
 
+	#[Override]
 	protected function setUp(): void
 	{
 		$this->kli    = Kli::new('test');

@@ -10,9 +10,14 @@
 >
     <projectFiles>
         <directory name="src"/>
+        <!--
+            The suite is analysed too: it is as much ours as `src/` is, and leaving it out hides the
+            kind of fault only an analyser finds there, a call to a private constructor or a method
+            that does not exist, which no test run reaches until the day it does.
+        -->
+        <directory name="tests"/>
         <ignoreFiles>
             <directory name="vendor"/>
-            <directory name="tests"/>
         </ignoreFiles>
     </projectFiles>
 

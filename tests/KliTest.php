@@ -192,7 +192,7 @@ final class KliTest extends TestCase
 
 		$act = $cmd->action('it');
 		$act->option('val', 'v')->string()->def('x');
-		$act->handler(static function (KliArgs $args) use (&$actInvoked): void {
+		$act->handler(static function () use (&$actInvoked): void {
 			$actInvoked = true;
 		});
 
@@ -383,8 +383,8 @@ final class KliTest extends TestCase
 		$kli = new ScriptedKli('test', []);
 
 		try {
+			// `terminate(): never`, which PHP turns into a TypeError of its own if it returns.
 			$kli->terminate(42);
-			self::fail('KliTerminateCalledException was not thrown');
 		} catch (KliTerminateCalledException $e) {
 			self::assertSame(42, $e->exitCode);
 		}
@@ -396,7 +396,6 @@ final class KliTest extends TestCase
 
 		try {
 			$kli->terminate();
-			self::fail('KliTerminateCalledException was not thrown');
 		} catch (KliTerminateCalledException $e) {
 			self::assertSame(0, $e->exitCode);
 		}

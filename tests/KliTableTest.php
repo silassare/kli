@@ -19,6 +19,7 @@ use Kli\Table\Interfaces\KliTableCellFormatterInterface;
 use Kli\Table\KliTable;
 use Kli\Table\KliTableFormatter;
 use Kli\Table\KliTableHeader;
+use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -195,11 +196,13 @@ final class KliTableTest extends TestCase
 			->alignCenter();
 		$table->addHeader('Date', 'date')
 			->setCellFormatter(new class implements KliTableCellFormatterInterface {
+				#[Override]
 				public function format($value, KliTableHeader $header, array $row): string
 				{
 					return \date('jS F Y, g:i a', $value);
 				}
 
+				#[Override]
 				public function getStyle($value, KliTableHeader $header, array $row): ?KliStyle
 				{
 					return $row['color'] ? new KliStyle()->yellow() : null;

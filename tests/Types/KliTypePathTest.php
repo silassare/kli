@@ -16,6 +16,7 @@ namespace Kli\Tests\Types;
 use Kli\Exceptions\KliInputException;
 use Kli\Exceptions\KliRuntimeException;
 use Kli\Types\KliTypePath;
+use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -31,6 +32,7 @@ final class KliTypePathTest extends TestCase
 
 	private string $file;
 
+	#[Override]
 	protected function setUp(): void
 	{
 		$this->dir  = \sys_get_temp_dir();
