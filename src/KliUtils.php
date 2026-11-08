@@ -178,7 +178,9 @@ class KliUtils
 		$bottom = isset($options['bottom']) ? \max(0, $options['bottom']) : 0;
 		$pad    = $options['pad'] ?? ' ';
 
-		$text         = \preg_replace("~\n|\r\n?~", \PHP_EOL, $text);
+		// Kept only when there is a result: a literal pattern has no compilation to fail, and text
+		// whose line endings were left as they are is still text to pad.
+		$text = \preg_replace("~\n|\r\n?~", \PHP_EOL, $text) ?? $text;
 		$parts        = \explode(\PHP_EOL, $text);
 		$margin_left  = \str_repeat($pad, $left);
 		$margin_right = \str_repeat($pad, $right);

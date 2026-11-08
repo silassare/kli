@@ -1,5 +1,9 @@
 ### v1.1.0 (unreleased)
 
+    - `KliUtils::paddings()` keeps the line endings it was given when the replacement that
+      normalises them answers nothing, instead of passing that nothing to `explode()`: the pattern
+      is a literal and cannot fail, so this is what the raised analysis level names rather than a
+      fault anyone met
     - The shared coding standard applies the PHP 8.5 migration, so the syntax follows the floor
       instead of the year a file was written: `$x::class` over `get_class($x)`, `0o755` over `0755`,
       an arrow function over a closure that only returns, a heredoc indented with its code
